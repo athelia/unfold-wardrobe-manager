@@ -5,9 +5,9 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 
+# Import helper function, SQLAlchemy database, and model definitions
 from model import (connect_to_db, db, User, BaseCategory, UserCategory, Article,
     Outfit, Tag, ArticleOutfit, TagArticle, TagOutfit)
-# from model import 
 
 from sqlalchemy import asc, update
 
