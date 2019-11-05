@@ -1,0 +1,10 @@
+1|tops|Blouses|Long sleeved dressier shirts
+1|tops|T-Shirts|Short sleeved casual tee
+1|bottoms|Jeans|Denim pants
+1|bottoms|Skirts|Long or short skirts
+1|fulls|Casual Dresses|
+1|shoes|Sneakers|Casual athletic shoes
+1|shoes|Heels|
+1|jewels|Earrings|
+1|access|Belts|
+1|outers|Jackets|

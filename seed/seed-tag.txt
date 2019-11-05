@@ -1,0 +1,4 @@
+1|casual
+1|formal
+1|winter
+1|summer
