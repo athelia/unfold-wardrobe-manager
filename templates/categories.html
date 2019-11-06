@@ -5,13 +5,17 @@
 {% block content %}
 
   {% for category in categories %}
-    <a href="/categories/{{ category.category_id }}"><div class="category-block">
-      {{ category.name }}
-    </div></a>
+    <div class="category-block">
+      <a href="/categories/{{ category.category_id }}">
+        {{ category.name }}
+      </a>
+    </div>
   {% endfor %}
 
-  <a href="/add-category"><div class="category-block">
-    Create a new category
-  </div></a>
+  <div class="category-block">
+    <a href="/add-category">
+      Create a new category
+    </a>
+  <div class="category-block">
 
 {% endblock%}
