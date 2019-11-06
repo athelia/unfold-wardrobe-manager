@@ -11,7 +11,7 @@ db = SQLAlchemy()
 class User(db.Model):
     """User of wardrobe manager website."""
 
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=False)
@@ -22,13 +22,13 @@ class User(db.Model):
     outfits = db.relationship('Outfit', backref='users')
 
     def __repr__(self):
-        return f"<user_id={self.user_id} email={self.email}>"
+        return f'<user_id={self.user_id} email={self.email}>'
 
 
 class Category(db.Model):
     """User defined categories of clothing articles, inheriting from standard categories."""
 
-    __tablename__ = "categories"
+    __tablename__ = 'categories'
 
     category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
@@ -46,13 +46,13 @@ class Category(db.Model):
     article = db.relationship('Article', backref='categories')
 
     def __repr__(self):
-        return f"<Category ID={self.category_id} Name={self.name}>"
+        return f'<category_id={self.category_id} name={self.name}>'
 
 
 class Article(db.Model):
     """Article of clothing."""
 
-    __tablename__ = "articles"
+    __tablename__ = 'articles'
 
     article_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     description = db.Column(db.String(256), nullable=True)
@@ -74,13 +74,13 @@ class Article(db.Model):
                            secondary='tags_articles')
 
     def __repr__(self):
-        return f"<Article ID={self.article_id} Category={self.category.name} Description={self.description:.15}>"
+        return f'<article_id={self.article_id} category.name={self.category.name} description={self.description:.15}>'
 
 
 class Outfit(db.Model):
     """Outfit composed of articles."""
     
-    __tablename__ = "outfits"
+    __tablename__ = 'outfits'
 
     outfit_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
@@ -97,13 +97,13 @@ class Outfit(db.Model):
                            secondary='tags_outfits')
 
     def __repr__(self):
-        return f"<Outfit ID={self.outfit_id} Name={self.name} Description={self.description:.15}>"
+        return f'<outfit_id={self.outfit_id} name={self.name} description={self.description:.15}>'
 
 
 class Tag(db.Model):
     """Tag for articles and outfits."""
     
-    __tablename__ = "tags"
+    __tablename__ = 'tags'
 
     tag_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(32), nullable=False)
@@ -113,26 +113,26 @@ class Tag(db.Model):
                         nullable=False)
 
     def __repr__(self):
-        return f"<Tag ID={self.tag_id} Name={self.name}>"
+        return f'<Tag ID={self.tag_id} Name={self.name}>'
 
 
 class BaseCategory(db.Model):
     """Standard categories of clothing articles."""
 
-    __tablename__ = "base_categories"
+    __tablename__ = 'base_categories'
 
     base_category_id = db.Column(db.String(10), primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(256), nullable=True)
 
     def __repr__(self):
-        return f"<Category ID={self.category_id} Name={self.name}>"
+        return f'<base_category_id={self.base_category_id} name={self.name}>'
 
 
 class ArticleOutfit(db.Model):
     """Association table for articles and outfits."""
 
-    __tablename__ = "articles_outfits"
+    __tablename__ = 'articles_outfits'
 
     article_outfit_id = db.Column(db.Integer,
                                   autoincrement=True,
@@ -145,13 +145,13 @@ class ArticleOutfit(db.Model):
                           nullable=False)
 
     def __repr__(self):
-        return f"<ArticleOutfit ID={self.article_outfit_id} Article ID={self.article_id} Outfit ID={self.outfit_id}>"
+        return f'<article_outfit_id={self.article_outfit_id} article_id={self.article_id} outfit_id={self.outfit_id}>'
 
 
 class TagArticle(db.Model):
     """Association table for tags and articles."""
     
-    __tablename__ = "tags_articles"
+    __tablename__ = 'tags_articles'
 
     tag_article_id = db.Column(db.Integer,
                                autoincrement=True,
@@ -164,13 +164,13 @@ class TagArticle(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f"<TagArticle ID={self.tag_article_id} Tag ID={self.tag_id} Article ID={self.article_id}>"
+        return f'<tag_article_id={self.tag_article_id} tag_id={self.tag_id} article_id={self.article_id}>'
 
 
 class TagOutfit(db.Model):
     """Association table for tags and outfits."""
     
-    __tablename__ = "tags_outfits"
+    __tablename__ = 'tags_outfits'
 
     tag_outfit_id = db.Column(db.Integer,
                               autoincrement=True,
@@ -183,7 +183,7 @@ class TagOutfit(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f"<TagOutfit ID={self.tag_outfit_id} Tag ID={self.tag_id} Outfit ID={self.outfit_id}>"
+        return f'<tag_outfit_id={self.tag_outfit_id} tag_id={self.tag_id} outfit_id={self.outfit_id}>'
 
 
 ##############################################################################
@@ -200,10 +200,10 @@ def connect_to_db(app):
     db.init_app(app)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
 
     from server import app 
     connect_to_db(app)
-    print("Connected to DB.")
+    print('Connected to DB.')

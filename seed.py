@@ -3,7 +3,7 @@
 from sqlalchemy import func
 
 # Import helper function, SQLAlchemy database, and model definitions
-from model import (connect_to_db, db, User, BaseCategory, UserCategory, Article,
+from model import (connect_to_db, db, User, BaseCategory, Category, Article,
     Outfit, Tag, ArticleOutfit, TagArticle, TagOutfit)
 
 from server import app
@@ -35,7 +35,7 @@ def load_users():
     db.session.commit()
 
 
-def load_categories():
+def load_base_categories():
     """Load base categories from seed-category.txt into database."""
 
     print("Base Categories")
@@ -67,20 +67,20 @@ def load_user_categories():
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate users
-    UserCategory.query.delete()
+    Category.query.delete()
 
     # Read seed category file and insert data
     for row in open("seed/seed-user-category.txt"):
         row = row.rstrip()
         user_id, base_category_id, name, description = row.split("|")
 
-        user_category = UserCategory(user_id=int(user_id),
-                                     base_category_id=base_category_id,
-                                     name=name,
-                                     description=description)
+        category = Category(user_id=int(user_id),
+                            base_category_id=base_category_id,
+                            name=name,
+                            description=description)
 
         # We need to add to the session or it won't ever be stored
-        db.session.add(user_category)
+        db.session.add(category)
 
     # Once we're done, we should commit our work
     db.session.commit()
@@ -98,10 +98,10 @@ def load_articles():
     # Read seed category file and insert data
     for row in open("seed/seed-article.txt"):
         row = row.rstrip()
-        user_id, user_category_id, description = row.split("|")
+        user_id, category_id, description = row.split("|")
 
         article = Article(user_id=int(user_id),
-                          user_category_id=int(user_category_id),
+                          category_id=int(category_id),
                           description=description)
 
         # We need to add to the session or it won't ever be stored
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
     # Import data
     load_users()
-    load_categories()
+    load_base_categories()
     load_user_categories()
     load_articles()
     load_tags()

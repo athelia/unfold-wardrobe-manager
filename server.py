@@ -61,7 +61,7 @@ def show_categories():
 
 
 @app.route('/categories/<category_id>')
-def show_articles(category_id):
+def show_category_articles(category_id):
     """Display articles of clothing belonging to selected category."""
 
     articles = Article.query.filter(Article.category_id==category_id).all()
@@ -116,9 +116,9 @@ def show_create_article_form():
 def add_article():
     """Adds new clothing article and redirects to the previous category page."""
 
-    name = request.form.get('category-name')
     category_id = request.form.get('category')
-    description = request.form.get('category-description')
+    description = request.form.get('article-description')
+    img = request.form.get('article-image-upload')
 
     new_article = Article(user_id=session['user_id'],
                           category_id=category_id,
@@ -126,7 +126,7 @@ def add_article():
     db.session.add(new_article)
     db.session.commit()
 
-    flash(f"Created {new_article.name} successfully")
+    flash(f"Created new item in {new_article.categories.name}")
 
     return redirect(f'/categories/{category_id}')
 
