@@ -1,0 +1,15 @@
+.category-block {
+    border: solid 1px gray;
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    display: inline-block;
+}
+
+.articles-block {
+    border: solid 1px gold;
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    display: inline-block;
+}

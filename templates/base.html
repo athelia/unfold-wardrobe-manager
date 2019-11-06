@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Wardrobe Manager{% endblock %}</title>
+  <title>{% block title %}{% endblock %}Wardrobe Manager</title>
+  <link rel="stylesheet" href="/static/css/styles.css"/>
 </head>
+
 <body>
 
-{% block content %}
-HERE IS SOME CONTENT
-{% endblock %}
+<!-- Show flashed messages -->
+{% for message in get_flashed_messages() %}
+  <p>{{ message }}</p>
+{% endfor %}
+
+<!-- Content of pages using inheritance -->
+{% block content %} HERE IS SOME CONTENT {% endblock %}
 
 </body>
 </html>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ user_category.name }} - {% endblock %}
+
+{% block content %}
+  
+  <p>
+    <a href="/categories">Back to Categories</a>
+  </p>
+
+  {% for article in articles %}
+    <a href="/articles/{{ article.article_id }}"><div class="articles-block">
+      {% if article.image %}
+        <img src="/static/img/{{ article.img }}">
+      {% else %}
+        {{ article.description }}
+      {% endif %}
+    </div></a>
+  {% endfor %}
+
+  <a href="/add-article"><div class="articles-block">
+    Create a new article
+  </div></a>
+
+{% endblock%}

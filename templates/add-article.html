@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Article - {% endblock %}
+
+{% block content %}
+
+  <p>
+    <a href="/categories">Back to Categories</a>
+  </p>
+
+  <form action="/create-article" id="create-article-form" method="POST">
+    <p>
+      <label for="category">What category of clothing is this?*</label>
+      <select name="category" id="category-select" required>
+        {% for category in categories %}
+          <option value="{{ category.category_id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <!-- This will probably be JQuery or JS to fill the category description when a category is picked.
+
+    <p id="base-category-description">
+    </p>
+    
+     -->
+    <p>
+      <label for="article-description">Describe the item (optional):</label>
+      <input type="text" name="article-description" id="new-article-description-input">
+    </p>
+    <p>
+      <label for="article-image-upload">Add an image*:</label>
+      <input type="file" name="article-image-upload">
+    </p>
+    <p>
+      <label for="purchase-price">Purchase price:</label>
+      $ <input type="number" step="any" name="purchase-price">
+    </p>
+    <input type="submit" value="Create item">
+  </form>
+
+{% endblock%}

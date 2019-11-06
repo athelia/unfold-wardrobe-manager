@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}
+{% block title %} {% endblock %}
 
-{% endblock %}
-
-{% block body %}
+{% block content %}
 <h1>Welcome!</h1>
 
 <form action="/login" name="login">
-    <label for="email">Email address:</label>
-    <input type="text" name="email">
-    <label for="password">Password:</label>
-    <input type="password" name="password">
-    <input type="submit" value="Login">
+  <label for="email">Email address:</label>
+  <input type="text" name="email" required>
+  <label for="password">Password:</label>
+  <input type="password" name="password" required>
+  <input type="submit" value="Login">
 </form>
 
 <a href="/create-account" name="create-account">Create a new account</a>

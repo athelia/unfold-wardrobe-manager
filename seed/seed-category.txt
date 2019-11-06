@@ -1,9 +1,9 @@
-tops|Top|General category for torso coverage.
-bottoms|Bottom|General category for waist and leg coverage.
+tops|Tops|General category for torso coverage.
+bottoms|Bottoms|General category for waist and leg coverage.
 fulls|Full-length|General category for full-body coverage - includes jumpsuits and dresses.
 shoes|Shoes|General category for footwear.
 jewels|Jewelry|General category for jewelry.
-hats|Hat|General category for headwear.
-access|Accessory|General category for acessories - includes scarves and belts.
+hats|Hats|General category for headwear.
+access|Accessories|General category for acessories - includes scarves and belts.
 outers|Outerwear|General category for jackets and coats.
 others|Other|General category for articles that don't fit into other categories.

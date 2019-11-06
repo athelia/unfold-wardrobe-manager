@@ -25,7 +25,7 @@ def load_users():
         user_id, email, password = row.split("|")
 
         user = User(user_id=user_id,
-                    email=email,
+                    email=email.lower(), # Cast to lowercase
                     password=password)
 
         # We need to add to the session or it won't ever be stored

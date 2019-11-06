@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+  <p>
+    <a href="/categories">Back to Categories</a>
+  </p>
+
+  <form action="/create-category" id="create-category-form" method="POST">
+    <p>
+      <label for="">New category name:*</label>
+      <input type="text" name="category-name" id="new-category-name-input" required>
+    </p>
+    <p>
+      <label for="base-category">What kind of category is this?*</label>
+      <select name="base-category" id="base-category-select" required>
+        {% for category in base_categories %}
+          <option value="{{ category.base_category_id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <!-- This will probably be JQuery or JS to fill the category description when a category is picked.
+
+    <p id="base-category-description">
+    </p>
+    
+     -->
+    <p>
+      <label for="category-description">Describe the category (optional):</label>
+      <input type="text" name="category-description" id="new-category-description-input">
+    </p>
+    <input type="submit" value="Create category">
+  </form>
+
+{% endblock%}
