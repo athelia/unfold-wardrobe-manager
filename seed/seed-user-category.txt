@@ -8,3 +8,4 @@
 1|jewels|Earrings|
 1|access|Belts|
 1|outers|Jackets|
+1|bottoms|Leggings|
