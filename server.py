@@ -13,9 +13,7 @@ from sqlalchemy import asc, update
 
 
 app = Flask(__name__)
-
-# Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.config.from_pyfile('flaskconfig.cfg')
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -54,7 +52,7 @@ def login():
 def show_categories():
     """Display all user categories and the option to add a new category."""
 
-    categories = Category.query.all()
+    categories = Category.query.filter(User.user_id==session['user_id']).all()
 
     return render_template("categories.html", 
                            categories=categories)
@@ -64,8 +62,10 @@ def show_categories():
 def show_category_articles(category_id):
     """Display articles of clothing belonging to selected category."""
 
-    articles = Article.query.filter(Article.category_id==category_id).all()
-    category = Category.query.filter(Category.category_id==category_id).one()
+    articles = Article.query.filter(Article.category_id==category_id,
+                                    User.user_id==session['user_id']).all()
+    category = Category.query.filter(Category.category_id==category_id,
+                                     User.user_id==session['user_id']).one()
 
     return render_template("single-category.html", 
                            articles=articles,
@@ -91,9 +91,10 @@ def add_category():
     description = request.form.get('category-description')
 
     new_category = Category(user_id=session['user_id'],
-                                base_category_id=base_category,
-                                name=name,
-                                description=description)
+                            base_category_id=base_category,
+                            name=name,
+                            description=description)
+
     db.session.add(new_category)
     db.session.commit()
 
@@ -106,7 +107,7 @@ def add_category():
 def show_create_article_form():
     """Display form to create a new article of clothing."""
 
-    categories = Category.query.all()
+    categories = Category.query.filter(User.user_id==session['user_id']).all()
 
     return render_template("add-article.html",
                            categories=categories)
@@ -123,6 +124,7 @@ def add_article():
     new_article = Article(user_id=session['user_id'],
                           category_id=category_id,
                           description=description)
+
     db.session.add(new_article)
     db.session.commit()
 
@@ -135,7 +137,7 @@ def add_article():
 def show_article_detail(article_id):
     """Display specific article details."""
 
-    # articles = Article.query.filter(Article.category_id==category.category_id).all()
+    # articles = Article.query.filter(Article.category_id==category.category_id, User.user_id==session['user_id']).all()
 
     # return render_template("articles.html", 
     #                        articles=articles)
