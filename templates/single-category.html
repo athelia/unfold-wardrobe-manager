@@ -12,7 +12,7 @@
     <button class="articles-block">
       <a href="/articles/{{ article.article_id }}">
         {% if article.image %}
-          <img src="{{ article.image }}" class="clothing-in-block">
+          <img src="{{ article.image }}" class="article-image">
         {% else %}
           {{ article.description }}
         {% endif %}
