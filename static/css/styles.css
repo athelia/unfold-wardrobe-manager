@@ -13,3 +13,8 @@
     margin: 10px;
     display: inline-block;
 }
+
+.clothing-in-block {
+    max-width: 140px;
+    max-height: 140px;
+}
