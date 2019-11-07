@@ -74,7 +74,9 @@ class Article(db.Model):
                            secondary='tags_articles')
 
     def __repr__(self):
-        return f'<article_id={self.article_id} category.name={self.category.name} description={self.description:.15}>'
+        return f'<article_id={self.article_id} \
+                  category.name={self.category.name} \
+                  description={self.description:.15}>'
 
 
 class Outfit(db.Model):
@@ -83,10 +85,11 @@ class Outfit(db.Model):
     __tablename__ = 'outfits'
 
     outfit_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     name = db.Column(db.String(64), nullable=True)
     description = db.Column(db.String(256), nullable=True)
     times_worn = db.Column(db.Integer, default='0', nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
 
     # Define relationship to Article and Tag
     articles = db.relationship('Article', 
@@ -97,7 +100,9 @@ class Outfit(db.Model):
                            secondary='tags_outfits')
 
     def __repr__(self):
-        return f'<outfit_id={self.outfit_id} name={self.name} description={self.description:.15}>'
+        return f'<outfit_id={self.outfit_id} \
+                  name={self.name} \
+                  description={self.description:.15}>'
 
 
 class Tag(db.Model):
@@ -145,7 +150,9 @@ class ArticleOutfit(db.Model):
                           nullable=False)
 
     def __repr__(self):
-        return f'<article_outfit_id={self.article_outfit_id} article_id={self.article_id} outfit_id={self.outfit_id}>'
+        return f'<article_outfit_id={self.article_outfit_id} \
+                  article_id={self.article_id} \
+                  outfit_id={self.outfit_id}>'
 
 
 class TagArticle(db.Model):
@@ -164,7 +171,9 @@ class TagArticle(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f'<tag_article_id={self.tag_article_id} tag_id={self.tag_id} article_id={self.article_id}>'
+        return f'<tag_article_id={self.tag_article_id} \
+                  tag_id={self.tag_id} \
+                  article_id={self.article_id}>'
 
 
 class TagOutfit(db.Model):
@@ -183,7 +192,9 @@ class TagOutfit(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f'<tag_outfit_id={self.tag_outfit_id} tag_id={self.tag_id} outfit_id={self.outfit_id}>'
+        return f'<tag_outfit_id={self.tag_outfit_id} \
+                  tag_id={self.tag_id} \
+                  outfit_id={self.outfit_id}>'
 
 
 ##############################################################################
