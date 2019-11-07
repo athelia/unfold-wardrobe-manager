@@ -47,7 +47,7 @@ app.jinja_env.undefined = StrictUndefined
 # AttributeError: type object 'User' has no attribute 'get'
 # @login_manager.user_loader
 # def load_user(user_id):
-#     return User.get(user_id)
+#     return User.query.filter(User.user_id == user_id).first()
 
 
 @app.route('/')
@@ -95,6 +95,8 @@ def show_categories():
 def show_category_articles(category_id):
     """Display articles of clothing belonging to selected category."""
 
+    # TODO: Possible refactor is to save repetitive queries to a variable &
+    # only execute inside the route
     articles = Article.query.filter(Article.category_id == category_id,
                                     User.user_id == session['user_id']).all()
     category = Category.query.filter(Category.category_id == category_id,
