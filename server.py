@@ -1,11 +1,12 @@
 """Web app for wardrobe management"""
 
 from jinja2 import StrictUndefined
-
 from flask import Flask, render_template, redirect, request, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
-
 from werkzeug.utils import secure_filename
+
+import cloudinary
+from cloudinary.uploader import upload
 
 import os
 
@@ -23,13 +24,19 @@ from image_handling import allowed_file, ALLOWED_EXTENSIONS
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
 
+# Set API configuration from environmental variables
+cloudinary.config.update = ({
+    'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'api_key': os.environ.get('CLOUDINARY_API_KEY'),
+    'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
+})
+
+
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
 # error.
 app.jinja_env.undefined = StrictUndefined
 
-# UPLOAD_FOLDER = '/var/www/uploads'
-# ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 # Flask-Login is WIP
 # # Flask-Login needs some setup
 # login_manager = LoginManager()
@@ -157,17 +164,30 @@ def add_article():
     if not allowed_file(file.filename):
         flash(f'File extension .{file.filename.rsplit(".", 1)[1]} not allowed')
     if file and allowed_file(file.filename):
-        # Sanitizes user input to prevent malicious injection
+        # Sanitizes user input
         filename = secure_filename(file.filename)
-        path = os.path.join(app.config['UPLOAD_FOLDER'], str(session['user_id']))
-        
-        if not os.path.exists(path):
-            os.makedirs(path)
-        
-        img_src = file.save(os.path.join(path), filename)
+        # path = os.path.join(app.config['UPLOAD_FOLDER'], str(session['user_id']))
+
+        # if not os.path.exists(path):
+        #     os.makedirs(path)
+
+        # ATTEMPT #1: Results in Errno20, NotADirectoryError
+        # new_filename = '-'.join([str(session['user_id']),file.filename])
+        # file.save(os.path.join(app.config['UPLOAD_FOLDER'],new_filename))
+
+        # ATTEMPT #2: Results in Errno21, IsADirectoryError
+        # file.save(app.config['UPLOAD_FOLDER'])
+
+        # ATTEMPT #3: 
+        # file.save('static/images/' + filename)
+        upload_file = upload(file,
+                              folder = f"user/{session['user_id']}/{category_id}",
+                              unique_filename = 1)
+        # print(upload_file)
+        # print(upload_file['secure_url'])
         new_article = Article(user_id=session['user_id'],
                               category_id=category_id,
-                              img=img_src,
+                              image=upload_file['secure_url'],
                               description=description)
         db.session.add(new_article)
         db.session.commit()
@@ -184,6 +204,11 @@ def show_article_detail(article_id):
 
     # return render_template("articles.html", 
     #                        articles=articles)
+    pass
+
+
+@app.route('/outfits')
+def show_outfits():
     pass
 
 

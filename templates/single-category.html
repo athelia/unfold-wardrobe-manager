@@ -9,17 +9,21 @@
   </p>
 
   {% for article in articles %}
-    <a href="/articles/{{ article.article_id }}"><div class="articles-block">
-      {% if article.image %}
-        <img src="/static/img/{{ article.img }}">
-      {% else %}
-        {{ article.description }}
-      {% endif %}
-    </div></a>
+    <button class="articles-block">
+      <a href="/articles/{{ article.article_id }}">
+        {% if article.image %}
+          <img src="{{ article.image }}" class="clothing-in-block">
+        {% else %}
+          {{ article.description }}
+        {% endif %}
+      </a>
+    </button>
   {% endfor %}
 
-  <a href="/add-article"><div class="articles-block">
-    Create a new article
-  </div></a>
+  <button class="articles-block">
+    <a href="/add-article">
+      Create a new article
+    </a>
+  </button>
 
 {% endblock%}

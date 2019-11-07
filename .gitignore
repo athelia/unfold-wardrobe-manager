@@ -3,3 +3,4 @@ __pycache__
 *.pyc
 .ds_store
 flaskconfig.cfg
+secrets.sh*

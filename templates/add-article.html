@@ -11,13 +11,14 @@
   <form action="/create-article" id="create-article-form" method="POST" enctype="multipart/form-data">
     <p>
       <label for="category">What category of clothing is this?*</label>
+      <!-- TODO: Default to current category -->
       <select name="category" id="category-select" required>
         {% for category in categories %}
           <option value="{{ category.category_id }}">{{ category.name }}</option>
         {% endfor %}
       </select>
     </p>
-    <!-- This will probably be JQuery or JS to fill the category description when a category is picked.
+    <!-- TODO: fill the category description when a category is picked (probably JQ or JS)
 
     <p id="base-category-description">
     </p>
