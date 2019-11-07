@@ -53,6 +53,8 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
+    del session['user_id']
+    del session['user_email']
 
     return render_template("homepage.html")
 
@@ -81,11 +83,18 @@ def login():
         return redirect('/')
 
 
+@app.route('/choose-path')
+def route_to_outfits_categories_articles():
+    """Display page to go to outfits, categories, or articles."""
+
+    pass
+
+
 @app.route('/categories')
 def show_categories():
     """Display all user categories and the option to add a new category."""
 
-    categories = Category.query.filter(User.user_id == session['user_id']).all()
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
 
     return render_template("categories.html", 
                            categories=categories)
@@ -98,9 +107,9 @@ def show_category_articles(category_id):
     # TODO: Possible refactor is to save repetitive queries to a variable &
     # only execute inside the route
     articles = Article.query.filter(Article.category_id == category_id,
-                                    User.user_id == session['user_id']).all()
+                                    Article.user_id == session['user_id']).all()
     category = Category.query.filter(Category.category_id == category_id,
-                                     User.user_id == session['user_id']).one()
+                                     Category.user_id == session['user_id']).one()
 
     return render_template("single-category.html", 
                            articles=articles,
@@ -142,16 +151,10 @@ def add_category():
 def show_create_article_form():
     """Display form to create a new article of clothing."""
 
-    categories = Category.query.filter(User.user_id == session['user_id']).all()
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
 
     return render_template("add-article.html",
                            categories=categories)
-
-
-# def allowed_file(filename):
-#     # print(filename.rsplit('.',1)[1].lower())
-#     return ('.' in filename and 
-#         filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS)
 
 
 @app.route('/create-article', methods=['POST'])
@@ -161,39 +164,32 @@ def add_article():
     category_id = request.form.get('category')
     description = request.form.get('article-description')
     file = request.files['article-image-upload']
+
+    category = Category.query.filter_by(category_id=category_id).one()
     
-    # print(f'\n\n\n\nFilename: {file.filename}\nExtension:{file.filename.rsplit(".",1)[1].lower()}\n\n\n\n')
     if not allowed_file(file.filename):
         flash(f'File extension .{file.filename.rsplit(".", 1)[1]} not allowed')
     if file and allowed_file(file.filename):
         # Sanitizes user input
         filename = secure_filename(file.filename)
-        # path = os.path.join(app.config['UPLOAD_FOLDER'], str(session['user_id']))
 
-        # if not os.path.exists(path):
-        #     os.makedirs(path)
-
-        # ATTEMPT #1: Results in Errno20, NotADirectoryError
-        # new_filename = '-'.join([str(session['user_id']),file.filename])
-        # file.save(os.path.join(app.config['UPLOAD_FOLDER'],new_filename))
-
-        # ATTEMPT #2: Results in Errno21, IsADirectoryError
-        # file.save(app.config['UPLOAD_FOLDER'])
-
-        # ATTEMPT #3: 
-        # file.save('static/images/' + filename)
+        # Cloudinary upload function: 1) folders by user and category name, 
+        # 2) unique filename is true, 
+        # 3) use cloudinary's AI to remove background 
+        # ^ (commented out b/c it req.s subscription)
         upload_file = upload(file,
-                              folder = f"user/{session['user_id']}/{category_id}",
-                              unique_filename = 1)
-        # print(upload_file)
-        # print(upload_file['secure_url'])
+                             folder = f"user/{session['user_email']}/{category.name}",
+                             unique_filename = 1,
+                             # background_removal = "cloudinary_ai",
+                             )
+
         new_article = Article(user_id=session['user_id'],
                               category_id=category_id,
                               image=upload_file['secure_url'],
                               description=description)
         db.session.add(new_article)
         db.session.commit()
-        flash(f"Created new item in {new_article.categories.name}")
+        flash(f"Created new item in {category.name}")
 
     return redirect(f'/categories/{category_id}')
 
