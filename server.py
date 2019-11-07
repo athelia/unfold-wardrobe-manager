@@ -5,14 +5,20 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 
+from werkzeug.utils import secure_filename
+
+import os
+
+from sqlalchemy import asc, update
+
 from flask_login import LoginManager
 
 # Import helper function, SQLAlchemy database, and model definitions
 from model import (connect_to_db, db, User, BaseCategory, Category, Article,
     Outfit, Tag, ArticleOutfit, TagArticle, TagOutfit)
 
-from sqlalchemy import asc, update
-
+# Import functions for image storage and processing
+from image_handling import allowed_file, ALLOWED_EXTENSIONS
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
@@ -22,6 +28,8 @@ app.config.from_pyfile('flaskconfig.cfg')
 # error.
 app.jinja_env.undefined = StrictUndefined
 
+# UPLOAD_FOLDER = '/var/www/uploads'
+# ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 # Flask-Login is WIP
 # # Flask-Login needs some setup
 # login_manager = LoginManager()
@@ -131,22 +139,39 @@ def show_create_article_form():
                            categories=categories)
 
 
+# def allowed_file(filename):
+#     # print(filename.rsplit('.',1)[1].lower())
+#     return ('.' in filename and 
+#         filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS)
+
+
 @app.route('/create-article', methods=['POST'])
 def add_article():
     """Adds new clothing article and redirects to the previous category page."""
 
     category_id = request.form.get('category')
     description = request.form.get('article-description')
-    img = request.form.get('article-image-upload')
-
-    new_article = Article(user_id=session['user_id'],
-                          category_id=category_id,
-                          description=description)
-
-    db.session.add(new_article)
-    db.session.commit()
-
-    flash(f"Created new item in {new_article.categories.name}")
+    file = request.files['article-image-upload']
+    
+    # print(f'\n\n\n\nFilename: {file.filename}\nExtension:{file.filename.rsplit(".",1)[1].lower()}\n\n\n\n')
+    if not allowed_file(file.filename):
+        flash(f'File extension .{file.filename.rsplit(".", 1)[1]} not allowed')
+    if file and allowed_file(file.filename):
+        # Sanitizes user input to prevent malicious injection
+        filename = secure_filename(file.filename)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], str(session['user_id']))
+        
+        if not os.path.exists(path):
+            os.makedirs(path)
+        
+        img_src = file.save(os.path.join(path), filename)
+        new_article = Article(user_id=session['user_id'],
+                              category_id=category_id,
+                              img=img_src,
+                              description=description)
+        db.session.add(new_article)
+        db.session.commit()
+        flash(f"Created new item in {new_article.categories.name}")
 
     return redirect(f'/categories/{category_id}')
 
