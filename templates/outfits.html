@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+  {% for outfit in outfits %}
+    <button class="outfits-block">
+      <a href="/outfits/{{ outfit.outfit_id }}">
+      <!-- {% if outfit.image %}
+        <img src="/static/img/{{ outfit.img }}">
+      {% else %}
+        {{ outfit.description }}
+      {% endif %} -->
+      </a>
+    </button>
+  {% endfor %}
+
+  <button class="outfits-block">
+    <a href="/add-outfit">
+      Create a new outfit
+    </a>
+  </button>
+
+{% endblock%}
