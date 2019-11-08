@@ -176,13 +176,14 @@ def add_article():
         # Cloudinary upload function: 1) folders by user and category name, 
         # 2) unique filename is true, 
         # 3) use cloudinary's AI to remove background 
-        # ^ (commented out b/c it req.s subscription)
+        # ^ (commented out b/c paid service)
         upload_file = upload(file,
                              folder = f"user/{session['user_email']}/{category.name}",
                              unique_filename = 1,
                              # background_removal = "cloudinary_ai",
                              )
 
+        # Create a new Article in the database
         new_article = Article(user_id=session['user_id'],
                               category_id=category_id,
                               image=upload_file['secure_url'],
@@ -198,16 +199,91 @@ def add_article():
 def show_article_detail(article_id):
     """Display specific article details."""
 
-    # articles = Article.query.filter(Article.category_id==category.category_id, User.user_id==session['user_id']).all()
+    article = Article.query.filter_by(article_id = article_id).first()
 
-    # return render_template("articles.html", 
-    #                        articles=articles)
-    pass
+    return render_template("single-article.html", 
+                           article=article)
 
 
 @app.route('/outfits')
 def show_outfits():
-    pass
+    """Display all outfits and the option to add a new outfit."""
+
+    outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
+
+    return render_template('outfits.html', outfits=outfits)
+
+
+@app.route('/add-outfit')
+def show_create_outfit_form():
+    """Display form to create a new outfit."""
+
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
+
+    return render_template('add-outfit.html', categories=categories)
+
+
+@app.route('/outfits/<outfit_id>')
+def show_outfit_detail(outfit_id):
+    """Display specific outfit details."""
+
+    outfit = Outfit.query.filter_by(outfit_id = outfit_id).first()
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
+
+    return render_template('single-outfit.html',
+                           outfit=outfit,
+                           categories=categories)
+
+
+def is_category_in_outfit(outfit, category):
+    for article in outfit.articles:
+        if article.category_id == category.category_id:
+            return True
+    return False
+
+
+@app.route('/update-outfit')
+def add_article_to_outfit:
+    """Adds an article to the current outfit."""
+
+    # I can figure out how to send the article and outfit via a "get req"
+    # within the link, but how do I send it with a post req and no
+    # form? 
+    outfit.add_article(article)
+
+# # WIP - do some simpler steps first
+# @app.route('/select-article/<outfit_id>/<category_id>/<article_id>')
+# def add_or_replace_article_in_outfit(outfit_id, category_id, article_id):
+#     """If category already in outfit, replace article in outfit; otherwise, add."""
+
+#     outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+#     category = Category.query.filter_by(category_id = category_id).one()
+
+#     if is_category_in_outfit(outfit, category):
+#         pass
+#     else:
+#         pass
+
+#     # outfit_categories = Category.query.filter(Outfit.articles.category_id == category_id).all()
+#     # outfit = Outfit.query.filter(Outfit.outfit_id == outfit_id).one()
+
+#     # categories = Category.query.filter(Category.user_id == session['user_id']).all()
+#     # if category_id in outfit_categories:
+#     #     outfit.article_id = article_id
+#     # else:
+#     #     outfit.article_id = article_id
+
+#     return redirect(f'outfits/{outfit_id}',
+#                     outfit=outfit,
+#                     categories=categories)
+
+# def update_article(article_id, outfit_id):
+#     """Change article in outfit's category."""
+
+#     article_outfit = ArticleOutfit.query.filter(ArticleOutfit.article_id == article_id,
+#                                                 ArticleOutfit.outfit_id == outfit_id
+#                                                 ).first()
+    
 
 
 if __name__ == "__main__":
