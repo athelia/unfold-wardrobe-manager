@@ -1,15 +1,25 @@
 .category-block {
     border: solid 1px gray;
+}
+
+.articles-block {
+    border: solid 1px gold;
+}
+
+.outfit-block {
+    border: solid 1px green;
+}
+
+.block-bucket {
     width: 150px;
     height: 150px;
     margin: 10px;
     display: inline-block;
 }
 
-.articles-block {
-    border: solid 1px gold;
-    width: 150px;
-    height: 150px;
+.display-category {
+    width: 35%;
+    height: 300px;
     margin: 10px;
     display: inline-block;
 }
@@ -17,4 +27,25 @@
 .article-image {
     max-width: 140px;
     max-height: 140px;
+}
+
+.outfit-frame {
+    width: 45%;
+    height: 80%;
+    display: inline-block;
+}
+
+.category-frame {
+    width: 45%;
+    height: 80%;
+    display: inline-block;
+}
+
+.scrollable {
+    overflow-y: scroll
+}
+
+.outer-frame {
+    margin-left: auto;
+    margin-right: auto;
 }
