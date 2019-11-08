@@ -18,8 +18,14 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
 
     # Define relationships to Article and Outfit
-    articles = db.relationship('Article', backref='users')
-    outfits = db.relationship('Outfit', backref='users')
+    articles = db.relationship('Article', backref='user')
+    outfits = db.relationship('Outfit', backref='user')
+
+    # def get_categories(self):
+    #   """Query for all of a user's categories."""
+      
+    #   categories = Category.query.filter(Category.user_id == self.user_id).all()
+    #   return categories
 
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'
@@ -43,7 +49,7 @@ class Category(db.Model):
 
     # Define relationship to BaseCategory and Article
     base_category = db.relationship('BaseCategory', backref='categories')
-    article = db.relationship('Article', backref='categories')
+    articles = db.relationship('Article', backref='category')
 
     def __repr__(self):
         return f'<category_id={self.category_id} name={self.name}>'
@@ -98,6 +104,11 @@ class Outfit(db.Model):
     tags = db.relationship('Tag',
                            backref='outfits',
                            secondary='tags_outfits')
+
+    def add_article(self, article):
+        # TODO: check if an article of a cateogry doesn't alrady exist
+        self.articles.append(article)
+        db.session.commit()
 
     def __repr__(self):
         return f'<outfit_id={self.outfit_id} \
