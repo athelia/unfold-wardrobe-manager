@@ -9,7 +9,7 @@
   </p>
 
   {% for article in articles %}
-    <button class="articles-block">
+    <button class="articles-block block-bucket">
       <a href="/articles/{{ article.article_id }}">
         {% if article.image %}
           <img src="{{ article.image }}" class="article-image">
@@ -20,7 +20,7 @@
     </button>
   {% endfor %}
 
-  <button class="articles-block">
+  <button class="articles-block block-bucket">
     <a href="/add-article">
       Create a new article
     </a>

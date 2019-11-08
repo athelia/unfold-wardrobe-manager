@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Outfit - {% endblock %}
+
+{% block content %}
+
+  <form action="/create-outfit" id="create-outfit-form" method="POST" enctype="multipart/form-data">
+    
+<!--     <p>
+      <label for="category">What category of clothing is this?*</label>
+      <select name="category" id="category-select" required>
+        {% for category in categories %}
+          <option value="{{ category.category_id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </p> -->
+
+    <div class="category-frame scrollable">
+      {% for category in categories %}
+        <div class="display-category category-block scrollable">
+          {{ category.name }}
+          {% for article in category.articles %}
+            <div class="article-block block-bucket"> 
+              <a href="/select-article/{{ article.category_id }}/{{ article.article_id }}">
+                {% if article.image %}
+                  <img src="{{ article.image }}" class="article-image">
+                {% else %}
+                  {{ article.description }}
+                {% endif %}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <p>
+      <label for="outfit-description">Describe the outfit (optional):</label>
+      <input type="text" name="outfit-description" id="new-outfit-description-input">
+    </p>
+    <p>
+      <label for="outfit-name">Outfit name (optional):</label>
+      <input type="text" name="outfit-name">
+    </p>
+    <input type="submit" value="Create outfit">
+  </form>
+
+{% endblock%}

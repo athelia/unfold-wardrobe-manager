@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {% if outfit.name %}
+    {{ outfit.name }}
+  {% else %}
+    {{ outfit.outfit_id }}
+  {% endif %}
+  Outfit Detail - 
+{% endblock %}
+
+{% block content %}
+  
+  <p>
+    <a href="/outfits">Back to Outfits</a>
+  </p>
+
+  <div class="outer-frame">
+    
+    <div class="outfit-frame">
+      {% for article in outfit.articles %}
+        <div class="articles-block block-bucket">
+          <a href="/articles/{{ article.article_id }}">
+            {% if article.image %}
+              <img src="{{ article.image }}" class="article-image">
+            {% else %}
+              {{ article.description }}
+            {% endif %}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="category-frame scrollable">
+      {% for category in categories %}
+        <div class="display-category category-block scrollable">
+          {{ category.name }}
+          {% for article in category.articles %}
+            <div class="article-block block-bucket"> 
+              {% if article.image %}
+                <a href="/select-article/{{ outfit.outfit_id }}/{{ article.category_id }}/{{ article.article_id }}">
+                  <img src="{{ article.image }}" class="article-image">
+                </a>
+              {% else %}
+                {{ article.description }}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+{% endblock%}

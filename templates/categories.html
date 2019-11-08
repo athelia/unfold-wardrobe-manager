@@ -5,14 +5,14 @@
 {% block content %}
 
   {% for category in categories %}
-    <button class="category-block">
+    <button class="category-block block-bucket">
       <a href="/categories/{{ category.category_id }}">
         {{ category.name }}
       </a>
     </button>
   {% endfor %}
 
-  <button class="category-block">
+  <button class="category-block block-bucket">
     <a href="/add-category">
       Create a new category
     </a>

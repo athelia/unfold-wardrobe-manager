@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %} {% endblock %}
+{% block title %}Outfits - {% endblock %}
 
 {% block content %}
 
   {% for outfit in outfits %}
-    <button class="outfits-block">
+    <button class="outfit-block block-bucket">
       <a href="/outfits/{{ outfit.outfit_id }}">
-      <!-- {% if outfit.image %}
-        <img src="/static/img/{{ outfit.img }}">
-      {% else %}
+      {% if outfit.description %}
         {{ outfit.description }}
-      {% endif %} -->
+      {% else %}
+        {{ outfit.outfit_id }}
+      {% endif %}
       </a>
     </button>
   {% endfor %}
 
-  <button class="outfits-block">
+  <button class="outfit-block block-bucket">
     <a href="/add-outfit">
       Create a new outfit
     </a>

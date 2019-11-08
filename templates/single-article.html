@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Article Detail - {% endblock %}
+
+{% block content %}
+  
+  <p>
+    <a href="/articles">Back to Articles</a>
+  </p>
+  <h2>
+    {{ article.category.name }} - {{ article.description }}
+  </h2>
+
+  {% if article.image %}
+    <img src="{{ article.image }}">
+  {% endif %}
+
+  Times worn: {{ article.times_worn }}
+  Purchase price: {{ article.purchase_price }}
+
+{% endblock%}
