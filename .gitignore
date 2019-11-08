@@ -4,3 +4,4 @@ __pycache__
 .ds_store
 flaskconfig.cfg
 secrets.sh*
+clothesdatabase
