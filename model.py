@@ -79,6 +79,24 @@ class Article(db.Model):
                            backref='articles',
                            secondary='tags_articles')
 
+    # def update(self, category=self.category, description=self.description,
+    #            purchase_price=self.purchase_price):
+    #     """Update the article's information."""
+
+    #     self.category_id = category.category_id
+    #     self.description = description
+    #     self.purchase_price = purchase_price
+    #     db.session.commit()
+
+    def delete(self):
+        """Remove the outfit."""
+
+        for outfit in self.outfits:
+            outfit.remove(self)
+
+        del(self)
+        db.session.commit()
+
     def __repr__(self):
         return f'<article_id={self.article_id} \
                   category.name={self.category.name} \
@@ -105,10 +123,47 @@ class Outfit(db.Model):
                            backref='outfits',
                            secondary='tags_outfits')
 
+    # def update(self, name=self.name, description=self.description):
+    #     """Update the outfit's information."""
+    #     self.name = name
+    #     self.description = description
+    #     db.session.commit()
+
     def add_article(self, article):
+        """Add the article to the outfit."""
+
         # TODO: check if an article of a cateogry doesn't alrady exist
         self.articles.append(article)
         db.session.commit()
+
+    def remove_article(self, article):
+        """Remove the article from the outfit."""
+
+        self.articles.remove(article)
+        db.session.commit()
+
+    def calculate_value(self):
+        """Sum value of all articles in the outfit."""
+        
+        sum = 0
+        for article in self.articles:
+            sum += article.purchase_price
+        return sum
+
+    def delete(self):
+        """Remove the outfit."""
+
+        for article in self.articles:
+            article.remove(self)
+
+        del(self)
+        db.session.commit()
+
+    def is_category_in_outfit(self, category):
+        for article in self.articles:
+            if article.category_id == category.category_id:
+                return True
+        return False
 
     def __repr__(self):
         return f'<outfit_id={self.outfit_id} \
