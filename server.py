@@ -223,6 +223,34 @@ def show_create_outfit_form():
     return render_template('add-outfit.html', categories=categories)
 
 
+@app.route('/create-outfit', methods=['POST'])
+def add_outfit():
+    """Adds new outfit and redirects to the previous outfits page."""
+
+    description = request.form.get('outfit-description')
+    name = request.form.get('outfit-name')
+    article_ids = request.form.getlist('articles-to-add')
+
+    # First create a new Outfit in the db
+    outfit = Outfit(user_id=session['user_id'],
+                    description=description,
+                    name=name)
+    db.session.add(outfit)
+    db.session.commit()
+
+    # Then create all the article relationships
+    for article_id in article_ids:
+        article = Article.query.filter(Article.article_id == article_id).one()
+        outfit.add_article(article)
+        db.session.commit()
+
+    text = name if name else description
+
+    flash(f"Created new outfit: {text}")
+
+    return redirect('/outfits')
+
+
 @app.route('/outfits/<outfit_id>')
 def show_outfit_detail(outfit_id):
     """Display specific outfit details."""
@@ -235,21 +263,39 @@ def show_outfit_detail(outfit_id):
                            categories=categories)
 
 
-def is_category_in_outfit(outfit, category):
-    for article in outfit.articles:
-        if article.category_id == category.category_id:
-            return True
-    return False
+@app.route('/add-article/<outfit_id>/<article_id>')
+def add_article_to_outfit(outfit_id, article_id):
+    """Add article to outfit and update the page."""
+    
+    outfit = Outfit.query.filter(Outfit.outfit_id == outfit_id).one()
+    article = Article.query.filter(Article.article_id == article_id).one()
 
-
-@app.route('/update-outfit')
-def add_article_to_outfit:
-    """Adds an article to the current outfit."""
-
-    # I can figure out how to send the article and outfit via a "get req"
-    # within the link, but how do I send it with a post req and no
-    # form? 
     outfit.add_article(article)
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
+
+    return redirect(f'/outfits/{outfit_id}')
+
+
+@app.route('/remove-article/<outfit_id>/<article_id>')
+def remove_article_from_outfit(outfit_id, article_id):
+    """Remove article from outfit and update the page."""
+
+    outfit = Outfit.query.filter(Outfit.outfit_id == outfit_id).one()
+    article = Article.query.filter(Article.article_id == article_id).one()
+
+    outfit.remove_article(article)
+
+    return redirect(f'/outfits/{outfit_id}')
+
+
+# @app.route('/update-outfit')
+# def add_article_to_outfit():
+#     """Adds an article to the current outfit."""
+
+#     # I can figure out how to send the article and outfit via a "get req"
+#     # within the link, but how do I send it with a post req and no
+#     # form? 
+#     outfit.add_article(article)
 
 # # WIP - do some simpler steps first
 # @app.route('/select-article/<outfit_id>/<category_id>/<article_id>')
