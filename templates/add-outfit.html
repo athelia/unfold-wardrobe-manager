@@ -4,33 +4,31 @@
 
 {% block content %}
 
-  <form action="/create-outfit" id="create-outfit-form" method="POST" enctype="multipart/form-data">
-    
-<!--     <p>
-      <label for="category">What category of clothing is this?*</label>
-      <select name="category" id="category-select" required>
-        {% for category in categories %}
-          <option value="{{ category.category_id }}">{{ category.name }}</option>
-        {% endfor %}
-      </select>
-    </p> -->
+  <p>
+    <a href="/outfits">Back to Outfits</a>
+  </p>
 
-    <div class="category-frame scrollable">
+
+
+  <form action="/create-outfit" id="create-outfit-form" method="POST" enctype="multipart/form-data">
+    <!-- The right container shows all categories that the user has. -->
+    <div class="scrollable">
       {% for category in categories %}
-        <div class="display-category category-block scrollable">
-          {{ category.name }}
+      <fieldset class="display-category category-block scrollable">
+        <legend>{{ category.name }}</legend>
           {% for article in category.articles %}
             <div class="article-block block-bucket"> 
-              <a href="/select-article/{{ article.category_id }}/{{ article.article_id }}">
-                {% if article.image %}
-                  <img src="{{ article.image }}" class="article-image">
-                {% else %}
-                  {{ article.description }}
-                {% endif %}
-              </a>
+              <input type="checkbox" id="{{ article.article_id }}" value="{{ article.article_id }}" name="articles-to-add" />
+                <label for="{{ article.article_id }}">
+                  {% if article.image %}
+                    <img src="{{ article.image }}" class="article-image">
+                  {% else %}
+                    {{ article.description }}
+                  {% endif %}
+                </label>
             </div>
           {% endfor %}
-        </div>
+      </fieldset>
       {% endfor %}
     </div>
 

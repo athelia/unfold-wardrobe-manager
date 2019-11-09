@@ -10,17 +10,32 @@
 {% endblock %}
 
 {% block content %}
-  
+
+  <!-- Go back to page where you can see all outfits -->
   <p>
     <a href="/outfits">Back to Outfits</a>
   </p>
 
+  <!-- Keep the left and right sides in another container -->
   <div class="outer-frame">
-    
+
+    <!-- 
+    The left container shows everything that's in the current outfit.
+    Here we display the outfit's name if it has one, otherwise its ID.
+     -->
     <div class="outfit-frame">
+      <h3>Outfit - 
+      {% if outfit.name %}
+        {{ outfit.name }}
+      {% else %}
+        # {{ outfit.outfit_id }}
+      {% endif %}
+      </h3>
+
+      <!-- Iterate over all articles in the outfit & display them. -->
       {% for article in outfit.articles %}
         <div class="articles-block block-bucket">
-          <a href="/articles/{{ article.article_id }}">
+          <a href="/remove-article/{{ outfit.outfit_id }}/{{ article.article_id }}">
             {% if article.image %}
               <img src="{{ article.image }}" class="article-image">
             {% else %}
@@ -31,24 +46,35 @@
       {% endfor %}
     </div>
 
+    <!-- The right container shows all categories that the user has. -->
     <div class="category-frame scrollable">
       {% for category in categories %}
-        <div class="display-category category-block scrollable">
-          {{ category.name }}
+        <fieldset class="display-category category-block scrollable">
+          <legend>{{ category.name }}</legend>
+          <!-- For each category, show all articles added to the category. -->
           {% for article in category.articles %}
             <div class="article-block block-bucket"> 
               {% if article.image %}
-                <a href="/select-article/{{ outfit.outfit_id }}/{{ article.category_id }}/{{ article.article_id }}">
+                <a href="/add-article/{{ outfit.outfit_id }}/{{ article.article_id }}">
+                <!-- <form action="/add-article" method="POST"> -->
+                  <!-- <input type="hidden" name="outfit_id" value="{{ outfit.outfit_id }}" /> -->
                   <img src="{{ article.image }}" class="article-image">
+                <!-- </form> -->
                 </a>
               {% else %}
                 {{ article.description }}
               {% endif %}
             </div>
           {% endfor %}
-        </div>
+        </fieldset>
       {% endfor %}
     </div>
   </div>
+
+  <!-- <form action="/articlkajds" method="POST">
+    <img>
+    <input type="hidden" name="outfit_id" value="{{ outfit.outfit_id }}" />
+
+  </form> -->
 
 {% endblock%}
