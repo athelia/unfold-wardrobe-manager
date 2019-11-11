@@ -21,6 +21,15 @@ class User(db.Model):
     articles = db.relationship('Article', backref='user')
     outfits = db.relationship('Outfit', backref='user')
 
+    def update(self, attribute_name, new_attribute):
+        """Update the category's information."""
+
+        if attribute_name == 'email':
+          self.email = new_attribute
+        elif attribute_name == 'password':
+          self.password = new_attribute
+        db.session.commit()
+
     # def get_categories(self):
     #   """Query for all of a user's categories."""
       
@@ -51,6 +60,25 @@ class Category(db.Model):
     base_category = db.relationship('BaseCategory', backref='categories')
     articles = db.relationship('Article', backref='category')
 
+    def update(self, attribute_name, new_attribute):
+        """Update the category's information."""
+
+        if attribute_name == 'name':
+          self.name = new_attribute
+        elif attribute_name == 'description':
+          self.description = new_attribute
+        db.session.commit()
+
+    def delete(self):
+        """Remove the category."""
+
+        # First remove all foreign key dependencies
+        for article in self.articles:
+            article.remove(self)
+
+        del(self)
+        db.session.commit()
+
     def __repr__(self):
         return f'<category_id={self.category_id} name={self.name}>'
 
@@ -79,6 +107,9 @@ class Article(db.Model):
                            backref='articles',
                            secondary='tags_articles')
 
+    #############################
+    # ~CODE REVIEW~ 
+    # 
     # def update(self, category=self.category, description=self.description,
     #            purchase_price=self.purchase_price):
     #     """Update the article's information."""
@@ -88,9 +119,24 @@ class Article(db.Model):
     #     self.purchase_price = purchase_price
     #     db.session.commit()
 
-    def delete(self):
-        """Remove the outfit."""
+    def update(self, attribute_name, new_attribute):
+        """Update the article's information."""
 
+        # self.f'{attribute_name}' = new_attribute
+        # self.attribute_name = new_attribute
+        # f'{self}.{attribute_name}' = new_attribute
+        if attribute_name == 'category_id':
+          self.category_id = new_attribute
+        elif attribute_name == 'description':
+          self.description = new_attribute
+        elif attribute_name == 'purchase_price':
+          self.purchase_price = new_attribute
+        db.session.commit()
+
+    def delete(self):
+        """Remove the article."""
+
+        # First remove all foreign key dependencies
         for outfit in self.outfits:
             outfit.remove(self)
 
@@ -123,11 +169,17 @@ class Outfit(db.Model):
                            backref='outfits',
                            secondary='tags_outfits')
 
-    # def update(self, name=self.name, description=self.description):
-    #     """Update the outfit's information."""
-    #     self.name = name
-    #     self.description = description
-    #     db.session.commit()
+    # Outfit update methods: update, add_article, remove_article
+    def update(self, attribute_name, new_attribute):
+        """Update the category's information."""
+
+        if attribute_name == 'name':
+            self.name = new_attribute
+        elif attribute_name == 'description':
+            self.description = new_attribute
+        elif attribute_name == 'times_worn':
+            self.times_worn = new_attribute
+        db.session.commit()
 
     def add_article(self, article):
         """Add the article to the outfit."""
@@ -142,6 +194,18 @@ class Outfit(db.Model):
         self.articles.remove(article)
         db.session.commit()
 
+    # Outfit delete method
+    def delete(self):
+        """Remove the outfit."""
+
+        # First remove all foreign key dependencies
+        for article in self.articles:
+            article.remove(self)
+
+        del(self)
+        db.session.commit()
+
+    # Assorted outfit methods
     def calculate_value(self):
         """Sum value of all articles in the outfit."""
         
@@ -149,15 +213,6 @@ class Outfit(db.Model):
         for article in self.articles:
             sum += article.purchase_price
         return sum
-
-    def delete(self):
-        """Remove the outfit."""
-
-        for article in self.articles:
-            article.remove(self)
-
-        del(self)
-        db.session.commit()
 
     def is_category_in_outfit(self, category):
         for article in self.articles:
