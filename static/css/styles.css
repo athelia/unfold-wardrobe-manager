@@ -14,6 +14,7 @@
     width: 150px;
     height: 150px;
     margin: 10px;
+    border: solid 1px;
     display: inline-block;
 }
 
@@ -48,4 +49,10 @@
 .outer-frame {
     margin-left: auto;
     margin-right: auto;
+}
+
+.login-form {
+    margin-left: auto;
+    margin-right: auto;
+    width: 45%;
 }

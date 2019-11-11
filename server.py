@@ -52,11 +52,11 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
 def index():
-    """Homepage."""
-    del session['user_id']
-    del session['user_email']
-
-    return render_template("homepage.html")
+    """If logged in, display homepage to go to outfits, categories, or articles."""
+    if session.get('user_id', None):
+        return render_template("homepage.html")
+    else:
+        return render_template("login.html")
 
 
 @app.route('/login')
@@ -77,17 +77,17 @@ def login():
         # Flask-Login is WIP
         # login_user(user)
         flash(f"Welcome back, {session['user_email']}!")
-        return redirect('/categories')
+        return redirect('/')
     else:
         flash("Invalid email & password combination. Please try again.")
         return redirect('/')
 
 
-@app.route('/choose-path')
-def route_to_outfits_categories_articles():
-    """Display page to go to outfits, categories, or articles."""
+@app.route('/create-account')
+def create_account_page():
+    """Display account creation form."""
 
-    pass
+    return render_template("new-account.html")
 
 
 @app.route('/categories')

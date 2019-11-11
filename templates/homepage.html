@@ -3,15 +3,23 @@
 {% block title %} {% endblock %}
 
 {% block content %}
-<h1>Welcome!</h1>
 
-<form action="/login" name="login">
-  <label for="email">Email address:</label>
-  <input type="text" name="email" required>
-  <label for="password">Password:</label>
-  <input type="password" name="password" required>
-  <input type="submit" value="Login">
-</form>
+<button class="block-bucket">
+  <a href="/outfits">
+    Outfits
+  </a>
+</button>
 
-<a href="/create-account" name="create-account">Create a new account</a>
+<button class="block-bucket">
+  <a href="/articles">
+    Articles
+  </a>
+</button>
+
+<button class="block-bucket">
+  <a href="/categories">
+    Categories
+  </a>
+</button>
+
 {% endblock%}
