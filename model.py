@@ -30,11 +30,24 @@ class User(db.Model):
           self.password = new_attribute
         db.session.commit()
 
-    # def get_categories(self):
-    #   """Query for all of a user's categories."""
-      
-    #   categories = Category.query.filter(Category.user_id == self.user_id).all()
-    #   return categories
+    # ~CODE REVIEW~
+    def delete(self):
+        """Remove the user."""
+
+        # First remove all foreign key dependencies
+        for outfit in self.outfits:
+            for article in outfit.articles:
+                outfit.remove(article)
+            del(outfit)
+
+        for article in self.articles:
+            del(article)
+
+        for category in self.categories:
+            del(category)
+
+        del(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'
@@ -69,6 +82,7 @@ class Category(db.Model):
           self.description = new_attribute
         db.session.commit()
 
+    # ~CODE REVIEW~
     def delete(self):
         """Remove the category."""
 
@@ -133,6 +147,7 @@ class Article(db.Model):
           self.purchase_price = new_attribute
         db.session.commit()
 
+    # ~CODE REVIEW~
     def delete(self):
         """Remove the article."""
 
@@ -194,6 +209,7 @@ class Outfit(db.Model):
         self.articles.remove(article)
         db.session.commit()
 
+    # ~CODE REVIEW~
     # Outfit delete method
     def delete(self):
         """Remove the outfit."""
