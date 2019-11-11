@@ -49,6 +49,24 @@ class User(db.Model):
         del(self)
         db.session.commit()
 
+    def get_categories_query(self):
+      """Start a query for all of a user's categories."""
+      
+      categories_query = Category.query.filter_by(user_id = self.user_id)
+      return categories_query
+
+    def get_articles_query(self):
+      """Start a query for all of a user's articles."""
+      
+      articles_query = Article.query.filter_by(user_id = self.user_id)
+      return articles_query
+
+    def get_outfits_query(self):
+      """Query for all of a user's outfits."""
+      
+      outfits_query = Outfit.query.filter_by(user_id = self.user_id)
+      return outfits_query
+
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'
 
