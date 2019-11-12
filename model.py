@@ -169,11 +169,12 @@ class Article(db.Model):
     def delete(self):
         """Remove the article."""
 
-        # First remove all foreign key dependencies
-        for outfit in self.outfits:
-            outfit.remove(self)
+        # # First remove all foreign key dependencies
+        # for outfit in self.outfits:
+        #     outfit.remove(self)
 
-        del(self)
+        # del(self)
+        db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):

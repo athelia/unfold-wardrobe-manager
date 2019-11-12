@@ -218,6 +218,18 @@ def add_article():
     return redirect(f'/categories/{category_id}')
 
 
+@app.route('/delete-article', methods=['POST'])
+def delete_article():
+    """Deletes an article."""
+
+    article_id = request.form.get('article-to-delete')
+    article = Article.query.filter_by(article_id = article_id).one()
+
+    article.delete()
+
+    return redirect('/articles')
+
+
 @app.route('/articles/<article_id>')
 def show_article_detail(article_id):
     """Display specific article details."""

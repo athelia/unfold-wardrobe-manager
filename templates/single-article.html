@@ -15,7 +15,16 @@
     <img class="full-size" src="{{ article.image }}">
   {% endif %}
 
-  Times worn: {{ article.times_worn }}
-  Purchase price: {{ article.purchase_price }}
+  <p>
+    Times worn: {{ article.times_worn }}
+  </p>
+  <p>
+    Purchase price: {{ article.purchase_price }}
+  </p>
+  <form action="/delete-article" method="POST">
+    <input type="hidden" name="article-to-delete" id="article-to-delete" value="{{ article.article_id }}">
+    <label for="delete-article">Permanently delete this article?</label>
+    <input type="submit" id="delete-article" value="Delete">
+  </form>
 
 {% endblock%}
