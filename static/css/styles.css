@@ -56,3 +56,8 @@
     margin-right: auto;
     width: 45%;
 }
+
+.full-size {
+    max-width: 80%;
+    max-height: 80%;
+}

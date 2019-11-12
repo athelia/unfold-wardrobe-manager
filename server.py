@@ -83,6 +83,20 @@ def login():
         return redirect('/')
 
 
+@app.route('/logout')
+def logout():
+    """Log user out of session."""
+
+    # Remove user's id and email from session
+    del session['user_id']
+    del session['user_email']
+    # Flask-Login is WIP
+    # login_user(user)
+    flash(f"Logged out successfully.")
+    return redirect('/')
+
+
+# WIP 
 @app.route('/create-account')
 def create_account_page():
     """Display account creation form."""
@@ -146,6 +160,15 @@ def add_category():
 
     return redirect('/categories')
 
+
+@app.route('/articles')
+def show_articles():
+    """Display all articles of clothing and the option to add a new article."""
+
+    articles = Article.query.filter(Article.user_id == session['user_id']).all()
+
+    return render_template("articles.html", 
+                           articles=articles)
 
 @app.route('/add-article')
 def show_create_article_form():

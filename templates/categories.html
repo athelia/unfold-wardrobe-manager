@@ -4,6 +4,10 @@
 
 {% block content %}
 
+  <p>
+    <a href="/">Back to Homepage</a>
+  </p>
+
   {% for category in categories %}
     <button class="category-block block-bucket">
       <a href="/categories/{{ category.category_id }}">
@@ -14,7 +18,7 @@
 
   <button class="category-block block-bucket">
     <a href="/add-category">
-      Create a new category
+      +
     </a>
   </button>
 

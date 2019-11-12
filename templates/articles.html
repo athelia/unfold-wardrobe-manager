@@ -5,25 +5,25 @@
 {% block content %}
   
   <p>
-    <a href="/categories">Back to Categories</a>
+    <a href="/">Back to Homepage</a>
   </p>
 
   {% for article in articles %}
-    <div class="articles-block block-bucket">
+    <button class="articles-block block-bucket">
       <a href="/articles/{{ article.article_id }}">
       {% if article.image %}
-        <img src="/static/img/{{ article.img }}">
+        <img class="article-image" src="{{ article.image }}">
       {% else %}
         {{ article.description }}
       {% endif %}
       </a>
-    </div>
+    </button>
   {% endfor %}
 
-  <div class="articles-block block-bucket">
+  <button class="articles-block block-bucket">
     <a href="/add-article">
-      Create a new article
+      +
     </a>
-  </div>
+  </button>
 
 {% endblock%}

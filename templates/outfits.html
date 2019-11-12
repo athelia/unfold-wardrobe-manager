@@ -4,6 +4,10 @@
 
 {% block content %}
 
+  <p>
+    <a href="/">Back to Homepage</a>
+  </p>
+
   {% for outfit in outfits %}
     <button class="outfit-block block-bucket">
       <a href="/outfits/{{ outfit.outfit_id }}">
@@ -18,7 +22,7 @@
 
   <button class="outfit-block block-bucket">
     <a href="/add-outfit">
-      Create a new outfit
+      +
     </a>
   </button>
 
