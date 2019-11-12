@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+<h1>Welcome!</h1>
+
+<fieldset class="login-form">
+    <legend>Login</legend>
+    <form action="/login" name="login">
+      <p>
+        <label for="email">Email address:</label>
+        <input type="text" name="email" required>
+      </p>
+      <p>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+      </p>
+      <input type="submit" value="Login">
+    </form>
+</fieldset>
+
+<p align="center">
+  <a href="/create-account" name="create-account">Create a new account</a>
+</p>
+{% endblock%}
