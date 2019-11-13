@@ -15,12 +15,24 @@
     <img class="full-size" src="{{ article.image }}">
   {% endif %}
 
-  <p>
-    Times worn: {{ article.times_worn }}
-  </p>
-  <p>
-    Purchase price: {{ article.purchase_price }}
-  </p>
+  <form action="/update-article" method="POST">
+    <p>
+      Category: {{ article.category.name }}
+    </p>
+    <p>
+      Times worn: {{ article.times_worn }}
+    </p>
+    <p>
+      <input type="hidden" name="article-to-edit" id="article-to-edit" value="{{ article.article_id }}">
+      Purchase price: $ {{ article.purchase_price }}
+    </p>
+    <p>
+      <label for="purchase-price">New purchase price:</label>
+      $ <input type="number" step="any" name="purchase-price">
+      <input type="submit" id="update-article" value="Edit">
+    </p>
+  </form>
+
   <form action="/delete-article" method="POST">
     <input type="hidden" name="article-to-delete" id="article-to-delete" value="{{ article.article_id }}">
     <label for="delete-article">Permanently delete this article?</label>

@@ -240,6 +240,18 @@ def show_article_detail(article_id):
                            article=article)
 
 
+@app.route('/update-article', methods=['POST'])
+def update_article_details():
+    """Updates an article's details."""
+
+    new_price = request.form.get('purchase-price')
+    article_id = request.form.get('article-to-edit')
+    article = Article.query.filter_by(article_id = article_id).one()
+
+    article.update({'purchase_price' : new_price})
+    return redirect(f'/articles/{article_id}')
+
+
 @app.route('/outfits')
 def show_outfits():
     """Display all outfits and the option to add a new outfit."""
