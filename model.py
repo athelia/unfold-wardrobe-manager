@@ -253,7 +253,7 @@ class BaseCategory(db.Model):
 
     __tablename__ = 'base_categories'
 
-    base_category_id = db.Column(db.String(10), primary_key=True)
+    base_category_id = db.Column(db.Unicode(10), primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(256), nullable=True)
 
