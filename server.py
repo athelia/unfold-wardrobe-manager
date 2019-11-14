@@ -9,6 +9,7 @@ import cloudinary
 from cloudinary.uploader import upload
 
 import os
+import requests
 
 from sqlalchemy import asc, update
 
@@ -18,19 +19,33 @@ from flask_login import LoginManager
 from model import (connect_to_db, db, User, BaseCategory, Category, Article,
     Outfit, Tag, ArticleOutfit, TagArticle, TagOutfit)
 
+#########################
+# REFACTOR ME
 # Import functions for image storage and processing
 from image_handling import allowed_file, ALLOWED_EXTENSIONS
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
 
-# Set API configuration from environmental variables
+import flask_restless
+manager = flask_restless.APIManager(app)
+
+# Set Cloudinary API configuration from environmental variables
 cloudinary.config.update = ({
     'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'api_key': os.environ.get('CLOUDINARY_API_KEY'),
     'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
-})
+    })
 
+# Set Etsy API config from environmental variables
+from etsy import Etsy
+etsy_config = ({
+    'api_key': os.environ.get('ETSY_API_KEY'),
+    'api_secret': os.environ.get('ETSY_API_SECRET')
+    })
+
+# Manual assignment of API key
+etsy_api = Etsy(etsy_config['api_key'])
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -48,6 +63,7 @@ app.jinja_env.undefined = StrictUndefined
 # @login_manager.user_loader
 # def load_user(user_id):
 #     return User.query.filter(User.user_id == user_id).first()
+
 
 
 @app.route('/')
@@ -333,6 +349,16 @@ def remove_article_from_outfit(outfit_id, article_id):
     outfit.remove_article(article)
 
     return redirect(f'/outfits/{outfit_id}')
+
+
+@app.route('/etsy-api')
+def test_etsy_api():
+    """Test some Etsy API calls."""
+
+    json_listings = etsy_api.findAllFeaturedListings
+
+    return render_template('/api-test.html', json_listings=json_listings)
+
 
 
 # @app.route('/update-outfit')
