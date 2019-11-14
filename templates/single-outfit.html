@@ -24,13 +24,14 @@
     Here we display the outfit's name if it has one, otherwise its ID.
      -->
     <div class="outfit-frame">
-      <h3>Outfit - 
+      <fieldset>
+      <legend>Outfit - 
       {% if outfit.name %}
         {{ outfit.name }}
       {% else %}
         # {{ outfit.outfit_id }}
       {% endif %}
-      </h3>
+      </legend>
 
       <!-- Iterate over all articles in the outfit & display them. -->
       {% for article in outfit.articles %}
@@ -44,6 +45,7 @@
           </a>
         </div>
       {% endfor %}
+      </fieldset>
     </div>
 
     <!-- The right container shows all categories that the user has. -->
