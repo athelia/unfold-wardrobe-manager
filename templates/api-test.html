@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Article Detail - {% endblock %}
+
+{% block content %}
+  
+{% for listing in json_listings %}
+  {% if listing.get('title') %}
+    <p>
+      title={{ listing.get('title', '') }}<br />
+      category_id={{ listing.get('category_id', '') }}<br />
+      category_path={{ listing.get('category_path', '') }}<br />
+      listing_id={{ listing.get('listing_id', '') }}<br />
+      url={% if listing.get('url') %}<a href="{{ listing['url'] }}">{{ listing['url'] }}</a>{% endif %}<br />
+      user_id={{ listing.get('user_id', '') }}<br />
+      price={{ listing.get('price', '') }}<br />
+    </p>
+  {% endif %}
+{% endfor %}
+
+{% endblock%}

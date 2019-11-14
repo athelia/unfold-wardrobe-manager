@@ -355,7 +355,7 @@ def remove_article_from_outfit(outfit_id, article_id):
 def test_etsy_api():
     """Test some Etsy API calls."""
 
-    json_listings = etsy_api.findAllFeaturedListings
+    json_listings = etsy_api.getInterestingListings()
 
     return render_template('/api-test.html', json_listings=json_listings)
 
