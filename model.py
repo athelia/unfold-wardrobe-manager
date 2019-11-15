@@ -40,9 +40,12 @@ class User(db.Model):
         # ? self.outfits.delete()
         # ? Outfit.query.filter_by(user_id=self.user_id).delete()
 
+        # ?
         outfits.delete().where(outfits.user_id == self.user_id)
         articles.delete().where(articles.user_id == self.user_id)
         categories.delete().where(categories.user_id == self.user_id)
+
+        # Not good:
         # for outfit in self.outfits:
         #     db.session.delete(outfit)
         # for article in self.articles:
@@ -67,6 +70,8 @@ class User(db.Model):
         """Count all of a user's created outfits."""
 
         pass
+
+    # ? TODO ? add count_articles and count_categories and count_tags
 
     def get_categories_query(self):
       """Start a query for all of a user's categories."""
