@@ -360,6 +360,18 @@ def test_etsy_api():
     return render_template('api-test.html', json_listings=json_listings)
 
 
+@app.route('/profile')
+def show_profile():
+    """Display logged-in user's profile."""
+
+    if session.get('user_id'):
+        user = User.query.filter_by(user_id = session['user_id']).one()
+    else:
+        user = None
+
+    return render_template('profile.html', user=user)
+
+
 # @app.route('/update-outfit')
 # def add_article_to_outfit():
 #     """Adds an article to the current outfit."""

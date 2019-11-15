@@ -22,4 +22,51 @@
   </a>
 </button>
 
+<form action="/get-weather" id="get-weather">
+    <label for="city">City:</label>
+    <input type="text" name="city">
+    <input type="submit" value="Get Weather">
+</form>
+
+<div class="weather-forecast">
+    <div class="weather-forecast today" id="forecast-today">
+    </div>
+    <div class="weather-forecast tomorrow" id="forecast-tomorrow">
+    </div>
+</div>
+
+<script>
+    "use strict";
+
+    const kelvinToFahreheit = (kelvin) => {
+        return kelvin - 273 * 1.8 + 32
+    };
+
+    const updateWeather = (res) => {
+        tempF = kelvinToFahrenheit(res.main['temp']);
+        $('#forecast-today').html(tempF);
+    };
+
+    $('#get-weather').on('submit', (evt) => {
+        evt.preventDefault();
+
+        const city = $('city').val();
+
+        parameters = {
+            'async': true,
+            'crossDomain': true,
+            'url': `https://community-open-weather-map.p.rapidapi.com/weather?units=imperial&q=${city}`,
+            'method': 'GET',
+            'headers': {
+                'x-rapidapi-host': 'community-open-weather-map.p.rapidapi.com',
+                'x-rapidapi-key': '225deb2e85a9e0632762551be777b883'
+            }
+        }
+
+        $.ajax(parameters.done(updateWeather));
+    });
+
+</script>
+
+
 {% endblock%}
