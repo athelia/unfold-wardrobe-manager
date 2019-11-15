@@ -357,8 +357,7 @@ def test_etsy_api():
 
     json_listings = etsy_api.getInterestingListings()
 
-    return render_template('/api-test.html', json_listings=json_listings)
-
+    return render_template('api-test.html', json_listings=json_listings)
 
 
 # @app.route('/update-outfit')
