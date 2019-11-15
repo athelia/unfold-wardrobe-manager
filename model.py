@@ -25,13 +25,11 @@ class User(db.Model):
     categories = db.relationship('Category', backref='user',
                                  cascade='all, delete, delete-orphan')
 
-    def update(self, attribute_name, new_attribute):
-        """Update the category's information."""
+    def update(self, options):
+        """Update the user's information."""
 
-        if attribute_name == 'email':
-          self.email = new_attribute
-        elif attribute_name == 'password':
-          self.password = new_attribute
+        self.email = options.get('email', self.email)
+        self.password = options.get('password', self.password)
         db.session.commit()
 
     # ~CODE REVIEW~
@@ -55,6 +53,20 @@ class User(db.Model):
         # Then remove the account
         db.session.delete(self)
         db.session.commit()
+
+    def calculate_value(self):
+        """Sum value of all articles a user owns."""
+        
+        sum = 0
+        for article in self.articles:
+            sum += article.purchase_price
+        return sum
+
+    # STUB - lookup COUNT syntax for SQLAlchemy
+    def count_outfits(self):
+        """Count all of a user's created outfits."""
+
+        pass
 
     def get_categories_query(self):
       """Start a query for all of a user's categories."""
@@ -98,15 +110,16 @@ class Category(db.Model):
     base_category = db.relationship('BaseCategory', backref='categories')
     articles = db.relationship('Article', backref='category')
 
-    def update(self, attribute_name, new_attribute):
+    def update(self, options):
         """Update the category's information."""
 
-        if attribute_name == 'name':
-          self.name = new_attribute
-        elif attribute_name == 'description':
-          self.description = new_attribute
+        self.name = options.get('name', self.name)
+        self.description = options.get('description', self.description)
         db.session.commit()
 
+    # TODO: Warn if articles become orphaned as a result.
+    # Best refactoring would be allowing a user to select some/all via filters
+    # and reassign to a new category.
     def delete(self):
         """Remove the category."""
 
