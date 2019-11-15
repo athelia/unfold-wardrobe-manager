@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+<a href="/">Back to homepage</a>
+
+<form action="/update-user" method="POST">
+  <p>
+    Current Email: {{ user.email }}
+  </p>
+  <p>
+    <label for="email">Change email:</label>
+    <input type="text" name="email">
+  </p>
+  <p>
+    <label for="old-password">Current password:</label>
+    <input type="password" name="old-password">
+  </p>
+  <p>
+    <label for="new-password">New password:</label>
+    <input type="password" name="new-password">
+  </p>
+  <input type="submit" value="Submit Changes">
+</form>
+
+{% endblock%}
