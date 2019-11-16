@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  
+{% for forecast in forecasts %}
+  <img src="{{ forecast.get_weather_icon_url() }}" />
+  <p>
+    get_temperature={{ forecast.get_temperature('fahrenheit')['temp'] }}&deg;<br />
+    get_reference_time={{ forecast.get_reference_time() }}<br />
+    get_detailed_status={{ forecast.get_detailed_status() }}<br />
+    get_weather_icon_url={{ forecast.get_weather_icon_url() }}<br />
+  </p>
+{% endfor %}
+
+{% endblock%}

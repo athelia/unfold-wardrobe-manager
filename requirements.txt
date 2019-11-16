@@ -8,6 +8,7 @@ Flask-DebugToolbar==0.10.1
 Flask-Login==0.4.1
 Flask-Restless==0.17.0
 Flask-SQLAlchemy==2.4.1
+geojson==2.5.0
 httplib2==0.14.0
 idna==2.8
 itsdangerous==1.1.0
@@ -20,6 +21,7 @@ oauthlib==3.1.0
 pkg-resources==0.0.0
 psycopg2==2.8.4
 pyetsy==0.5.1
+pyowm==2.10.0
 python-dateutil==2.8.1
 python-mimeparse==1.6.0
 requests==2.22.0

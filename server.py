@@ -5,29 +5,36 @@ from flask import Flask, render_template, redirect, request, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.utils import secure_filename
 
-import cloudinary
-from cloudinary.uploader import upload
-
 import os
 import requests
-
+from datetime import datetime
 from sqlalchemy import asc, update
 
+import flask_restless
 from flask_login import LoginManager
 
 # Import helper function, SQLAlchemy database, and model definitions
 from model import (connect_to_db, db, User, BaseCategory, Category, Article,
-    Outfit, Tag, ArticleOutfit, TagArticle, TagOutfit)
+    Outfit, Tag, WearEvent, ArticleOutfit, TagArticle, TagOutfit, TagEvent)
+
+# Handles image upload and storage
+import cloudinary
+from cloudinary.uploader import upload
 
 #########################
 # REFACTOR ME
 # Import functions for image storage and processing
 from image_handling import allowed_file, ALLOWED_EXTENSIONS
 
+# Compare clothing prices
+from etsy import Etsy
+
+# Get weather from OpenWeatherMap API
+import pyowm
+
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
 
-import flask_restless
 manager = flask_restless.APIManager(app)
 
 # Set Cloudinary API configuration from environmental variables
@@ -38,14 +45,15 @@ cloudinary.config.update = ({
     })
 
 # Set Etsy API config from environmental variables
-from etsy import Etsy
 etsy_config = ({
     'api_key': os.environ.get('ETSY_API_KEY'),
     'api_secret': os.environ.get('ETSY_API_SECRET')
     })
-
 # Manual assignment of API key
 etsy_api = Etsy(etsy_config['api_key'])
+
+# Set OpenWeatherMap API key
+owm = pyowm.OWM(os.environ.get('OPEN_WEATHER_API_KEY'))
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -64,8 +72,19 @@ app.jinja_env.undefined = StrictUndefined
 # def load_user(user_id):
 #     return User.query.filter(User.user_id == user_id).first()
 
+@app.route('/weather')
+def test_weather():
+    """Test OpenWeatherMap's API & PyOWM wrapper"""
 
+    city = 'San Francisco'
+    city_country = city + ',USA'
+    observation = owm.three_hours_forecast(city_country)
+    f = observation.get_forecast()
+    forecasts = f.get_weathers()
 
+    return render_template('weather.html', forecasts=forecasts)
+
+# TODO: consistent single quotes in render_template template names
 @app.route('/')
 def index():
     """If logged in, display homepage to go to outfits, categories, or articles."""
