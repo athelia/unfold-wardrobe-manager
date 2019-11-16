@@ -72,24 +72,38 @@ app.jinja_env.undefined = StrictUndefined
 # def load_user(user_id):
 #     return User.query.filter(User.user_id == user_id).first()
 
-@app.route('/weather')
-def test_weather():
+@app.route('/weather/<city>')
+def test_weather(city):
     """Test OpenWeatherMap's API & PyOWM wrapper"""
 
-    city = 'San Francisco'
+    # city = 'San Francisco'
     city_country = city + ',USA'
+    print(city_country)
     observation = owm.three_hours_forecast(city_country)
     f = observation.get_forecast()
     forecasts = f.get_weathers()
+    print(datetime.time(datetime.now()))
+    for forecast in forecasts:
+        forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+        forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+    today = forecasts[0:8]
 
-    return render_template('weather.html', forecasts=forecasts)
+    return render_template('weather.html', today=today)
+
 
 # TODO: consistent single quotes in render_template template names
 @app.route('/')
 def index():
     """If logged in, display homepage to go to outfits, categories, or articles."""
     if session.get('user_id', None):
-        return render_template("homepage.html")
+        f = owm.three_hours_forecast(city_country).get_forecast()
+        forecasts = f.get_weathers()
+        print(datetime.time(datetime.now()))
+        for forecast in forecasts:
+            forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+            forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+        today = forecasts[0:8]
+        return render_template("homepage.html", today=today)
     else:
         return render_template("login.html")
 

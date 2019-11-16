@@ -28,6 +28,14 @@
     <input type="submit" value="Get Weather">
 </form>
 
+{% for forecast in today %}
+  <div class="forecast">
+    <img src="{{ forecast.get_weather_icon_url() }}" />
+    <h3>{{ forecast.temp }}&deg;</h3>
+    {{ forecast.datestr }} - {{ forecast.get_detailed_status() }}
+  </div>
+{% endfor %}
+
 <div class="weather-forecast">
     <div class="weather-forecast today" id="forecast-today">
     </div>
@@ -38,9 +46,9 @@
 <script>
     "use strict";
 
-    const kelvinToFahreheit = (kelvin) => {
-        return kelvin - 273 * 1.8 + 32
-    };
+    // const kelvinToFahreheit = (kelvin) => {
+    //     return kelvin - 273 * 1.8 + 32
+    // };
 
     const updateWeather = (res) => {
         tempF = kelvinToFahrenheit(res.main['temp']);
@@ -52,18 +60,18 @@
 
         const city = $('city').val();
 
-        parameters = {
-            'async': true,
-            'crossDomain': true,
-            'url': `https://community-open-weather-map.p.rapidapi.com/weather?units=imperial&q=${city}`,
-            'method': 'GET',
-            'headers': {
-                'x-rapidapi-host': 'community-open-weather-map.p.rapidapi.com',
-                'x-rapidapi-key': '225deb2e85a9e0632762551be777b883'
-            }
-        }
+        // parameters = {
+        //     'async': true,
+        //     'crossDomain': true,
+        //     'url': `https://community-open-weather-map.p.rapidapi.com/weather?units=imperial&q=${city}`,
+        //     'method': 'GET',
+        //     'headers': {
+        //         'x-rapidapi-host': 'community-open-weather-map.p.rapidapi.com',
+        //         'x-rapidapi-key': '225deb2e85a9e0632762551be777b883'
+        //     }
+        // }
 
-        $.ajax(parameters.done(updateWeather));
+        // $.ajax(parameters.done(updateWeather));
     });
 
 </script>

@@ -61,3 +61,8 @@
     max-width: 80%;
     max-height: 80%;
 }
+
+.forecast {
+    display: inline-block;
+    margin: 10px;
+}
