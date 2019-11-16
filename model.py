@@ -32,7 +32,8 @@ class User(db.Model):
         self.password = options.get('password', self.password)
         db.session.commit()
 
-    # ~CODE REVIEW~
+    # TODO: learn about cascade delete as in relationships above, then remove
+    # the remove-all-user-data functionality in delete().
     def delete(self):
         """Remove the user."""
 
@@ -199,6 +200,8 @@ class Outfit(db.Model):
     tags = db.relationship('Tag',
                            backref='outfits',
                            secondary='tags_outfits')
+    wear_events = db.relationship('WearEvent',
+                                  backref='outfits')
 
     # Outfit update methods: update, add_article, remove_article
     def update(self, options):
@@ -262,8 +265,61 @@ class Tag(db.Model):
                         db.ForeignKey('users.user_id'),
                         nullable=False)
 
+    def update(self, options):
+        """Update the tag's information."""
+
+        self.name = options.get('name', self.name)
+        db.session.commit()
+
+    def delete(self):
+        """Remove the tag."""
+
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
-        return f'<Tag ID={self.tag_id} Name={self.name}>'
+        return f'<tag_id={self.tag_id} name={self.name}>'
+
+
+class WearEvent(db.Model):
+    """Instances of outfits being worn. Can be past or future; outfits can be added later."""
+    
+    __tablename__ = 'wear_events'
+
+    wear_event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.String(256), nullable=True)
+    date = db.Column(db.DateTime, nullable=False)
+
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.user_id'),
+                        nullable=False)
+    outfit_id = db.Column(db.Integer,
+                          db.ForeignKey('outfit.outfit_id'),
+                          nullable=True) # Outfit can be added after creation
+
+    # Define relationship to Tag
+    tags = db.relationship('Tag',
+                           backref='wear_events',
+                           secondary='tags_events')
+
+    def update(self, options):
+        """Update the event's information."""
+
+        self.name = options.get('name', self.name)
+        self.description = options.get('description', self.description)
+        self.date = options.get('date', self.date)
+        self.outfit_id = options.get('outfit_id', self.outfit_id)
+        db.session.commit()
+
+    def delete(self):
+        """Remove the event."""
+
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'<event_id={self.event_id} name={self.name} user_id={self.user_id}>'
 
 
 class BaseCategory(db.Model):
@@ -340,6 +396,27 @@ class TagOutfit(db.Model):
         return f'<tag_outfit_id={self.tag_outfit_id} \
                   tag_id={self.tag_id} \
                   outfit_id={self.outfit_id}>'
+
+
+class TagEvent(db.Model):
+    """Association table for tags and events."""
+    
+    __tablename__ = 'tags_events'
+
+    tag_event_id = db.Column(db.Integer,
+                              autoincrement=True,
+                              primary_key=True)
+    wear_event_id = db.Column(db.Integer,
+                          db.ForeignKey('outfits.wear_event_id'),
+                          nullable=False)
+    tag_id = db.Column(db.Integer,
+                       db.ForeignKey('tags.tag_id'),
+                       nullable=False)
+
+    def __repr__(self):
+        return f'<tag_outfit_id={self.tag_outfit_id} \
+                  tag_id={self.tag_id} \
+                  wear_event_id={self.wear_event_id}>'
 
 
 ##############################################################################
