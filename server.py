@@ -95,6 +95,7 @@ def test_weather(city):
 @app.route('/')
 def index():
     """If logged in, display homepage to go to outfits, categories, or articles."""
+    city_country = 'San Francisco,USA'
     if session.get('user_id', None):
         f = owm.three_hours_forecast(city_country).get_forecast()
         forecasts = f.get_weathers()

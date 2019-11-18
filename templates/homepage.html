@@ -51,8 +51,7 @@
     // };
 
     const updateWeather = (res) => {
-        tempF = kelvinToFahrenheit(res.main['temp']);
-        $('#forecast-today').html(tempF);
+        $('#forecast-today').html(res.main['temp']);
     };
 
     $('#get-weather').on('submit', (evt) => {
