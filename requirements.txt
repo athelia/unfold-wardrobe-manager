@@ -3,11 +3,13 @@ certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
 cloudinary==1.18.2
+darkskylib==0.3.91
 Flask==1.1.1
 Flask-DebugToolbar==0.10.1
 Flask-Login==0.4.1
 Flask-Restless==0.17.0
 Flask-SQLAlchemy==2.4.1
+future==0.18.2
 geojson==2.5.0
 httplib2==0.14.0
 idna==2.8

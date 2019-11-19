@@ -2,8 +2,15 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import asc, update
+from datetime import datetime as dt
+import os
+from darksky import forecast
 
 db = SQLAlchemy()
+
+dark_sky = ({
+    'secret':os.environ.get('DARK_SKY_API_SECRET'),
+    })
 
 ##############################################################################
 # Model definitions
@@ -24,6 +31,8 @@ class User(db.Model):
                               cascade='all, delete, delete-orphan')
     categories = db.relationship('Category', backref='user',
                                  cascade='all, delete, delete-orphan')
+    wear_events = db.relationship('WearEvent', backref='user',
+                                  cascade='all, delete, delete-orphan')
 
     def update(self, options):
         """Update the user's information."""
@@ -290,12 +299,14 @@ class WearEvent(db.Model):
     name = db.Column(db.String(32), nullable=False)
     description = db.Column(db.String(256), nullable=True)
     date = db.Column(db.DateTime, nullable=False)
+    temperature = db.Column(db.Float, nullable=True)
+    weather_cond = db.Column(db.String(128), nullable=True)
 
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.user_id'),
                         nullable=False)
     outfit_id = db.Column(db.Integer,
-                          db.ForeignKey('outfit.outfit_id'),
+                          db.ForeignKey('outfits.outfit_id'),
                           nullable=True) # Outfit can be added after creation
 
     # Define relationship to Tag
@@ -311,6 +322,14 @@ class WearEvent(db.Model):
         self.date = options.get('date', self.date)
         self.outfit_id = options.get('outfit_id', self.outfit_id)
         db.session.commit()
+
+    def set_weather(self, lat, lng):
+        """Assign temperature and weather conditions for date at latitude & longitude."""
+
+        # time = dt(self.date)
+        weather = forecast(dark_sky['secret'], lat, lng, time=self.date)
+        self.temperature = weather.temperature
+        self.weather_cond = weather.summary
 
     def delete(self):
         """Remove the event."""
@@ -407,7 +426,7 @@ class TagEvent(db.Model):
                               autoincrement=True,
                               primary_key=True)
     wear_event_id = db.Column(db.Integer,
-                          db.ForeignKey('outfits.wear_event_id'),
+                          db.ForeignKey('wear_events.wear_event_id'),
                           nullable=False)
     tag_id = db.Column(db.Integer,
                        db.ForeignKey('tags.tag_id'),
