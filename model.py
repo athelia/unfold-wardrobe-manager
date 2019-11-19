@@ -323,13 +323,31 @@ class WearEvent(db.Model):
         self.outfit_id = options.get('outfit_id', self.outfit_id)
         db.session.commit()
 
-    def set_weather(self, lat, lng):
-        """Assign temperature and weather conditions for date at latitude & longitude."""
+    def set_weather(self, lat=37.774929, lng=122.419418):
+        """Assign temperature and weather conditions for date at latitude & longitude.
+            
+            >>> new_evt = WearEvent(wear_event_id=0, name='Party', \
+            description='Birthday party at Monarch', date=dt(2019, 11, 16, 20, 30), \
+            user_id=1)
+            >>> new_evt
+            <wear_event_id=0 name=Party user_id=1>
+            >>> key = ####### 
+            >>> dark_sky['secret'] = key
+            >>> sflat=37.774929
+            >>> sflng=-122.419418
+            >>> new_evt.set_weather(sflat, sflng)
+            >>> new_evt.temperature
+            58.77
+            >>> new_evt.weather_cond
+            'Clear'
 
-        # time = dt(self.date)
-        weather = forecast(dark_sky['secret'], lat, lng, time=self.date)
+        """
+
+        # Dark Sky requires a date in isoformat
+        weather = forecast(dark_sky['secret'], lat, lng, time=self.date.isoformat())
         self.temperature = weather.temperature
         self.weather_cond = weather.summary
+        db.session.commit()
 
     def delete(self):
         """Remove the event."""
@@ -338,7 +356,7 @@ class WearEvent(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<event_id={self.event_id} name={self.name} user_id={self.user_id}>'
+        return f'<wear_event_id={self.wear_event_id} name={self.name} user_id={self.user_id}>'
 
 
 class BaseCategory(db.Model):
