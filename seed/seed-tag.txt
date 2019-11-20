@@ -1,4 +1,42 @@
+1|favorite
+2|favorite
+3|favorite
+4|favorite
+5|favorite
+6|favorite
+7|favorite
+8|favorite
+9|favorite
+10|favorite
 1|casual
 1|formal
 1|winter
 1|summer
+10|casual
+10|formal
+10|active
+10|comfortable
+10|professional
+10|cold weather
+10|warm weather
+10|Nike
+10|La Sportiva
+10|Chaco
+10|Frye
+10|Anthropologie
+10|Sam Edelman
+10|Rock & Republic
+10|fast fashion
+10|grey
+10|black
+10|white
+10|teal
+10|maroon
+10|green
+10|blue
+10|pink
+10|navy
+10|solid
+10|print
+10|polka dots
+10|floral

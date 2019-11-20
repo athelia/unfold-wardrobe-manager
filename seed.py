@@ -52,11 +52,7 @@ def load_base_categories():
         base_category = BaseCategory(base_category_id=base_category_id,
                                      name=name,
                                      description=description)
-
-        # We need to add to the session or it won't ever be stored
         db.session.add(base_category)
-
-    # Once we're done, we should commit our work
     db.session.commit()
 
 
@@ -70,19 +66,21 @@ def load_user_categories():
     Category.query.delete()
 
     # Read seed category file and insert data
-    for row in open("seed/seed-user-category.txt"):
+    for row in open("seed/seed-user-category-2.txt"):
         row = row.rstrip()
-        user_id, base_category_id, name, description = row.split("|")
+        # Works for original seed data
+        # user_id, base_category_id, name, description = row.split("|")
 
-        category = Category(user_id=int(user_id),
-                            base_category_id=base_category_id,
-                            name=name,
-                            description=description)
+        # These are metadata lines in the file
+        if not row.startswith('--'):
+            category_id, name, description, user_id, base_category_id = row.split("|")
 
-        # We need to add to the session or it won't ever be stored
-        db.session.add(category)
-
-    # Once we're done, we should commit our work
+            category = Category(category_id=int(category_id),
+                                name=name,
+                                description=description,
+                                user_id=int(user_id),
+                                base_category_id=base_category_id)
+            db.session.add(category)
     db.session.commit()
 
 
@@ -96,18 +94,28 @@ def load_articles():
     Article.query.delete()
 
     # Read seed category file and insert data
-    for row in open("seed/seed-article.txt"):
+    for row in open("seed/seed-article-2.txt"):
         row = row.rstrip()
-        user_id, category_id, description = row.split("|")
+        # Works for original seed data 
+        # user_id, category_id, description = row.split("|")
 
-        article = Article(user_id=int(user_id),
-                          category_id=int(category_id),
-                          description=description)
-
-        # We need to add to the session or it won't ever be stored
-        db.session.add(article)
-
-    # Once we're done, we should commit our work
+        # These are metadata lines in the file
+        if not row.startswith('--'):
+            article_id, description, image, purchase_price, times_worn, sell_price, user_id, category_id = row.split("|")
+            
+            # Prevent passing an empty string into field expecting float
+            if not purchase_price:
+                purchase_price = None
+            
+            article = Article(article_id=int(article_id),
+                              description=description,
+                              image=image,
+                              purchase_price=purchase_price,
+                              times_worn=times_worn,
+                              user_id=int(user_id),
+                              category_id=int(category_id),
+                              )
+            db.session.add(article)
     db.session.commit()
 
 
@@ -148,6 +156,19 @@ def set_val_user_id():
     db.session.commit()
 
 
+def set_val_category_id():
+    """Set value for the next category_id after seeding database"""
+
+    # Get the Max category_id in the database
+    result = db.session.query(func.max(Category.category_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next category_id to be max_id + 1
+    query = "SELECT setval('categories_category_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
 if __name__ == "__main__":
     connect_to_db(app)
 
@@ -160,3 +181,7 @@ if __name__ == "__main__":
     load_user_categories()
     load_articles()
     load_tags()
+
+    # Update IDs to reflect imported data
+    set_val_user_id()
+    set_val_category_id()

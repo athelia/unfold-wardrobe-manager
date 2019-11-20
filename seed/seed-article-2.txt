@@ -1,0 +1,46 @@
+--
+-- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+-- COPY public.articles (article_id, description, image, purchase_price, times_worn, sell_price, user_id, category_id) FROM stdin;
+16|Blue; flowers|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573159909/user/lillyjclark%40jourrapide.com/Dance Dresses/eevcuyr9gajxqcgql4tt.jpg||0||3|11
+17|Dark pink wrap|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160030/user/lillyjclark%40jourrapide.com/Dance Dresses/q9uvmnnk5pyyxjcqa4fr.jpg||0||3|11
+18|Red strapless high slit|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160061/user/lillyjclark%40jourrapide.com/Dance Dresses/du6q3eojup8mn1guglu8.jpg||0||3|11
+19|Black lacy|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160088/user/lillyjclark%40jourrapide.com/Dance Dresses/toi0ucj13mvd4cx8ysep.jpg||0||3|11
+20|Black; midriff cutout; flowers|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160242/user/lillyjclark%40jourrapide.com/Dance Dresses/fmxm4fvfojtar5jsfmrz.jpg||0||3|11
+21|Peach short ruffles|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160309/user/lillyjclark%40jourrapide.com/Dance Dresses/vla8pqcnck0j8igriojr.jpg||0||3|11
+22|White sheath pink blossoms|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165562/user/lillyjclark%40jourrapide.com/Dance Dresses/pboaume5weu1d3gzwbtl.png||0||3|11
+23|White off-shoulder; blue floral|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165597/user/lillyjclark%40jourrapide.com/Dance Dresses/plyhhqao36dufcxdkgvr.png||0||3|11
+24|Black sheer with roses|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165645/user/lillyjclark%40jourrapide.com/Dance Dresses/nvvdjosaml3sbhaprslt.jpg||0||3|11
+25|Navy with pink & purple floral|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165691/user/lillyjclark%40jourrapide.com/Dance Dresses/zjdaktzrknm4axkxfch3.png||0||3|11
+26|Wedges black straps|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573169180/user/lillyjclark%40jourrapide.com/Sandals/euwj246xy1i3y0srr1up.png||0||3|12
+27|Free People charcoal top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573517309/user/renejforgey%40armyspy.com/Sleeveless Blouses/s2fipbo1xpk3xncqawfy.jpg||0||6|13
+29|Striped floral skirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573517354/user/renejforgey%40armyspy.com/Skirts/ophyafgoi5u4xwopoo8u.jpg||0||6|14
+30|Black dress with blue flowers|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573592523/user/lillyjclark%40jourrapide.com/Dance Dresses/k4g00dakhkpndwztq6kp.jpg||0||3|11
+15|Black; white dots; knee length|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573159870/user/lillyjclark%40jourrapide.com/Dance Dresses/uu4mrr8btmr4ep7a0atg.jpg|45|0||3|11
+31|Long teal ruffle coat|https://res.cloudinary.com/dkmc9of4y/image/upload/v1573746501/user/lillyjclark%40jourrapide.com/Jackets/wxwsss95sg1kxgii3e85.jpg||0||3|15
+32|Grey asymmetrical jacket|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196332/user/brennan.schroed%40hotmail.com/Jackets/a3elepru8zsedapqoufc.jpg||0||10|21
+33|Blue MCTF Windbreaker|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196409/user/brennan.schroed%40hotmail.com/Jackets/ds3fq3hanpruaqbdqazh.jpg||0||10|21
+34|Blue galaxy leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196454/user/brennan.schroed%40hotmail.com/Leggings/xdvq6fwqyhynssb1q25w.jpg||0||10|17
+35|Olive + multicolor tassel scarf|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196495/user/brennan.schroed%40hotmail.com/Scarves/sk9ibikz8khdxqviw2sd.jpg||0||10|23
+36|Black and grey colorblock dress|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196530/user/brennan.schroed%40hotmail.com/Dresses/abt4yvrdywr71ncy8tmj.jpg||0||10|25
+37|Black pencil skirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196567/user/brennan.schroed%40hotmail.com/Skirts/s8bfjht1x9frpzk1mdu4.jpg||0||10|24
+38|Army green henley|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196615/user/brennan.schroed%40hotmail.com/Long-sleeves/fjb6gi9j2wxyiknkvji3.jpg||0||10|19
+39|Mint green long sweater|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196646/user/brennan.schroed%40hotmail.com/Sweaters/qvhqhahhdsvcsyp24uhq.jpg||0||10|16
+40|Navy striped t-shirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196677/user/brennan.schroed%40hotmail.com/Tees/qyy9dsolnybjadtfbda5.jpg||0||10|18
+41|Teal metallic dot shirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196716/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/pztja5qox5djnqhk0jqc.jpg||0||10|20
+42|Polka dot b+w tie front blouse|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196774/user/brennan.schroed%40hotmail.com/Long-sleeves/rebq3fzvq8a3eaudiopx.jpg||0||10|19
+43|White short sleeve blouse with metallic accent|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196810/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/mxd1nxzgciaeueihs58h.jpg||0||10|20
+44|Crushville 2015 blue tshirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196885/user/brennan.schroed%40hotmail.com/Tees/pz5ipcxoxgkoktbyxkxm.jpg||0||10|18
+45|White cami|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196994/user/brennan.schroed%40hotmail.com/Camisoles/m9kohtjdg8oxf4uopjed.jpg||0||10|22
+46|Black and white floral floofy blouse|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197045/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/xuh5q5gwz9zyvnmcb3bm.jpg||0||10|20
+47|Black leatherlike leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197087/user/brennan.schroed%40hotmail.com/Leggings/r8jqppqoie9oydvhsupp.jpg||0||10|17
+48|Black floral lace high-low miniskirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197198/user/brennan.schroed%40hotmail.com/Skirts/zhvklzwnfrkwvfl1oxbd.jpg||0||10|24
+49|Maroon lacy butterfly sleeve top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197885/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/vbjvcjejpiye3reidaxv.jpg||0||10|20
+50|Grey drawstring tunic top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205788/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/atobufqh3e5zjcah8xaz.jpg||0||10|20
+51|Teal kimono dolman front tie top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205845/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/ntsk6mt4zacpnw5oupic.jpg||0||10|20
+52|Grey cowl neck sweater|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205929/user/brennan.schroed%40hotmail.com/Sweaters/hqwehc701rtms1itku6c.jpg||0||10|16
+53|Chacos|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574206839/user/brennan.schroed%40hotmail.com/Shoes/svg0vtoyp8tzju3viwry.png||0||10|26
+54|La Sportiva Trail Runners|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207195/user/brennan.schroed%40hotmail.com/Shoes/vnnwmuqcaxjx3jt9q10a.png||0||10|26
+55|Nike sneakers|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207240/user/brennan.schroed%40hotmail.com/Shoes/dpg1huzwvtm1gydtcvrl.jpg||0||10|26
+56|Sam Edelman nude stilettos|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207486/user/brennan.schroed%40hotmail.com/Shoes/tji0bs42lnb5m4dn9bno.png||0||10|26
+57|Frye suede ballet flats|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574208136/user/brennan.schroed%40hotmail.com/Shoes/ymlxczvqvkrdj4mwyzhz.png||0||10|26

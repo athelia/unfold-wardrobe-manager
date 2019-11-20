@@ -1,0 +1,820 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: articles; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.articles (
+    article_id integer NOT NULL,
+    description character varying(256),
+    image character varying,
+    purchase_price double precision,
+    times_worn integer NOT NULL,
+    sell_price double precision,
+    user_id integer NOT NULL,
+    category_id integer NOT NULL
+);
+
+
+ALTER TABLE public.articles OWNER TO vagrant;
+
+--
+-- Name: articles_article_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.articles_article_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.articles_article_id_seq OWNER TO vagrant;
+
+--
+-- Name: articles_article_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.articles_article_id_seq OWNED BY public.articles.article_id;
+
+
+--
+-- Name: articles_outfits; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.articles_outfits (
+    article_outfit_id integer NOT NULL,
+    article_id integer NOT NULL,
+    outfit_id integer NOT NULL
+);
+
+
+ALTER TABLE public.articles_outfits OWNER TO vagrant;
+
+--
+-- Name: articles_outfits_article_outfit_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.articles_outfits_article_outfit_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.articles_outfits_article_outfit_id_seq OWNER TO vagrant;
+
+--
+-- Name: articles_outfits_article_outfit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.articles_outfits_article_outfit_id_seq OWNED BY public.articles_outfits.article_outfit_id;
+
+
+--
+-- Name: base_categories; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.base_categories (
+    base_category_id character varying(10) NOT NULL,
+    name character varying(64) NOT NULL,
+    description character varying(256)
+);
+
+
+ALTER TABLE public.base_categories OWNER TO vagrant;
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.categories (
+    category_id integer NOT NULL,
+    name character varying(64) NOT NULL,
+    description character varying(256),
+    user_id integer NOT NULL,
+    base_category_id character varying(10) NOT NULL
+);
+
+
+ALTER TABLE public.categories OWNER TO vagrant;
+
+--
+-- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.categories_category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.categories_category_id_seq OWNER TO vagrant;
+
+--
+-- Name: categories_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.categories_category_id_seq OWNED BY public.categories.category_id;
+
+
+--
+-- Name: outfits; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.outfits (
+    outfit_id integer NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(64),
+    description character varying(256),
+    times_worn integer NOT NULL
+);
+
+
+ALTER TABLE public.outfits OWNER TO vagrant;
+
+--
+-- Name: outfits_outfit_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.outfits_outfit_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.outfits_outfit_id_seq OWNER TO vagrant;
+
+--
+-- Name: outfits_outfit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.outfits_outfit_id_seq OWNED BY public.outfits.outfit_id;
+
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.tags (
+    tag_id integer NOT NULL,
+    name character varying(32) NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tags OWNER TO vagrant;
+
+--
+-- Name: tags_articles; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.tags_articles (
+    tag_article_id integer NOT NULL,
+    article_id integer NOT NULL,
+    tag_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tags_articles OWNER TO vagrant;
+
+--
+-- Name: tags_articles_tag_article_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.tags_articles_tag_article_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_articles_tag_article_id_seq OWNER TO vagrant;
+
+--
+-- Name: tags_articles_tag_article_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.tags_articles_tag_article_id_seq OWNED BY public.tags_articles.tag_article_id;
+
+
+--
+-- Name: tags_outfits; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.tags_outfits (
+    tag_outfit_id integer NOT NULL,
+    outfit_id integer NOT NULL,
+    tag_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tags_outfits OWNER TO vagrant;
+
+--
+-- Name: tags_outfits_tag_outfit_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.tags_outfits_tag_outfit_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_outfits_tag_outfit_id_seq OWNER TO vagrant;
+
+--
+-- Name: tags_outfits_tag_outfit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.tags_outfits_tag_outfit_id_seq OWNED BY public.tags_outfits.tag_outfit_id;
+
+
+--
+-- Name: tags_tag_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.tags_tag_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_tag_id_seq OWNER TO vagrant;
+
+--
+-- Name: tags_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.tags_tag_id_seq OWNED BY public.tags.tag_id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE public.users (
+    user_id integer NOT NULL,
+    email character varying(64) NOT NULL,
+    password character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO vagrant;
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE public.users_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_user_id_seq OWNER TO vagrant;
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
+
+
+--
+-- Name: articles article_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles ALTER COLUMN article_id SET DEFAULT nextval('public.articles_article_id_seq'::regclass);
+
+
+--
+-- Name: articles_outfits article_outfit_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles_outfits ALTER COLUMN article_outfit_id SET DEFAULT nextval('public.articles_outfits_article_outfit_id_seq'::regclass);
+
+
+--
+-- Name: categories category_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.categories ALTER COLUMN category_id SET DEFAULT nextval('public.categories_category_id_seq'::regclass);
+
+
+--
+-- Name: outfits outfit_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.outfits ALTER COLUMN outfit_id SET DEFAULT nextval('public.outfits_outfit_id_seq'::regclass);
+
+
+--
+-- Name: tags tag_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN tag_id SET DEFAULT nextval('public.tags_tag_id_seq'::regclass);
+
+
+--
+-- Name: tags_articles tag_article_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_articles ALTER COLUMN tag_article_id SET DEFAULT nextval('public.tags_articles_tag_article_id_seq'::regclass);
+
+
+--
+-- Name: tags_outfits tag_outfit_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_outfits ALTER COLUMN tag_outfit_id SET DEFAULT nextval('public.tags_outfits_tag_outfit_id_seq'::regclass);
+
+
+--
+-- Name: users user_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
+
+
+--
+-- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.articles (article_id, description, image, purchase_price, times_worn, sell_price, user_id, category_id) FROM stdin;
+1	Black and white polka dot button-down	\N	\N	0	\N	1	1
+2	Blue Resurgens Rye tee	\N	\N	0	\N	1	2
+3	Black and grey knee length A line dress	\N	\N	0	\N	1	5
+4	Blue windbreaker	\N	\N	0	\N	1	10
+5	White and silver Nikes	\N	\N	0	\N	1	6
+12		totoro.jpg	\N	0	\N	1	1
+13		https://res.cloudinary.com/dkmc9of4y/image/upload/v1573091456/user/1/1/akw214ulfcmvqmik8wwq.jpg	\N	0	\N	1	1
+16	Blue; flowers	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573159909/user/lillyjclark%40jourrapide.com/Dance%20Dresses/eevcuyr9gajxqcgql4tt.jpg	\N	0	\N	3	11
+17	Dark pink wrap	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160030/user/lillyjclark%40jourrapide.com/Dance%20Dresses/q9uvmnnk5pyyxjcqa4fr.jpg	\N	0	\N	3	11
+18	Red strapless high slit	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160061/user/lillyjclark%40jourrapide.com/Dance%20Dresses/du6q3eojup8mn1guglu8.jpg	\N	0	\N	3	11
+19	Black lacy	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160088/user/lillyjclark%40jourrapide.com/Dance%20Dresses/toi0ucj13mvd4cx8ysep.jpg	\N	0	\N	3	11
+20	Black; midriff cutout; flowers	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160242/user/lillyjclark%40jourrapide.com/Dance%20Dresses/fmxm4fvfojtar5jsfmrz.jpg	\N	0	\N	3	11
+21	Peach short ruffles	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573160309/user/lillyjclark%40jourrapide.com/Dance%20Dresses/vla8pqcnck0j8igriojr.jpg	\N	0	\N	3	11
+22	White sheath pink blossoms	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165562/user/lillyjclark%40jourrapide.com/Dance%20Dresses/pboaume5weu1d3gzwbtl.png	\N	0	\N	3	11
+23	White off-shoulder; blue floral	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165597/user/lillyjclark%40jourrapide.com/Dance%20Dresses/plyhhqao36dufcxdkgvr.png	\N	0	\N	3	11
+24	Black sheer with roses	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165645/user/lillyjclark%40jourrapide.com/Dance%20Dresses/nvvdjosaml3sbhaprslt.jpg	\N	0	\N	3	11
+25	Navy with pink & purple floral	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573165691/user/lillyjclark%40jourrapide.com/Dance%20Dresses/zjdaktzrknm4axkxfch3.png	\N	0	\N	3	11
+26	Wedges black straps	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573169180/user/lillyjclark%40jourrapide.com/Sandals/euwj246xy1i3y0srr1up.png	\N	0	\N	3	12
+27	Free People charcoal top	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573517309/user/renejforgey%40armyspy.com/Sleeveless%20Blouses/s2fipbo1xpk3xncqawfy.jpg	\N	0	\N	6	13
+29	Striped floral skirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573517354/user/renejforgey%40armyspy.com/Skirts/ophyafgoi5u4xwopoo8u.jpg	\N	0	\N	6	14
+30	Black dress with blue flowers	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573592523/user/lillyjclark%40jourrapide.com/Dance%20Dresses/k4g00dakhkpndwztq6kp.jpg	\N	0	\N	3	11
+15	Black; white dots; knee length	https://res.cloudinary.com/dkmc9of4y/image/upload/v1573159870/user/lillyjclark%40jourrapide.com/Dance%20Dresses/uu4mrr8btmr4ep7a0atg.jpg	45	0	\N	3	11
+31		https://res.cloudinary.com/dkmc9of4y/image/upload/v1573746501/user/lillyjclark%40jourrapide.com/Jackets/wxwsss95sg1kxgii3e85.jpg	\N	0	\N	3	15
+32	Grey asymmetrical jacket	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196332/user/brennan.schroed%40hotmail.com/Jackets/a3elepru8zsedapqoufc.jpg	\N	0	\N	10	21
+33	Blue MCTF Windbreaker	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196409/user/brennan.schroed%40hotmail.com/Jackets/ds3fq3hanpruaqbdqazh.jpg	\N	0	\N	10	21
+34	Blue galaxy leggings	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196454/user/brennan.schroed%40hotmail.com/Leggings/xdvq6fwqyhynssb1q25w.jpg	\N	0	\N	10	17
+35	Olive + multicolor tassel scarf	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196495/user/brennan.schroed%40hotmail.com/Scarves/sk9ibikz8khdxqviw2sd.jpg	\N	0	\N	10	23
+36	Black and grey colorblock dress	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196530/user/brennan.schroed%40hotmail.com/Dresses/abt4yvrdywr71ncy8tmj.jpg	\N	0	\N	10	25
+37	Black pencil skirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196567/user/brennan.schroed%40hotmail.com/Skirts/s8bfjht1x9frpzk1mdu4.jpg	\N	0	\N	10	24
+38	Army green henley	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196615/user/brennan.schroed%40hotmail.com/Long-sleeves/fjb6gi9j2wxyiknkvji3.jpg	\N	0	\N	10	19
+39	Mint green long sweater	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196646/user/brennan.schroed%40hotmail.com/Sweaters/qvhqhahhdsvcsyp24uhq.jpg	\N	0	\N	10	16
+40	Navy striped t-shirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196677/user/brennan.schroed%40hotmail.com/Tees/qyy9dsolnybjadtfbda5.jpg	\N	0	\N	10	18
+41	Teal metallic dot shirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196716/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/pztja5qox5djnqhk0jqc.jpg	\N	0	\N	10	20
+42	Polka dot b+w tie front blouse	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196774/user/brennan.schroed%40hotmail.com/Long-sleeves/rebq3fzvq8a3eaudiopx.jpg	\N	0	\N	10	19
+43	White short sleeve blouse with metallic accent	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196810/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/mxd1nxzgciaeueihs58h.jpg	\N	0	\N	10	20
+44	Crushville 2015 blue tshirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196885/user/brennan.schroed%40hotmail.com/Tees/pz5ipcxoxgkoktbyxkxm.jpg	\N	0	\N	10	18
+45	White cami	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196994/user/brennan.schroed%40hotmail.com/Camisoles/m9kohtjdg8oxf4uopjed.jpg	\N	0	\N	10	22
+46	Black and white floral floofy blouse	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197045/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/xuh5q5gwz9zyvnmcb3bm.jpg	\N	0	\N	10	20
+47	Black leatherlike leggings	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197087/user/brennan.schroed%40hotmail.com/Leggings/r8jqppqoie9oydvhsupp.jpg	\N	0	\N	10	17
+48	Black floral lace high-low miniskirt	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197198/user/brennan.schroed%40hotmail.com/Skirts/zhvklzwnfrkwvfl1oxbd.jpg	\N	0	\N	10	24
+49	Maroon lacy butterfly sleeve top	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197885/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/vbjvcjejpiye3reidaxv.jpg	\N	0	\N	10	20
+50	Grey drawstring tunic top	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205788/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/atobufqh3e5zjcah8xaz.jpg	\N	0	\N	10	20
+51	Teal kimono dolman front tie top	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205845/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/ntsk6mt4zacpnw5oupic.jpg	\N	0	\N	10	20
+52	Grey cowl neck sweater	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205929/user/brennan.schroed%40hotmail.com/Sweaters/hqwehc701rtms1itku6c.jpg	\N	0	\N	10	16
+53	Chacos	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574206839/user/brennan.schroed%40hotmail.com/Shoes/svg0vtoyp8tzju3viwry.png	\N	0	\N	10	26
+54	La Sportiva Trail Runners	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207195/user/brennan.schroed%40hotmail.com/Shoes/vnnwmuqcaxjx3jt9q10a.png	\N	0	\N	10	26
+55	Nike sneakers	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207240/user/brennan.schroed%40hotmail.com/Shoes/dpg1huzwvtm1gydtcvrl.jpg	\N	0	\N	10	26
+56	Sam Edelman nude stilettos	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207486/user/brennan.schroed%40hotmail.com/Shoes/tji0bs42lnb5m4dn9bno.png	\N	0	\N	10	26
+57	Frye suede ballet flats	https://res.cloudinary.com/dkmc9of4y/image/upload/v1574208136/user/brennan.schroed%40hotmail.com/Shoes/ymlxczvqvkrdj4mwyzhz.png	\N	0	\N	10	26
+\.
+
+
+--
+-- Data for Name: articles_outfits; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.articles_outfits (article_outfit_id, article_id, outfit_id) FROM stdin;
+2	26	2
+4	15	12
+5	26	12
+8	23	2
+10	26	14
+12	30	14
+15	31	2
+17	21	15
+18	26	15
+19	31	15
+20	52	16
+21	47	16
+22	46	16
+23	45	16
+24	34	17
+25	44	17
+26	33	17
+27	53	17
+28	38	18
+29	33	18
+30	54	18
+\.
+
+
+--
+-- Data for Name: base_categories; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.base_categories (base_category_id, name, description) FROM stdin;
+tops	Tops	General category for torso coverage.
+bottoms	Bottoms	General category for waist and leg coverage.
+fulls	Full-length	General category for full-body coverage - includes jumpsuits and dresses.
+shoes	Shoes	General category for footwear.
+jewels	Jewelry	General category for jewelry.
+hats	Hats	General category for headwear.
+access	Accessories	General category for acessories - includes scarves and belts.
+outers	Outerwear	General category for jackets and coats.
+others	Other	General category for articles that don't fit into other categories.
+\.
+
+
+--
+-- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.categories (category_id, name, description, user_id, base_category_id) FROM stdin;
+1	Blouses	Long sleeved dressier shirts	1	tops
+2	T-Shirts	Short sleeved casual tee	1	tops
+3	Jeans	Denim pants	1	bottoms
+4	Skirts	Long or short skirts	1	bottoms
+5	Casual Dresses		1	fulls
+6	Sneakers	Casual athletic shoes	1	shoes
+7	Heels		1	shoes
+8	Earrings		1	jewels
+9	Belts		1	access
+10	Jackets		1	outers
+11	Dance Dresses	Dresses for salsa etc.	3	fulls
+12	Sandals		3	shoes
+13	Sleeveless Blouses		6	tops
+14	Skirts		6	bottoms
+15	Jackets		3	outers
+16	Sweaters		10	tops
+17	Leggings		10	bottoms
+18	Tees	Short sleeved casual cotton shirts	10	tops
+19	Long-sleeves		10	tops
+20	Sleeveless Blouses		10	tops
+21	Jackets		10	outers
+22	Camisoles		10	tops
+23	Scarves		10	access
+24	Skirts		10	bottoms
+25	Dresses		10	fulls
+26	Shoes		10	shoes
+\.
+
+
+--
+-- Data for Name: outfits; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.outfits (outfit_id, user_id, name, description, times_worn) FROM stdin;
+2	3	Summer 1	White dress & sandals	0
+12	3	Dance dress #2	Polka dot dress & sandals	0
+14	3	Dance outfit #3	Black and blue floral dress with sandals	0
+15	3		Jacket and pink ruffle dress	0
+16	10	Casual 11/18	Casual black on black with sweater	0
+17	10	Athletic 11/17	Crushville tee & leggings with jacket	0
+18	10	Athletic 11/16	Outdoorsy layers for hiking	0
+\.
+
+
+--
+-- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.tags (tag_id, name, user_id) FROM stdin;
+1	casual	1
+2	formal	1
+3	winter	1
+4	summer	1
+\.
+
+
+--
+-- Data for Name: tags_articles; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.tags_articles (tag_article_id, article_id, tag_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tags_outfits; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.tags_outfits (tag_outfit_id, outfit_id, tag_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY public.users (user_id, email, password) FROM stdin;
+1	dorothyjmeyers@armyspy.com	Ahwo5sae1
+2	craiggdebose@jourrapide.com	ooMaeg6Ah
+3	lillyjclark@jourrapide.com	iethohZ0Qu
+4	davidamedina@armyspy.com	chea3laiP
+5	frankiebhicks@armyspy.com	iomi9HeeT
+6	renejforgey@armyspy.com	tai7eePh8ie
+7	iriskbradwell@armyspy.com	Gei1ush9
+8	victorkpatterson@jourrapide.com	Saen1ich
+9	maye.boye7@gmail.com	Ohno7eeth
+10	brennan.schroed@hotmail.com	Aig4heiqu
+\.
+
+
+--
+-- Name: articles_article_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.articles_article_id_seq', 57, true);
+
+
+--
+-- Name: articles_outfits_article_outfit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.articles_outfits_article_outfit_id_seq', 30, true);
+
+
+--
+-- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.categories_category_id_seq', 26, true);
+
+
+--
+-- Name: outfits_outfit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.outfits_outfit_id_seq', 18, true);
+
+
+--
+-- Name: tags_articles_tag_article_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.tags_articles_tag_article_id_seq', 1, false);
+
+
+--
+-- Name: tags_outfits_tag_outfit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.tags_outfits_tag_outfit_id_seq', 1, false);
+
+
+--
+-- Name: tags_tag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.tags_tag_id_seq', 4, true);
+
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('public.users_user_id_seq', 1, false);
+
+
+--
+-- Name: articles_outfits articles_outfits_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles_outfits
+    ADD CONSTRAINT articles_outfits_pkey PRIMARY KEY (article_outfit_id);
+
+
+--
+-- Name: articles articles_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_pkey PRIMARY KEY (article_id);
+
+
+--
+-- Name: base_categories base_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.base_categories
+    ADD CONSTRAINT base_categories_pkey PRIMARY KEY (base_category_id);
+
+
+--
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (category_id);
+
+
+--
+-- Name: outfits outfits_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.outfits
+    ADD CONSTRAINT outfits_pkey PRIMARY KEY (outfit_id);
+
+
+--
+-- Name: tags_articles tags_articles_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_articles
+    ADD CONSTRAINT tags_articles_pkey PRIMARY KEY (tag_article_id);
+
+
+--
+-- Name: tags_outfits tags_outfits_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_outfits
+    ADD CONSTRAINT tags_outfits_pkey PRIMARY KEY (tag_outfit_id);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (tag_id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: articles articles_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(category_id);
+
+
+--
+-- Name: articles_outfits articles_outfits_article_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles_outfits
+    ADD CONSTRAINT articles_outfits_article_id_fkey FOREIGN KEY (article_id) REFERENCES public.articles(article_id);
+
+
+--
+-- Name: articles_outfits articles_outfits_outfit_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles_outfits
+    ADD CONSTRAINT articles_outfits_outfit_id_fkey FOREIGN KEY (outfit_id) REFERENCES public.outfits(outfit_id);
+
+
+--
+-- Name: articles articles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- Name: categories categories_base_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_base_category_id_fkey FOREIGN KEY (base_category_id) REFERENCES public.base_categories(base_category_id);
+
+
+--
+-- Name: categories categories_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- Name: outfits outfits_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.outfits
+    ADD CONSTRAINT outfits_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- Name: tags_articles tags_articles_article_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_articles
+    ADD CONSTRAINT tags_articles_article_id_fkey FOREIGN KEY (article_id) REFERENCES public.articles(article_id);
+
+
+--
+-- Name: tags_articles tags_articles_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_articles
+    ADD CONSTRAINT tags_articles_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(tag_id);
+
+
+--
+-- Name: tags_outfits tags_outfits_outfit_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_outfits
+    ADD CONSTRAINT tags_outfits_outfit_id_fkey FOREIGN KEY (outfit_id) REFERENCES public.outfits(outfit_id);
+
+
+--
+-- Name: tags_outfits tags_outfits_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags_outfits
+    ADD CONSTRAINT tags_outfits_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(tag_id);
+
+
+--
+-- Name: tags tags_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
