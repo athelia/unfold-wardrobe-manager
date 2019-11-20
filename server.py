@@ -26,6 +26,9 @@ from cloudinary.uploader import upload
 # Import functions for image storage and processing
 from image_handling import allowed_file, ALLOWED_EXTENSIONS
 
+# CITIES' latitude and longitude
+from global_var import CITIES
+
 # Compare clothing prices
 from etsy import Etsy
 
@@ -383,6 +386,28 @@ def remove_article_from_outfit(outfit_id, article_id):
     outfit.remove_article(article)
 
     return redirect(f'/outfits/{outfit_id}')
+
+
+@app.route('/events')
+def show_events():
+    """Display all events and the option to add a new event."""
+
+    events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).all()
+
+    return render_template('events.html', events=events)
+
+
+@app.route('/add-event')
+def add_wear_event():
+    """Display form to create a new wear event/clothing log."""
+
+    outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
+
+    return render_template('add-event.html',
+                           CITIES=CITIES,
+                           outfits=outfits,
+                           tags=tags)
 
 
 @app.route('/etsy-api')

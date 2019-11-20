@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Event/Clothing Log - {% endblock %}
+
+{% block content %}
+
+  <p>
+    <a href="/">Back to Home</a>
+  </p>
+
+  <form action="/create-event" id="create-event-form" method="POST" enctype="multipart/form-data">
+    <p>
+      <label for="event-date">Date of event or log*:</label>
+      <input type="date" name="event-date" required>
+    </p>
+    <p>
+      <label for="event-time">Time of event (optional:</label>
+      <input type="time" name="event-time">
+    <p>
+      <label for="event-name">Name of the event (optional):</label>
+      <input type="text" name="event-name" id="new-event-name-input">
+    </p>
+    <p>
+      <label for="event-description">Description of the event (optional):</label>
+      <input type="text" name="event-description" id="new-event-description-input">
+    </p>
+    <p>
+      <label for="city">Location:</label>
+        <select name="city" id="city-select">
+        {% for city in CITIES %}
+          {{ city }}
+          <option value="{{ CITIES[city]['location_id'] }}">{{ CITIES[city]['name'] }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      <label for="event-outfit">Outfit to add (optional):</label>
+      <select name="event-outfit" id="event-outfit-select">
+        {% for outfit in outfits %}
+          <option value="{{ outfit.outfit_id }}">{{ outfit.name }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <fieldset>
+      <legend>Tags (optional):</legend>
+        {% for tag in tags %}
+          <div>
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event_tags" />
+            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+          </div>
+        {% endfor %}
+      </fieldset>
+    <input type="submit" value="Create item">
+  </form>
+
+{% endblock%}

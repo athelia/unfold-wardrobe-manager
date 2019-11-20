@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+  <p>
+    <a href="/">Back to Homepage</a>
+  </p>
+
+  {% for event in events %}
+    <button class="event-block block-bucket">
+      <a href="/events/{{ events.wear_event_id }}">
+        {{ event.name }}
+      </a>
+    </button>
+  {% endfor %}
+
+  <button class="event-block block-bucket">
+    <a href="/add-event">
+      +
+    </a>
+  </button>
+
+{% endblock%}
