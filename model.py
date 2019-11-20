@@ -323,7 +323,7 @@ class WearEvent(db.Model):
         self.outfit_id = options.get('outfit_id', self.outfit_id)
         db.session.commit()
 
-    def set_weather(self, lat=37.774929, lng=122.419418):
+    def set_weather(self, lat=37.774929, lng=-122.419418):
         """Assign temperature and weather conditions for date at latitude & longitude.
             
             >>> new_evt = WearEvent(wear_event_id=0, name='Party', \
