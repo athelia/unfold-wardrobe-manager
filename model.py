@@ -178,6 +178,18 @@ class Article(db.Model):
 
         db.session.commit()
 
+    def add_tag(self, tag):
+        """Add the tag to the article."""
+
+        self.tags.append(tag)
+        db.session.commit()
+
+    def remove_tag(self, tag):
+        """Remove the tag from the article."""
+
+        self.tags.remove(tag)
+        db.session.commit()
+
     def delete(self):
         """Remove the article."""
 
@@ -234,6 +246,18 @@ class Outfit(db.Model):
         self.articles.remove(article)
         db.session.commit()
 
+    def add_tag(self, tag):
+        """Add the tag to the outfit."""
+
+        self.tags.append(tag)
+        db.session.commit()
+
+    def remove_tag(self, tag):
+        """Remove the tag from the outfit."""
+
+        self.tags.remove(tag)
+        db.session.commit()
+
     # Outfit delete method
     def delete(self):
         """Remove the outfit."""
@@ -273,6 +297,24 @@ class Tag(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.user_id'),
                         nullable=False)
+
+    def parse_str_to_tag(tag_string, user_id):
+        """Convert comma-sep string to Tag objects."""
+
+        new_tags = []
+
+        if tag_string:
+            tags = tag_string.split(',')
+            for idx, tag_name in enumerate(tags):
+                tag_name.lstrip()
+                tag = Tag(user_id=user_id,
+                          name=tag_name)
+                new_tags.append(tag)
+                # db.session.add(tag)
+
+        # db.session.commit()
+        # Return new tags so we can create relationships with them
+        return new_tags
 
     def update(self, options):
         """Update the tag's information."""
@@ -340,13 +382,24 @@ class WearEvent(db.Model):
             58.77
             >>> new_evt.weather_cond
             'Clear'
-
         """
 
         # Dark Sky requires a date in isoformat
         weather = forecast(dark_sky['secret'], lat, lng, time=self.date.isoformat())
         self.temperature = weather.temperature
         self.weather_cond = weather.summary
+        db.session.commit()
+
+    def add_tag(self, tag):
+        """Add the tag to the event."""
+
+        self.tags.append(tag)
+        db.session.commit()
+
+    def remove_tag(self, tag):
+        """Remove the tag from the event."""
+
+        self.tags.remove(tag)
         db.session.commit()
 
     def delete(self):
