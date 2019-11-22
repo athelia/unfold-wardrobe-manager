@@ -26,17 +26,28 @@
      -->
     <p>
       <label for="article-description">Describe the item (optional):</label>
-      <input type="text" name="article-description" id="new-article-description-input">
+      <input type="text" name="article-description" id="new-article-description-input" />
     </p>
     <p>
       <label for="article-image-upload">Add an image*:</label>
-      <input type="file" name="article-image-upload" required>
+      <input type="file" name="article-image-upload" required />
     </p>
     <p>
       <label for="purchase-price">Purchase price:</label>
-      $ <input type="number" step="any" name="purchase-price">
+      $ <input type="number" step="any" name="purchase-price" />
     </p>
-    <input type="submit" value="Create item">
+    <fieldset>
+      <legend>Tags (optional):</legend>
+        {% for tag in tags %}
+          <div>
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" />
+            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+          </div>
+        {% endfor %}
+        <label for="new-tags">Add more tags (separate with commas):</label>
+        <input type="text" id="new-tags" name="new-tags" />
+    </fieldset>
+    <input type="submit" value="Create item" />
   </form>
 
 {% endblock%}

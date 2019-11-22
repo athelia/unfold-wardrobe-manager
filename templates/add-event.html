@@ -27,6 +27,7 @@
     <p>
       <label for="city">Location:</label>
         <select name="city" id="city-select">
+          <option value="">------</option>
         {% for city in CITIES %}
           {{ city }}
           <option value="{{ CITIES[city]['location_id'] }}">{{ CITIES[city]['name'] }}</option>
@@ -36,6 +37,7 @@
     <p>
       <label for="event-outfit">Outfit to add (optional):</label>
       <select name="event-outfit" id="event-outfit-select">
+          <option value="">------</option>
         {% for outfit in outfits %}
           <option value="{{ outfit.outfit_id }}">{{ outfit.name }}</option>
         {% endfor %}
@@ -45,12 +47,12 @@
       <legend>Tags (optional):</legend>
         {% for tag in tags %}
           <div>
-            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event_tags" />
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event-tags" />
             <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
           </div>
         {% endfor %}
       </fieldset>
-    <input type="submit" value="Create item">
+    <input type="submit" value="Create event">
   </form>
 
 {% endblock%}

@@ -29,8 +29,21 @@
     <p>
       <label for="purchase-price">New purchase price:</label>
       $ <input type="number" step="any" name="purchase-price">
-      <input type="submit" id="update-article" value="Edit">
     </p>
+    <fieldset>
+      <legend>Tags:</legend>
+        {% for tag in tags %}
+          <div>
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" {% if tag in article.tags %} checked {% endif %}/>
+            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+          </div>
+        {% endfor %}
+        <label for="new-tags">Add more tags (separate with commas):</label>
+        <input type="text" id="new-tags" name="new-tags" />
+        <div>
+          <input type="submit" id="update-article" value="Update">
+        </div>
+    </fieldset>
   </form>
 
   <form action="/delete-article" method="POST">

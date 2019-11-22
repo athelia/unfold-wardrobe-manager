@@ -11,7 +11,7 @@
 
 
   <form action="/create-outfit" id="create-outfit-form" method="POST" enctype="multipart/form-data">
-    <!-- The right container shows all categories that the user has. -->
+    <!-- The container shows all categories that the user has. -->
     <div class="scrollable">
       {% for category in categories %}
       <fieldset class="display-category category-block scrollable">
@@ -21,7 +21,7 @@
               <input type="checkbox" id="{{ article.article_id }}" value="{{ article.article_id }}" name="articles-to-add" />
                 <label for="{{ article.article_id }}">
                   {% if article.image %}
-                    <img src="{{ article.image }}" class="article-image">
+                    <img src="{{ article.image }}" class="article-image" />
                   {% else %}
                     {{ article.description }}
                   {% endif %}
@@ -34,13 +34,24 @@
 
     <p>
       <label for="outfit-description">Describe the outfit (optional):</label>
-      <input type="text" name="outfit-description" id="new-outfit-description-input">
+      <input type="text" name="outfit-description" id="new-outfit-description-input" />
     </p>
     <p>
       <label for="outfit-name">Outfit name (optional):</label>
-      <input type="text" name="outfit-name">
+      <input type="text" name="outfit-name" />
     </p>
-    <input type="submit" value="Create outfit">
+    <fieldset>
+      <legend>Tags:</legend>
+        {% for tag in tags %}
+          <div>
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="outfit-tags" />
+            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+          </div>
+        {% endfor %}
+        <label for="new-tags">Add more tags (separate with commas):</label>
+        <input type="text" id="new-tags" name="new-tags" />
+    </fieldset>
+    <input type="submit" value="Create outfit" />
   </form>
 
 {% endblock%}

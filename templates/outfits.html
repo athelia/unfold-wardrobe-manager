@@ -13,6 +13,8 @@
       <a href="/outfits/{{ outfit.outfit_id }}">
       {% if outfit.description %}
         {{ outfit.description }}
+      {% elif outfit.name %}
+        {{ outfit.name }}
       {% else %}
         {{ outfit.outfit_id }}
       {% endif %}

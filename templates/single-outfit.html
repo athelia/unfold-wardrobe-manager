@@ -73,6 +73,30 @@
     </div>
   </div>
 
+    <fieldset>
+      <legend>Tags:</legend>
+      <form action="/update-outfit" method="POST">
+        <input type="hidden" name="outfit-to-edit" id="outfit-to-edit" value="{{ outfit.outfit_id }}">
+        {% for tag in tags %}
+          <div>
+            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="outfit-tags" {% if tag in outfit.tags %} checked {% endif %}/>
+            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+          </div>
+        {% endfor %}
+        <label for="new-tags">Add more tags (separate with commas):</label>
+        <input type="text" id="new-tags" name="new-tags" />
+        <div>
+          <input type="submit" value="Update tags">
+        </div>
+      </form>
+    </fieldset>
+
+  <form action="/delete-outfit" method="POST">
+    <input type="hidden" name="outfit-to-delete" id="outfit-to-delete" value="{{ outfit.outfit_id }}">
+    <label for="delete-outfit">Permanently delete this outfit?</label>
+    <input type="submit" id="delete-outfit" value="Delete">
+  </form>
+
   <!-- <form action="/articlkajds" method="POST">
     <img>
     <input type="hidden" name="outfit_id" value="{{ outfit.outfit_id }}" />

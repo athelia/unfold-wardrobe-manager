@@ -8,19 +8,26 @@
     <a href="/">Back to Homepage</a>
   </p>
 
-  {% for article in articles %}
-    <button class="articles-block block-bucket">
-      <a href="/articles/{{ article.article_id }}">
-      {% if article.image %}
-        <img class="article-image" src="{{ article.image }}">
-      {% else %}
-        {{ article.description }}
-      {% endif %}
-      </a>
-    </button>
-  {% endfor %}
+    <div class="scrollable">
+      {% for category in categories %}
+      <fieldset class="display-category category-block scrollable">
+        <legend>{{ category.name }}</legend>
+          {% for article in category.articles %}
+            <button class="article-block block-bucket"> 
+              <a href="/articles/{{ article.article_id }}">
+                {% if article.image %}
+                  <img src="{{ article.image }}" class="article-image" />
+                {% else %}
+                  {{ article.description }}
+                {% endif %}
+              </a>
+            </button>
+          {% endfor %}
+      </fieldset>
+      {% endfor %}
+    </div>
 
-  <button class="articles-block block-bucket">
+  <button class="article-block block-bucket">
     <a href="/add-article">
       +
     </a>
