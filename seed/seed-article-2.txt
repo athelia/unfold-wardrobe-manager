@@ -33,7 +33,7 @@
 44|Crushville 2015 blue tshirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196885/user/brennan.schroed%40hotmail.com/Tees/pz5ipcxoxgkoktbyxkxm.jpg||0||10|18
 45|White cami|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574196994/user/brennan.schroed%40hotmail.com/Camisoles/m9kohtjdg8oxf4uopjed.jpg||0||10|22
 46|Black and white floral floofy blouse|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197045/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/xuh5q5gwz9zyvnmcb3bm.jpg||0||10|20
-47|Black leatherlike leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197087/user/brennan.schroed%40hotmail.com/Leggings/r8jqppqoie9oydvhsupp.jpg||0||10|17
+47|Black pleather leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197087/user/brennan.schroed%40hotmail.com/Leggings/r8jqppqoie9oydvhsupp.jpg||0||10|28
 48|Black floral lace high-low miniskirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197198/user/brennan.schroed%40hotmail.com/Skirts/zhvklzwnfrkwvfl1oxbd.jpg||0||10|24
 49|Maroon lacy butterfly sleeve top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574197885/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/vbjvcjejpiye3reidaxv.jpg||0||10|20
 50|Grey drawstring tunic top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574205788/user/brennan.schroed%40hotmail.com/Sleeveless Blouses/atobufqh3e5zjcah8xaz.jpg||0||10|20
@@ -44,3 +44,21 @@
 55|Nike sneakers|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207240/user/brennan.schroed%40hotmail.com/Shoes/dpg1huzwvtm1gydtcvrl.jpg||0||10|26
 56|Sam Edelman nude stilettos|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574207486/user/brennan.schroed%40hotmail.com/Shoes/tji0bs42lnb5m4dn9bno.png||0||10|26
 57|Frye suede ballet flats|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574208136/user/brennan.schroed%40hotmail.com/Shoes/ymlxczvqvkrdj4mwyzhz.png||0||10|26
+59|Pointy toe Gap flats|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574290995/user/brennan.schroed%40hotmail.com/Shoes/ge0ksjbgd6qirkqad7tw.jpg||0||10|26
+60|Black suede booties|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574291061/user/brennan.schroed%40hotmail.com/Shoes/zb8nrp5lzfcj8k28ocmx.jpg||0||10|26
+61|Green wooly tunic dress|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574291126/user/brennan.schroed%40hotmail.com/Dresses/nmacwvvdoffcv90inhh7.jpg||0||10|25
+62|Pink purple ombre chiffon top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574292107/user/brennan.schroed%40hotmail.com/Sleeveless%20Blouses/emexssu2fd44acmf7za5.jpg||0||10|20
+63|Sleeveless puffy jacket|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574292306/user/brennan.schroed%40hotmail.com/Jackets/aniikz4kmxh1ky2vzsmp.jpg|32|0||10|21
+64|Grey lacy cami|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574292572/user/brennan.schroed%40hotmail.com/Camisoles/wq3k0u5qbmv82odecy55.jpg|23|0||10|22
+65|Nike grey athletic turtleneck|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574292830/user/brennan.schroed%40hotmail.com/Long-sleeves/wcjtcwdefcpx5dr2dsfa.jpg|23|0||10|19
+66|Feather t-shirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293064/user/brennan.schroed%40hotmail.com/Long-sleeves/a4yy31ixatvtni5n31am.jpg||0||10|19
+67|Purple tunic top|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293123/user/brennan.schroed%40hotmail.com/Long-sleeves/b96zfedy4rguniwsi4np.jpg||0||10|19
+68|White mockneck|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293173/user/brennan.schroed%40hotmail.com/Long-sleeves/ljt4lgligxhvfkdldscj.jpg||0||10|19
+69|Army green skinny slacks|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293259/user/brennan.schroed%40hotmail.com/Skinny%20Pants/oqqifoqe4le7yv4kh6li.jpg|20|0||10|28
+70|Grey skinny jeans|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293317/user/brennan.schroed%40hotmail.com/Skinny%20Pants/saphlth6krr5z2sqvg7y.jpg|32|0||10|28
+72|Blue skinny jeans|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293595/user/brennan.schroed%40hotmail.com/Skinny%20Pants/gg2jey2tutbkqehwe5jw.jpg|40|0||10|28
+73|Charcoal high-low sweater|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293715/user/brennan.schroed%40hotmail.com/Sweaters/oliwhnvxpewsvhyqzf3e.jpg|17|0||10|16
+74|Resurgens Rye t-shirt|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293867/user/brennan.schroed%40hotmail.com/Tees/e8mdigt5uffhfvgqz5vj.jpg|15|0||10|18
+75|Bike shorts|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293927/user/brennan.schroed%40hotmail.com/Shorts/xofocvoe8bntgzj4okzi.jpg||0||10|29
+76|Pocket leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574293977/user/brennan.schroed%40hotmail.com/Leggings/dddc4fugfxglomziq8uz.jpg|22|0||10|17
+77|Maroon pleather leggings|https://res.cloudinary.com/dkmc9of4y/image/upload/v1574294061/user/brennan.schroed%40hotmail.com/Skinny%20Pants/inirdv9r6lo22wzlqn7q.jpg|19|0||10|28

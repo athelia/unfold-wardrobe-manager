@@ -28,3 +28,5 @@
 24|Skirts||10|bottoms
 25|Dresses||10|fulls
 26|Shoes||10|shoes
+28|Skinny Pants||10|bottoms
+29|Shorts||10|bottoms

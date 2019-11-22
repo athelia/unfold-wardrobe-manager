@@ -169,6 +169,19 @@ def set_val_category_id():
     db.session.commit()
 
 
+def set_val_article_id():
+    """Set value for the next article_id after seeding database"""
+
+    # Get the Max article_id in the database
+    result = db.session.query(func.max(Article.article_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next category_id to be max_id + 1
+    query = "SELECT setval('articles_article_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
+
 if __name__ == "__main__":
     connect_to_db(app)
 
@@ -185,3 +198,4 @@ if __name__ == "__main__":
     # Update IDs to reflect imported data
     set_val_user_id()
     set_val_category_id()
+    set_val_article_id()

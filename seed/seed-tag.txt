@@ -8,10 +8,38 @@
 8|favorite
 9|favorite
 10|favorite
-1|casual
-1|formal
-1|winter
-1|summer
+3|casual
+3|professional
+3|formal
+3|salsa dance
+3|swing dance
+3|winter
+3|spring
+3|summer
+3|fall
+3|red
+3|pink
+3|teal
+3|aqua
+3|green
+3|brown
+3|black
+3|white
+3|gray
+3|olive
+3|burnt orange
+3|metallic
+3|gold
+3|brass
+3|silver
+3|copper
+3|rose gold
+3|floral
+3|print
+3|lace
+3|tulle
+3|burnout
+3|denim
 10|casual
 10|formal
 10|active
