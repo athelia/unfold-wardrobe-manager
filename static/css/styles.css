@@ -62,6 +62,10 @@
     max-height: 80%;
 }
 
+.inline-block {
+    display: inline-block;
+}
+
 .forecast {
     display: inline-block;
     margin: 10px;

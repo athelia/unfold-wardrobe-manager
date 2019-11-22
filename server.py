@@ -94,6 +94,13 @@ def test_weather(city):
     return render_template('weather.html', today=today)
 
 
+###############################################################################
+#                                                                             #
+#                                BASIC ROUTES                                 #
+#                                                                             #
+###############################################################################
+
+
 # TODO: consistent single quotes in render_template template names
 @app.route('/')
 def index():
@@ -157,6 +164,26 @@ def create_account_page():
     return render_template("new-account.html")
 
 
+# WIP
+@app.route('/profile')
+def show_profile():
+    """Display logged-in user's profile."""
+
+    if session.get('user_id'):
+        user = User.query.filter_by(user_id = session['user_id']).one()
+    else:
+        user = None
+
+    return render_template('profile.html', user=user)
+
+
+###############################################################################
+#                                                                             #
+#                           CATEGORIES ROUTES                                 #
+#                                                                             #
+###############################################################################
+
+
 @app.route('/categories')
 def show_categories():
     """Display all user categories and the option to add a new category."""
@@ -214,6 +241,13 @@ def add_category():
     return redirect('/categories')
 
 
+###############################################################################
+#                                                                             #
+#                             ARTICLES ROUTES                                 #
+#                                                                             #
+###############################################################################
+
+
 @app.route('/articles')
 def show_articles():
     """Display all articles of clothing and the option to add a new article."""
@@ -224,6 +258,7 @@ def show_articles():
     return render_template("articles.html", 
                            articles=articles,
                            categories=categories)
+
 
 @app.route('/add-article')
 def show_create_article_form():
@@ -346,6 +381,13 @@ def update_article_details():
     return redirect(f'/articles/{article_id}')
 
 
+###############################################################################
+#                                                                             #
+#                              OUTFITS ROUTES                                 #
+#                                                                             #
+###############################################################################
+
+
 @app.route('/outfits')
 def show_outfits():
     """Display all outfits and the option to add a new outfit."""
@@ -420,6 +462,41 @@ def show_outfit_detail(outfit_id):
                            tags=tags)
 
 
+@app.route('/update-outfit', methods=['POST'])
+def update_outfit_details():
+    """Updates an outfit's details."""
+
+    outfit_id = request.form.get('outfit-to-edit')
+    new_tag_string = request.form.get('new-tags')
+    tag_ids = request.form.getlist('outfit-tags')
+    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+
+    all_tags = []
+    for tag_id in tag_ids:
+        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+    # Any newly created tags should be added to this as well
+    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+    # Then create all the tag relationships
+    for tag in all_tags:
+        outfit.add_tag(tag)
+
+    return redirect(f'/outfits/{outfit_id}')
+
+
+@app.route('/delete-outfit', methods=['POST'])
+def delete_outfit():
+    """Deletes an outfit."""
+
+    outfit_id = request.form.get('outfit-to-delete')
+    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+
+    outfit.delete()
+
+    return redirect('/outfits')
+
+
 @app.route('/add-article/<outfit_id>/<article_id>')
 def add_article_to_outfit(outfit_id, article_id):
     """Add article to outfit and update the page."""
@@ -443,6 +520,13 @@ def remove_article_from_outfit(outfit_id, article_id):
     outfit.remove_article(article)
 
     return redirect(f'/outfits/{outfit_id}')
+
+
+###############################################################################
+#                                                                             #
+#                               EVENTS ROUTES                                 #
+#                                                                             #
+###############################################################################
 
 
 @app.route('/events')
@@ -485,7 +569,7 @@ def add_event():
         hour, minute = time.split(':')
         date_time = datetime(int(year), int(month), int(day), int(hour), int(minute))
     else:
-        date_time = datetime(int(year), int(month), int(day))
+        date_time = datetime(int(year), int(month), int(day), int(10))
 
     # First create a new Event in the db
     event = WearEvent(user_id=session['user_id'],
@@ -517,19 +601,18 @@ def add_event():
     flash(f"Created new outfit: {text}")
 
     return redirect('/events')
-# @app.route('/create-event', methods=['POST'])
-# def add_event():
-#     year, month, day = request.form.get('event-date').split('-')
-#     hour, minute = request.form.get('event-time').split(':')
-#     city = request.form.get('city')
 
-#     combo_date_time = datetime(int(year), int(month), int(day), int(hour), int(minute))
-#     print(combo_date_time)
 
-#     # if city:
-#     #     event.set_weather(CITIES[city]['lat'], CITIES[city]['lng'])
+@app.route('/events/<wear_event_id>')
+def show_event_details(wear_event_id):
+    """Display specific event details."""
 
-#     return redirect('/events')
+    event = WearEvent.query.filter_by(wear_event_id = wear_event_id).first()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
+
+    return render_template('single-event.html',
+                           event=event,
+                           tags=tags)
 
 
 @app.route('/etsy-api')
@@ -539,53 +622,6 @@ def test_etsy_api():
     json_listings = etsy_api.getInterestingListings()
 
     return render_template('api-test.html', json_listings=json_listings)
-
-
-@app.route('/profile')
-def show_profile():
-    """Display logged-in user's profile."""
-
-    if session.get('user_id'):
-        user = User.query.filter_by(user_id = session['user_id']).one()
-    else:
-        user = None
-
-    return render_template('profile.html', user=user)
-
-
-@app.route('/update-outfit', methods=['POST'])
-def update_outfit_details():
-    """Updates an outfit's details."""
-
-    outfit_id = request.form.get('outfit-to-edit')
-    new_tag_string = request.form.get('new-tags')
-    tag_ids = request.form.getlist('outfit-tags')
-    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
-
-    all_tags = []
-    for tag_id in tag_ids:
-        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
-
-    # Any newly created tags should be added to this as well
-    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
-
-    # Then create all the tag relationships
-    for tag in all_tags:
-        outfit.add_tag(tag)
-
-    return redirect(f'/outfits/{outfit_id}')
-
-
-@app.route('/delete-outfit', methods=['POST'])
-def delete_outfit():
-    """Deletes an outfit."""
-
-    outfit_id = request.form.get('outfit-to-delete')
-    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
-
-    outfit.delete()
-
-    return redirect('/outfits')
 
 
 # # WIP - do some simpler steps first

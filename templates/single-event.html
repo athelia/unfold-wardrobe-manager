@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.name }} Event Detail - {% endblock %}
+
+{% block content %}
+
+  <!-- Go back to page where you can see all events -->
+  <p>
+    <a href="/events">Back to Events</a>
+  </p>
+
+  <!-- Keep the left and right sides in another container -->
+  <div class="outer-frame">
+
+    <!-- 
+    The left container shows everything that's in the current outfit.
+    Here we display the outfit's name if it has one, otherwise its ID.
+     -->
+    <div class="outfit-frame">
+      <fieldset>
+      <legend>Outfit - 
+      {% if event.outfits.name %}
+        {{ event.outfits.name }}
+      {% else %}
+        # {{ event.outfit_id }}
+      {% endif %}
+      </legend>
+
+      <!-- Iterate over all articles in the event (via the outfit) & display them. -->
+      {% for article in event.outfits.articles %}
+        <div class="articles-block block-bucket">
+          <a href="/articles/{{ article.article_id }}">
+            {% if article.image %}
+              <img src="{{ article.image }}" class="article-image">
+            {% else %}
+              {{ article.description }}
+            {% endif %}
+          </a>
+        </div>
+      {% endfor %}
+      </fieldset>
+    </div>
+
+    <!-- The right container has event details. -->
+      <div class="inline-block">
+        <form action="/update-event" method="POST">
+        <h1>
+          Name: {{ event.name }}
+        </h1>
+        <label for="update-name">New name:</label>
+        <input type="text" name="update-name">
+        <p>
+          Date: {{ event.date }}
+        </p>
+        <p>
+          Description: {{ event.description }}
+        </p>
+        <label for="update-description">New description:</label>
+        <input type="text" name="update-description">
+        <p>
+          Temperature: {{ event.temperature }}
+        </p>
+        <p>
+          Weather conditions: {{ event.weather_cond }}
+        </p>
+
+        <fieldset>
+          <legend>Tags:</legend>
+          <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
+          {% for tag in tags %}
+            <div>
+              <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event-tags" {% if tag in event.tags %} checked {% endif %}/>
+              <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+            </div>
+          {% endfor %}
+          <label for="new-tags">Add more tags (separate with commas):</label>
+          <input type="text" id="new-tags" name="new-tags" />
+          <div>
+            <input type="submit" value="Update tags">
+          </div>
+        </fieldset>
+      </form>
+     </div>
+
+  <form action="/delete-event" method="POST">
+    <input type="hidden" name="event-to-delete" id="event-to-delete" value="{{ event.wear_event_id }}">
+    <label for="delete-event">Permanently delete this event?</label>
+    <input type="submit" id="delete-event" value="Delete">
+  </form>
+
+{% endblock%}
