@@ -1,4 +1,4 @@
-# wardrobe-manager
+# Wardrobe Manager
 
 Choose what to wear with personalized outfit recommendations that use event tags, weather, and user's wear logs.
 
