@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import os
 import requests
 from datetime import datetime
-from sqlalchemy import asc, update
+from sqlalchemy import asc, update, func
 
 import flask_restless
 from flask_login import LoginManager
@@ -218,19 +218,23 @@ def add_category():
 def show_articles():
     """Display all articles of clothing and the option to add a new article."""
 
+    categories = Category.query.filter(Category.user_id == session['user_id']).all()
     articles = Article.query.filter(Article.user_id == session['user_id']).all()
 
     return render_template("articles.html", 
-                           articles=articles)
+                           articles=articles,
+                           categories=categories)
 
 @app.route('/add-article')
 def show_create_article_form():
     """Display form to create a new article of clothing."""
 
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
     return render_template("add-article.html",
-                           categories=categories)
+                           categories=categories,
+                           tags=tags)
 
 
 @app.route('/create-article', methods=['POST'])
@@ -240,12 +244,16 @@ def add_article():
     category_id = request.form.get('category')
     description = request.form.get('article-description')
     file = request.files['article-image-upload']
+    tag_ids = request.form.getlist('article-tags')
+    new_tag_string = request.form.get('new-tags')
+    purchase_price = request.form.get('purchase-price') 
 
     category = Category.query.filter_by(category_id=category_id).one()
-    
+
     if not allowed_file(file.filename):
         flash(f'File extension .{file.filename.rsplit(".", 1)[1]} not allowed')
     if file and allowed_file(file.filename):
+        
         # Sanitizes user input
         filename = secure_filename(file.filename)
 
@@ -259,11 +267,24 @@ def add_article():
                              # background_removal = "cloudinary_ai",
                              )
 
-        # Create a new Article in the database
+        # For purchase_price, an empty string not ok, but okay to pass None
         new_article = Article(user_id=session['user_id'],
                               category_id=category_id,
                               image=upload_file['secure_url'],
-                              description=description)
+                              description=description,
+                              purchase_price=purchase_price or None)
+
+        all_tags = []
+        for tag_id in tag_ids:
+            all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+        # Any newly created tags should be added to this as well
+        all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+        # Then create all the tag relationships
+        for tag in all_tags:
+            new_article.add_tag(tag)
+
         db.session.add(new_article)
         db.session.commit()
         flash(f"Created new item in {category.name}")
@@ -288,9 +309,11 @@ def show_article_detail(article_id):
     """Display specific article details."""
 
     article = Article.query.filter_by(article_id = article_id).first()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
     return render_template("single-article.html", 
-                           article=article)
+                           article=article,
+                           tags=tags)
 
 
 @app.route('/update-article', methods=['POST'])
@@ -299,9 +322,27 @@ def update_article_details():
 
     new_price = request.form.get('purchase-price')
     article_id = request.form.get('article-to-edit')
+    tag_ids = request.form.getlist('article-tags')
+    new_tag_string = request.form.get('new-tags')
     article = Article.query.filter_by(article_id = article_id).one()
 
-    article.update({'purchase_price' : new_price})
+    if new_price:
+        article.update({'purchase_price' : new_price})
+
+    all_tags = []
+    for tag_id in tag_ids:
+        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+    # TODO: Brute force method - remove all tags before appending
+    # Better: Check for discrepancies; remove unchecked, then proceed
+
+    # Any newly created tags should be added to this as well
+    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+    # Then create all the tag relationships
+    for tag in all_tags:
+        article.add_tag(tag)
+
     return redirect(f'/articles/{article_id}')
 
 
@@ -319,8 +360,9 @@ def show_create_outfit_form():
     """Display form to create a new outfit."""
 
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
-    return render_template('add-outfit.html', categories=categories)
+    return render_template('add-outfit.html', categories=categories, tags=tags)
 
 
 @app.route('/create-outfit', methods=['POST'])
@@ -330,19 +372,32 @@ def add_outfit():
     description = request.form.get('outfit-description')
     name = request.form.get('outfit-name')
     article_ids = request.form.getlist('articles-to-add')
+    tag_ids = request.form.getlist('outfit-tags')
+    new_tag_string = request.form.get('new-tags')
 
     # First create a new Outfit in the db
     outfit = Outfit(user_id=session['user_id'],
                     description=description,
                     name=name)
     db.session.add(outfit)
-    db.session.commit()
 
     # Then create all the article relationships
     for article_id in article_ids:
         article = Article.query.filter(Article.article_id == article_id).one()
         outfit.add_article(article)
-        db.session.commit()
+
+    all_tags = []
+    for tag_id in tag_ids:
+        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+    # Any newly created tags should be added to this as well
+    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+    # Then create all the tag relationships
+    for tag in all_tags:
+        outfit.add_tag(tag)
+
+    db.session.commit()
 
     text = name if name else description
 
@@ -357,10 +412,12 @@ def show_outfit_detail(outfit_id):
 
     outfit = Outfit.query.filter_by(outfit_id = outfit_id).first()
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
     return render_template('single-outfit.html',
                            outfit=outfit,
-                           categories=categories)
+                           categories=categories,
+                           tags=tags)
 
 
 @app.route('/add-article/<outfit_id>/<article_id>')
@@ -398,7 +455,7 @@ def show_events():
 
 
 @app.route('/add-event')
-def add_wear_event():
+def show_create_event_form():
     """Display form to create a new wear event/clothing log."""
 
     outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
@@ -408,6 +465,71 @@ def add_wear_event():
                            CITIES=CITIES,
                            outfits=outfits,
                            tags=tags)
+
+
+@app.route('/create-event', methods=['POST'])
+def add_event():
+    """Adds new event and redirects to the previous events page."""
+    
+    # String unpacking to pass as arguments to datetime
+    year, month, day = request.form.get('event-date').split('-')
+    time = request.form.get('event-time')
+    city = request.form.get('city')
+    description = request.form.get('event-description')
+    name = request.form.get('event-name')
+    outfit_id = request.form.get('event-outfit')
+    tag_ids = request.form.getlist('event-tags')
+    new_tag_string = request.form.get('new-tags')
+
+    if time:
+        hour, minute = time.split(':')
+        date_time = datetime(int(year), int(month), int(day), int(hour), int(minute))
+    else:
+        date_time = datetime(int(year), int(month), int(day))
+
+    # First create a new Event in the db
+    event = WearEvent(user_id=session['user_id'],
+                      outfit_id=outfit_id or None,
+                      description=description or None,
+                      name=name or f'{month}-{day}-{year}',
+                      date=date_time)
+
+    # If location is provided, get weather
+    if city:
+        event.set_weather(CITIES[city]['lat'], CITIES[city]['lng'])
+
+    all_tags = []
+    for tag_id in tag_ids:
+        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+    # Any newly created tags should be added to this as well
+    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+    # Then create all the tag relationships
+    for tag in all_tags:
+        event.add_tag(tag)
+
+    db.session.add(event)
+    db.session.commit()
+
+    text = name if name else description
+
+    flash(f"Created new outfit: {text}")
+
+    return redirect('/events')
+# @app.route('/create-event', methods=['POST'])
+# def add_event():
+#     year, month, day = request.form.get('event-date').split('-')
+#     hour, minute = request.form.get('event-time').split(':')
+#     city = request.form.get('city')
+
+#     combo_date_time = datetime(int(year), int(month), int(day), int(hour), int(minute))
+#     print(combo_date_time)
+
+#     # if city:
+#     #     event.set_weather(CITIES[city]['lat'], CITIES[city]['lng'])
+
+#     return redirect('/events')
 
 
 @app.route('/etsy-api')
@@ -431,14 +553,40 @@ def show_profile():
     return render_template('profile.html', user=user)
 
 
-# @app.route('/update-outfit')
-# def add_article_to_outfit():
-#     """Adds an article to the current outfit."""
+@app.route('/update-outfit', methods=['POST'])
+def update_outfit_details():
+    """Updates an outfit's details."""
 
-#     # I can figure out how to send the article and outfit via a "get req"
-#     # within the link, but how do I send it with a post req and no
-#     # form? 
-#     outfit.add_article(article)
+    outfit_id = request.form.get('outfit-to-edit')
+    new_tag_string = request.form.get('new-tags')
+    tag_ids = request.form.getlist('outfit-tags')
+    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+
+    all_tags = []
+    for tag_id in tag_ids:
+        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+
+    # Any newly created tags should be added to this as well
+    all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
+
+    # Then create all the tag relationships
+    for tag in all_tags:
+        outfit.add_tag(tag)
+
+    return redirect(f'/outfits/{outfit_id}')
+
+
+@app.route('/delete-outfit', methods=['POST'])
+def delete_outfit():
+    """Deletes an outfit."""
+
+    outfit_id = request.form.get('outfit-to-delete')
+    outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+
+    outfit.delete()
+
+    return redirect('/outfits')
+
 
 # # WIP - do some simpler steps first
 # @app.route('/select-article/<outfit_id>/<category_id>/<article_id>')
