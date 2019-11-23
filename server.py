@@ -582,6 +582,10 @@ def add_event():
     if city:
         event.set_weather(CITIES[city]['lat'], CITIES[city]['lng'])
 
+    if outfit_id:
+        outfit = Outfit.query.filter(outfit_id == outfit_id).one()
+        outfit.incr_times_worn()
+
     all_tags = []
     for tag_id in tag_ids:
         all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
@@ -603,16 +607,52 @@ def add_event():
     return redirect('/events')
 
 
+@app.route('/update-event', methods=['POST'])
+def update_event_details():
+    """Update an event's details."""
+
+    # WIP: this isn't functional
+    which, _, event_id = request.form.get('upate-which').rpartition('-')
+    event = WearEvent.query.filter_by(wear_event_id = event_id).one()
+
+    options = {}
+
+    # TODO: this feels yucky
+    if which == 'update-details':
+        name = request.form.get('update-name')
+        description = request.form.get('update-description')
+        tags = request.form.getlist('update-tags')
+        if name:
+            options['name'] = name
+        if description:
+            options['description'] = description
+        for tag in tags:
+            event.add_tag(tag)
+
+    elif which == 'update-outfit':
+        outfit_id = request.form.get('event-outfit')
+        options['outfit_id'] = outfit_id
+        outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
+        outfit.incr_times_worn()
+
+    event.update(options)
+    db.session.commit()
+
+    return redirect(f'/event/{event_id}')
+
+
 @app.route('/events/<wear_event_id>')
 def show_event_details(wear_event_id):
     """Display specific event details."""
 
     event = WearEvent.query.filter_by(wear_event_id = wear_event_id).first()
-    tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
+    tags = Tag.query.filter_by(user_id = session['user_id']).all()
+    outfits = Outfit.query.filter_by(user_id = session['user_id']).all()
 
     return render_template('single-event.html',
                            event=event,
-                           tags=tags)
+                           tags=tags,
+                           outfits=outfits)
 
 
 @app.route('/etsy-api')
