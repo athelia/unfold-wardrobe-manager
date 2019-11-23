@@ -37,7 +37,7 @@ class User(db.Model):
                               cascade='all, delete, delete-orphan')
     categories = db.relationship('Category', backref='user',
                                  cascade='all, delete, delete-orphan')
-    wear_events = db.relationship('WearEvent', backref='user',
+    events = db.relationship('WearEvent', backref='user',
                                   cascade='all, delete, delete-orphan')
 
     def update(self, options):
@@ -271,7 +271,7 @@ class Article(db.Model):
 
     def incr_times_worn(self):
         """Increase times_worn attribute.
-        
+
         >>> white_gloves.times_worn
         3
         >>> white_gloves.incr_times_worn()
@@ -315,8 +315,8 @@ class Outfit(db.Model):
     tags = db.relationship('Tag',
                            backref='outfits',
                            secondary='tags_outfits')
-    wear_events = db.relationship('WearEvent',
-                                  backref='outfits')
+    events = db.relationship('WearEvent',
+                                  backref='outfit')
 
     # Outfit update methods: update, add_article, remove_article
     def update(self, options):
@@ -456,7 +456,7 @@ class WearEvent(db.Model):
 
     # Define relationship to Tag
     tags = db.relationship('Tag',
-                           backref='wear_events',
+                           backref='events',
                            secondary='tags_events')
 
     def update(self, options):
