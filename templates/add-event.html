@@ -39,7 +39,13 @@
       <select name="event-outfit" id="event-outfit-select">
           <option value="">------</option>
         {% for outfit in outfits %}
-          <option value="{{ outfit.outfit_id }}">{{ outfit.name }}</option>
+          <option value="{{ outfit.outfit_id }}">
+            {% if outfit.name %}
+              {{ outfit.name }}
+            {% else %}
+              Outfit # {{ outfit.outfit_id }}
+            {% endif %}
+          </option>
         {% endfor %}
       </select>
     </p>

@@ -16,7 +16,13 @@ dark_sky = ({
 # Model definitions
 
 class User(db.Model):
-    """User of wardrobe manager website."""
+    """User of wardrobe manager website.
+    
+    >>> dr_horrible = User(user_id = 0, email = 'blog@phd-in-horribleness.com', \
+        password = 'talktoPennyTODAY')
+    >>> dr_horrible
+    <user_id=0 email=blog@phd-in-horribleness.com>
+    """
 
     __tablename__ = 'users'
 
@@ -75,13 +81,38 @@ class User(db.Model):
             sum += article.purchase_price
         return sum
 
-    # STUB - lookup COUNT syntax for SQLAlchemy
-    def count_outfits(self):
-        """Count all of a user's created outfits."""
+    def get_counts_of_users_items(self):
+        """Count all of a user's outfits, articles, categories, and tags."""
 
-        pass
+        # TODO: set up instance attribute stats somewhere else besides here :(
+        self.stats = {}
+        self.stats['counts'] = {
+                                    'outfits': 0,
+                                    'articles': 0,
+                                    'categories': 0,
+                                    'tags': 0,
+                                    }
 
-    # ? TODO ? add count_articles and count_categories and count_tags
+        # if not self.stats.get('counts'):
+        #     self.stats['counts'] = {
+        #                             'outfits': 0,
+        #                             'articles': 0,
+        #                             'categories': 0,
+        #                             'tags': 0,
+        #                             }
+
+        # TODO: refactor using something related to COUNT from SQLAlchemy
+        qty_outfits = len(self.get_outfits_query().all())
+        qty_articles = len(self.get_articles_query().all())
+        qty_categories = len(self.get_categories_query().all())
+        qty_tags = len(self.get_tags_query().all())
+
+        self.stats['counts']['outfits'] = qty_outfits
+        self.stats['counts']['articles'] = qty_articles
+        self.stats['counts']['categories'] = qty_categories
+        self.stats['counts']['tags'] = qty_tags
+
+        return self.stats
 
     def get_categories_query(self):
       """Start a query for all of a user's categories."""
@@ -101,12 +132,28 @@ class User(db.Model):
       outfits_query = Outfit.query.filter_by(user_id = self.user_id)
       return outfits_query
 
+    def get_tags_query(self):
+      """Query for all of a user's tags."""
+      
+      tags_query = Tag.query.filter_by(user_id = self.user_id)
+      return tags_query
+
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'
 
 
 class Category(db.Model):
-    """User defined categories of clothing articles, inheriting from standard categories."""
+    """User defined categories of clothing articles, inheriting from standard categories.
+    
+    >>> lab_coats = Category(category_id = 0, name = 'Lab Coats', description = \
+        'Classic length lab coats', user_id = 0, base_category_id = 'fulls')
+    >>> lab_coats
+    <category_id=0 name=Lab Coats>
+    >>> gloves = Category(category_id = 1, name = 'Gloves', description = \
+        'Chemical resistant 18" gloves', user_id = 0, base_category_id = 'others')
+    >>> gloves
+    <category_id=1 name=Gloves>
+    """
 
     __tablename__ = 'categories'
 
@@ -146,7 +193,27 @@ class Category(db.Model):
 
 
 class Article(db.Model):
-    """Article of clothing."""
+    """Article of clothing.
+    
+    NOTE - The repr will throw an AttributeError if created in Repl because the 
+    relationship between article and category does not exist.
+
+    >>> std_lab_coat = Article(article_id = 0, image = 'white_coat.png', \
+        description = '41" white lab coat with 3 button closure', \
+        purchase_price = 48.99, times_worn = 3, user_id = 0, category_id = 0)
+    >>> std_lab_coat
+    <article_id=0 category_name=Lab Coats description=41" white lab c>
+    >>> std_lab_coat.description
+    '41" white lab coat with 3 button closure'
+
+    >>> white_gloves = Article(article_id = 1, image = 'white_gloves.png', \
+        description = '18" white work gloves', purchase_price = 8.99, \
+        times_worn = 3, user_id = 0, category_id = 1)
+    >>> white_gloves
+    <article_id=1 category_name=Gloves description=18" white work >
+    >>> white_gloves.times_worn
+    3
+    """
 
     __tablename__ = 'articles'
 
@@ -170,11 +237,17 @@ class Article(db.Model):
                            secondary='tags_articles')
 
     def update(self, options):
-        """Update the article's information."""
+        """Update the article's information.
+
+        >>> white_gloves.update({'purchase_price': 7.99})
+        >>> white_gloves.purchase_price
+        7.99
+        """
 
         self.category_id = options.get('category_id', self.category_id)
         self.description = options.get('description', self.description)
         self.purchase_price = options.get('purchase_price', self.purchase_price)
+        self.sell_price = options.get('sell_price', self.sell_price)
 
         db.session.commit()
 
@@ -196,6 +269,19 @@ class Article(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def incr_times_worn(self):
+        """Increase times_worn attribute.
+        
+        >>> white_gloves.times_worn
+        3
+        >>> white_gloves.incr_times_worn()
+        >>> white_gloves.times_worn
+        4
+        """
+
+        self.times_worn += 1
+        db.session.commit()
+
     def __repr__(self):
         return f'<article_id={self.article_id} \
                   category.name={self.category.name} \
@@ -203,7 +289,15 @@ class Article(db.Model):
 
 
 class Outfit(db.Model):
-    """Outfit composed of articles."""
+    """Outfit composed of articles.
+    
+    >>> work_outfit = Outfit(outfit_id = 0, name = 'Work Outfit 1', \
+        description = 'White coat, white gloves, goggles, and work boots', \
+        times_worn = 3, user_id = 0)
+    >>> work_outfit
+    <outfit_id=0 name=Work Outfit 1 description=White coat, whi>
+
+    """
     
     __tablename__ = 'outfits'
 
@@ -273,6 +367,15 @@ class Outfit(db.Model):
         for article in self.articles:
             sum += article.purchase_price
         return sum
+
+    def incr_times_worn(self):
+        """Increase times_worn attribute."""
+
+        self.times_worn += 1
+        for article in self.articles:
+            article.incr_times_worn()
+
+        db.session.commit()
 
     def is_category_in_outfit(self, category):
         for article in self.articles:
@@ -389,6 +492,16 @@ class WearEvent(db.Model):
         self.temperature = weather.temperature
         self.weather_cond = weather.summary
         db.session.commit()
+
+    # WIP
+    def match_tags(self):
+        """Compare event's tags to outfit tags."""
+
+        for tag in self.tags:
+            # Are there outfits with the same tag?
+            # If so add all to a dictionary with a counter += 1
+            # Return dictionary
+            pass
 
     def add_tag(self, tag):
         """Add the tag to the event."""

@@ -11,8 +11,7 @@
   {% for event in events %}
     <button class="event-block block-bucket">
       <a href="/events/{{ event.wear_event_id }}">
-        {{ event.date }} - 
-        {{ event.name }}
+        {{ event.date }} - {{ event.name }}
       </a>
     </button>
   {% endfor %}
