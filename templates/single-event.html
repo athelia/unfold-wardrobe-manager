@@ -17,17 +17,18 @@
     Here we display the outfit's name if it has one, otherwise its ID.
      -->
     <div class="outfit-frame">
+    {% if event.outfit %}
       <fieldset>
-      <legend>Outfit - 
-      {% if event.outfits.name %}
-        {{ event.outfits.name }}
+      <legend>Event - 
+      {% if event.outfit.name %}
+        {{ event.outfit.name }}
       {% else %}
         # {{ event.outfit_id }}
       {% endif %}
       </legend>
 
       <!-- Iterate over all articles in the event (via the outfit) & display them. -->
-      {% for article in event.outfits.articles %}
+      {% for article in event.outfit.articles %}
         <div class="articles-block block-bucket">
           <a href="/articles/{{ article.article_id }}">
             {% if article.image %}
@@ -39,46 +40,67 @@
         </div>
       {% endfor %}
       </fieldset>
+    {% else %}
+    <form action="/update-event" method="POST">
+      <input type="hidden" name="update-which" value="update-outfit-{{ event.wear_event_id }}">
+      <label for="event-outfit">Add outfit:</label>
+      <select name="event-outfit" id="event-outfit-select">
+          <option value="">------</option>
+        {% for outfit in outfits %}
+          <option value="{{ outfit.outfit_id }}">
+            {% if outfit.name %}
+              {{ outfit.name }}
+            {% else %}
+              Outfit # {{ outfit.outfit_id }}
+            {% endif %}
+          </option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Update outfit">
+    </form>
+    {% endif %}
     </div>
+
 
     <!-- The right container has event details. -->
       <div class="inline-block">
         <form action="/update-event" method="POST">
-        <h1>
-          Name: {{ event.name }}
-        </h1>
-        <label for="update-name">New name:</label>
-        <input type="text" name="update-name">
-        <p>
-          Date: {{ event.date }}
-        </p>
-        <p>
-          Description: {{ event.description }}
-        </p>
-        <label for="update-description">New description:</label>
-        <input type="text" name="update-description">
-        <p>
-          Temperature: {{ event.temperature }}
-        </p>
-        <p>
-          Weather conditions: {{ event.weather_cond }}
-        </p>
+          <input type="hidden" name="update-which" value="update-details-{{ event.wear_event_id }}">
+          <h1>
+            Name: {{ event.name }}
+          </h1>
+          <label for="update-name">New name:</label>
+          <input type="text" name="update-name">
+          <p>
+            Date: {{ event.date }}
+          </p>
+          <p>
+            Description: {{ event.description }}
+          </p>
+          <label for="update-description">New description:</label>
+          <input type="text" name="update-description">
+          <p>
+            Temperature: {{ event.temperature }}
+          </p>
+          <p>
+            Weather conditions: {{ event.weather_cond }}
+          </p>
 
-        <fieldset>
-          <legend>Tags:</legend>
-          <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
-          {% for tag in tags %}
+          <fieldset>
+            <legend>Tags:</legend>
+            <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
+            {% for tag in tags %}
+              <div>
+                <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="update-tags" {% if tag in event.tags %} checked {% endif %}/>
+                <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+              </div>
+            {% endfor %}
+            <label for="new-tags">Add more tags (separate with commas):</label>
+            <input type="text" id="new-tags" name="new-tags" />
             <div>
-              <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event-tags" {% if tag in event.tags %} checked {% endif %}/>
-              <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+              <input type="submit" value="Update tags">
             </div>
-          {% endfor %}
-          <label for="new-tags">Add more tags (separate with commas):</label>
-          <input type="text" id="new-tags" name="new-tags" />
-          <div>
-            <input type="submit" value="Update tags">
-          </div>
-        </fieldset>
+          </fieldset>
       </form>
      </div>
 
