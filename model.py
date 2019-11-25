@@ -435,13 +435,14 @@ class Tag(db.Model):
         return f'<tag_id={self.tag_id} name={self.name}>'
 
 
+# TODO: Modify table manually to increase name column from 32 -> 128 char
 class WearEvent(db.Model):
     """Instances of outfits being worn. Can be past or future; outfits can be added later."""
     
     __tablename__ = 'wear_events'
 
     wear_event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(32), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     description = db.Column(db.String(256), nullable=True)
     date = db.Column(db.DateTime, nullable=False)
     temperature = db.Column(db.Float, nullable=True)

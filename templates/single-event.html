@@ -12,6 +12,8 @@
   <!-- Keep the left and right sides in another container -->
   <div class="outer-frame">
 
+    <form action="/update-event" method="POST">
+    <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
     <!-- 
     The left container shows everything that's in the current outfit.
     Here we display the outfit's name if it has one, otherwise its ID.
@@ -41,8 +43,6 @@
       {% endfor %}
       </fieldset>
     {% else %}
-    <form action="/update-event" method="POST">
-      <input type="hidden" name="update-which" value="update-outfit-{{ event.wear_event_id }}">
       <label for="event-outfit">Add outfit:</label>
       <select name="event-outfit" id="event-outfit-select">
           <option value="">------</option>
@@ -57,15 +57,12 @@
         {% endfor %}
       </select>
       <input type="submit" value="Update outfit">
-    </form>
     {% endif %}
     </div>
 
 
     <!-- The right container has event details. -->
       <div class="inline-block">
-        <form action="/update-event" method="POST">
-          <input type="hidden" name="update-which" value="update-details-{{ event.wear_event_id }}">
           <h1>
             Name: {{ event.name }}
           </h1>
@@ -88,7 +85,6 @@
 
           <fieldset>
             <legend>Tags:</legend>
-            <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
             {% for tag in tags %}
               <div>
                 <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="update-tags" {% if tag in event.tags %} checked {% endif %}/>
@@ -96,13 +92,15 @@
               </div>
             {% endfor %}
             <label for="new-tags">Add more tags (separate with commas):</label>
-            <input type="text" id="new-tags" name="new-tags" />
-            <div>
-              <input type="submit" value="Update tags">
-            </div>
+            <input type="text" id="new-tags" name="new-tags" /> 
           </fieldset>
-      </form>
+        <div>
+          <input type="submit" value="Update event">    
+        </div>
      </div>
+   </form>
+  </div>
+  
 
   <form action="/delete-event" method="POST">
     <input type="hidden" name="event-to-delete" id="event-to-delete" value="{{ event.wear_event_id }}">

@@ -311,7 +311,7 @@ def add_article():
 
         all_tags = []
         for tag_id in tag_ids:
-            all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+            all_tags.append(Tag.query.filter_by(tag_id = tag_id).one())
 
         # Any newly created tags should be added to this as well
         all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
@@ -366,7 +366,7 @@ def update_article_details():
 
     all_tags = []
     for tag_id in tag_ids:
-        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+        all_tags.append(Tag.query.filter_by(tag_id = tag_id).one())
 
     # TODO: Brute force method - remove all tags before appending
     # Better: Check for discrepancies; remove unchecked, then proceed
@@ -430,7 +430,7 @@ def add_outfit():
 
     all_tags = []
     for tag_id in tag_ids:
-        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+        all_tags.append(Tag.query.filter_by(tag_id = tag_id).one())
 
     # Any newly created tags should be added to this as well
     all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
@@ -473,7 +473,7 @@ def update_outfit_details():
 
     all_tags = []
     for tag_id in tag_ids:
-        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+        all_tags.append(Tag.query.filter_by(tag_id = tag_id).one())
 
     # Any newly created tags should be added to this as well
     all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
@@ -583,12 +583,12 @@ def add_event():
         event.set_weather(CITIES[city]['lat'], CITIES[city]['lng'])
 
     if outfit_id:
-        outfit = Outfit.query.filter(outfit_id == outfit_id).one()
+        outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
         outfit.incr_times_worn()
 
     all_tags = []
     for tag_id in tag_ids:
-        all_tags.append(Tag.query.filter(Tag.tag_id == tag_id).one())
+        all_tags.append(Tag.query.filter_by(tag_id = tag_id).one())
 
     # Any newly created tags should be added to this as well
     all_tags += Tag.parse_str_to_tag(new_tag_string, session['user_id'])
@@ -610,27 +610,25 @@ def add_event():
 @app.route('/update-event', methods=['POST'])
 def update_event_details():
     """Update an event's details."""
-
-    # WIP: this isn't functional
-    which, _, event_id = request.form.get('upate-which').rpartition('-')
+    
+    event_id = request.form.get('event-to-edit')
     event = WearEvent.query.filter_by(wear_event_id = event_id).one()
+    outfit_id = request.form.get('event-outfit')
 
     options = {}
 
     # TODO: this feels yucky
-    if which == 'update-details':
-        name = request.form.get('update-name')
-        description = request.form.get('update-description')
-        tags = request.form.getlist('update-tags')
-        if name:
-            options['name'] = name
-        if description:
-            options['description'] = description
-        for tag in tags:
-            event.add_tag(tag)
-
-    elif which == 'update-outfit':
-        outfit_id = request.form.get('event-outfit')
+    name = request.form.get('update-name')
+    description = request.form.get('update-description')
+    tags = request.form.getlist('update-tags')
+    if name:
+        options['name'] = name
+    if description:
+        options['description'] = description
+    for tag_id in tags:
+        tag = Tag.query.filter_by(tag_id = tag_id).one()
+        event.add_tag(tag)
+    if outfit_id:
         options['outfit_id'] = outfit_id
         outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
         outfit.incr_times_worn()
@@ -638,7 +636,7 @@ def update_event_details():
     event.update(options)
     db.session.commit()
 
-    return redirect(f'/event/{event_id}')
+    return redirect(f'/events/{event_id}')
 
 
 @app.route('/events/<wear_event_id>')
