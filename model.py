@@ -5,6 +5,7 @@ from sqlalchemy import asc, update
 from datetime import datetime as dt
 import os
 from darksky import forecast
+import textwrap
 
 db = SQLAlchemy()
 
@@ -282,11 +283,14 @@ class Article(db.Model):
         self.times_worn += 1
         db.session.commit()
 
+    # def __repr__(self):
+    #     return textwrap.dedent(
+    #             f'<article_id={self.article_id} \
+    #             category.name={self.category.name} \
+    #             description={self.description:.20}>'
+    #             )
     def __repr__(self):
-        return f'<article_id={self.article_id} \
-                  category.name={self.category.name} \
-                  description={self.description:.15}>'
-
+        return f'<article_id={self.article_id} category.name={self.category.name} description={self.description:.20}>'
 
 class Outfit(db.Model):
     """Outfit composed of articles.
@@ -384,9 +388,7 @@ class Outfit(db.Model):
         return False
 
     def __repr__(self):
-        return f'<outfit_id={self.outfit_id} \
-                  name={self.name} \
-                  description={self.description:.15}>'
+        return f'<outfit_id={self.outfit_id} name={self.name} description={self.description:.20}>'
 
 
 class Tag(db.Model):
@@ -498,11 +500,22 @@ class WearEvent(db.Model):
     def match_tags(self):
         """Compare event's tags to outfit tags."""
 
-        for tag in self.tags:
-            # Are there outfits with the same tag?
-            # If so add all to a dictionary with a counter += 1
-            # Return dictionary
-            pass
+        outfit_dict = {}
+
+        if self.tags: 
+            first_tag = self.tags[0]
+
+            for tag in self.tags:
+                for outfit in tag.outfits:
+                    outfit_dict[outfit] = outfit_dict.get(outfit, [])
+                    outfit_dict[outfit].append(tag)
+                # Are there outfits with the same tag?
+                # If so add all to a dictionary with a counter += 1
+                # Return dictionary
+        else:
+            print('Event has no tags!')
+
+        return outfit_dict
 
     def add_tag(self, tag):
         """Add the tag to the event."""
@@ -576,9 +589,7 @@ class TagArticle(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f'<tag_article_id={self.tag_article_id} \
-                  tag_id={self.tag_id} \
-                  article_id={self.article_id}>'
+        return f'<tag_article_id={self.tag_article_id} tag_id={self.tag_id} article_id={self.article_id}>'
 
 
 class TagOutfit(db.Model):
@@ -597,9 +608,7 @@ class TagOutfit(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f'<tag_outfit_id={self.tag_outfit_id} \
-                  tag_id={self.tag_id} \
-                  outfit_id={self.outfit_id}>'
+        return f'<tag_outfit_id={self.tag_outfit_id} tag_id={self.tag_id} outfit_id={self.outfit_id}>'
 
 
 class TagEvent(db.Model):
@@ -618,9 +627,7 @@ class TagEvent(db.Model):
                        nullable=False)
 
     def __repr__(self):
-        return f'<tag_outfit_id={self.tag_outfit_id} \
-                  tag_id={self.tag_id} \
-                  wear_event_id={self.wear_event_id}>'
+        return f'<tag_outfit_id={self.tag_outfit_id} tag_id={self.tag_id} wear_event_id={self.wear_event_id}>'
 
 
 ##############################################################################
