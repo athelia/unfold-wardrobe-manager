@@ -70,3 +70,12 @@
     display: inline-block;
     margin: 10px;
 }
+
+img.forecast {
+    max-width: 40px;
+}
+
+.tomorrow {
+    border-left: 1px solid black;
+    padding-left: 10px;
+}

@@ -35,6 +35,9 @@ from etsy import Etsy
 # Get weather from OpenWeatherMap API
 import pyowm
 
+# Get weather from DarkSky API
+from darksky import forecast
+
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
 
@@ -57,6 +60,11 @@ etsy_api = Etsy(etsy_config['api_key'])
 
 # Set OpenWeatherMap API key
 owm = pyowm.OWM(os.environ.get('OPEN_WEATHER_API_KEY'))
+
+# Set DarkSky API key
+dark_sky = ({
+    'secret':os.environ.get('DARK_SKY_API_SECRET'),
+    })
 
 # Normally, if you use an undefined variable in Jinja2, it fails
 # silently. This is horrible. Fix this so that, instead, it raises an
@@ -94,6 +102,29 @@ def test_weather(city):
     return render_template('weather.html', today=today)
 
 
+@app.route('/ds-weather')
+def test_weather_darksky():
+    """Test DarkSky's API & DarkSkyLib wrapper"""
+
+    city = CITIES['SFO']
+    # Dark Sky requires a date in isoformat
+    weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
+
+    hourly = weather.hourly
+
+    print(datetime.time(datetime.now()))
+    for hour in hourly:
+
+        hour.datestr = datetime.utcfromtimestamp(hour['time']).strftime('%m-%d-%y %H:%M')
+
+    # for forecast in forecasts:
+    #     forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+    #     forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+    # today = forecasts[0:8]
+
+    return render_template('ds-weather.html', hourly=hourly)
+
+
 ###############################################################################
 #                                                                             #
 #                                BASIC ROUTES                                 #
@@ -105,16 +136,24 @@ def test_weather(city):
 @app.route('/')
 def index():
     """If logged in, display homepage to go to outfits, categories, or articles."""
-    city_country = 'San Francisco,USA'
+    
     if session.get('user_id', None):
-        f = owm.three_hours_forecast(city_country).get_forecast()
-        forecasts = f.get_weathers()
-        print(datetime.time(datetime.now()))
-        for forecast in forecasts:
-            forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-            forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
-        today = forecasts[0:8]
-        return render_template("homepage.html", today=today)
+        city = CITIES['SFO']
+        # Dark Sky requires a date in isoformat
+        weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
+        hourly = weather.hourly
+        daily = weather.daily
+
+        # Hard-code UTC-8
+        time_offset = - 8 * 60 * 60
+
+        for hour in hourly:
+            hour.datestr = datetime.utcfromtimestamp(hour['time'] + time_offset).strftime('%m-%d-%y %H:%M')
+
+        for day in daily:
+            day.datestr = datetime.utcfromtimestamp(day['time'] + time_offset).strftime('%m-%d-%y')
+
+        return render_template("homepage.html", hourly=hourly, daily=daily)
     else:
         return render_template("login.html")
 

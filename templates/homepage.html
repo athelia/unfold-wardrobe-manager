@@ -4,6 +4,10 @@
 
 {% block content %}
 
+<div class="recommendation">
+  
+</div>
+
 <button class="block-bucket">
   <a href="/outfits">
     Outfits
@@ -34,12 +38,20 @@
     <input type="submit" value="Get Weather">
 </form>
 
-{% for forecast in today %}
+{% for hour in hourly[:5:1] %}
   <div class="forecast">
-    <img src="{{ forecast.get_weather_icon_url() }}" />
-    <h3>{{ forecast.temp }}&deg;</h3>
-    {{ forecast.datestr }} - {{ forecast.get_detailed_status() }}
+    <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
+    <h3>{{ hour['temperature'] }}&deg;</h3>
+    {{ hour.datestr }} - {{ hour['summary'] }}
   </div>
+{% endfor %}
+
+{% for day in daily[1:2] %}
+<div class="forecast tomorrow">
+  <img src="https://darksky.net/images/weather-icons/{{ day['icon'] }}.png" class="forecast" />
+  <h3>{{ day.apparentTemperatureLow }}&deg; - {{ day.apparentTemperatureHigh }}&deg;</h3>
+  {{ day.datestr }} - {{ day['summary'] }}
+</div>
 {% endfor %}
 
 <div class="weather-forecast">
@@ -51,10 +63,6 @@
 
 <script>
     "use strict";
-
-    // const kelvinToFahreheit = (kelvin) => {
-    //     return kelvin - 273 * 1.8 + 32
-    // };
 
     const updateWeather = (res) => {
         $('#forecast-today').html(res.main['temp']);

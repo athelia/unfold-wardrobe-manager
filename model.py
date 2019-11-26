@@ -496,7 +496,7 @@ class WearEvent(db.Model):
         self.weather_cond = weather.summary
         db.session.commit()
 
-    # WIP
+
     def match_tags(self):
         """Compare event's tags to outfit tags."""
 
