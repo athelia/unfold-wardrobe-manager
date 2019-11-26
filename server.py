@@ -591,7 +591,7 @@ def remove_article_from_outfit(outfit_id, article_id):
 def show_events():
     """Display all events and the option to add a new event."""
 
-    events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).all()
+    events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).order_by(WearEvent.date).all()
 
     return render_template('events.html', events=events)
 
