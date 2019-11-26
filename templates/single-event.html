@@ -21,12 +21,13 @@
     <div class="outfit-frame">
     {% if event.outfit %}
       <fieldset>
-      <legend>Event - 
-      {% if event.outfit.name %}
-        {{ event.outfit.name }}
-      {% else %}
-        # {{ event.outfit_id }}
-      {% endif %}
+      <legend>
+        Outfit - #{{ event.outfit.outfit_id }}
+        {% if event.outfit.description %}
+           - {{ event.outfit.description }}
+        {% elif event.outfit.name %}
+           - {{ event.outfit.name }}
+        {% endif %}
       </legend>
 
       <!-- Iterate over all articles in the event (via the outfit) & display them. -->
@@ -48,10 +49,11 @@
           <option value="">------</option>
         {% for outfit in outfits %}
           <option value="{{ outfit.outfit_id }}">
-            {% if outfit.name %}
-              {{ outfit.name }}
-            {% else %}
-              Outfit # {{ outfit.outfit_id }}
+            #{{ outfit.outfit_id }}
+            {% if outfit.description %}
+               - {{ outfit.description }}
+            {% elif outfit.name %}
+               - {{ outfit.name }}
             {% endif %}
           </option>
         {% endfor %}

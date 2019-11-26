@@ -11,12 +11,11 @@
   {% for outfit in outfits %}
     <button class="outfit-block block-bucket">
       <a href="/outfits/{{ outfit.outfit_id }}">
+      #{{ outfit.outfit_id }}
       {% if outfit.description %}
-        {{ outfit.description }}
+         - {{ outfit.description }}
       {% elif outfit.name %}
-        {{ outfit.name }}
-      {% else %}
-        {{ outfit.outfit_id }}
+         - {{ outfit.name }}
       {% endif %}
       </a>
     </button>
