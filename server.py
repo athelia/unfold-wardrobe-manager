@@ -144,7 +144,9 @@ def index():
         hourly = weather.hourly
         daily = weather.daily
 
-        # Hard-code UTC-8
+        # Hard-code UTC-8 because haven't implemented proper time zone 
+        # localization (yet, anyway)
+        # TODO: User can set time zone in profile
         time_offset = - 8 * 60 * 60
 
         for hour in hourly:
@@ -155,16 +157,14 @@ def index():
         now = datetime.today()
         today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
         today_end = datetime(now.year, now.month, now.day, 23, 59, 59)
-        # seconds_since_midnight = (now - today_start).total_seconds()
-        margin = timedelta(days = 1)
         events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
-        # events_today = events.filter((today - margin) <= WearEvent.date ).all()
-        # events_today = events.filter(WearEvent.date == date.today()).all()
         events_today = events.filter(today_start <= WearEvent.date)
         events_today = events_today.filter(WearEvent.date <= today_end).all()
-        # events_today = events.filter(today_start - margin <= WearEvent.date)
-        # events_today = events_today.filter(WearEvent.date <= today_start).all()
+
+        outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         
+        # TODO: add the other outfit recs as options at subsequent indices
+        # outfit_recs[event] = [top_pick, other option, different option...]
         outfit_recs = {}
         for event in events_today:
             outfit_recs[event] = event.match_tags()['top_pick']
@@ -173,7 +173,8 @@ def index():
                                hourly=hourly,
                                daily=daily,
                                events_today=events_today,
-                               outfit_recs=outfit_recs)
+                               outfit_recs=outfit_recs,
+                               outfits = outfits)
     else:
         return render_template("login.html")
 
@@ -710,6 +711,18 @@ def show_event_details(wear_event_id):
                            event=event,
                            tags=tags,
                            outfits=outfits)
+
+
+@app.route('/delete-event', methods=['POST'])
+def delete_event():
+    """Deletes an event."""
+
+    wear_event_id = request.form.get('event-to-delete')
+    event = WearEvent.query.filter_by(wear_event_id = wear_event_id).one()
+
+    event.delete()
+
+    return redirect('/events')
 
 
 @app.route('/etsy-api')

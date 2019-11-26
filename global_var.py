@@ -23,5 +23,11 @@ CITIES = {
         'lat': 35.787743, 
         'lng': -78.644257,       
     },
+    'StCrz': {
+        'name': 'Santa Cruz',
+        'location_id': 'StCrz',
+        'lat': 37.276741, 
+        'lng': -121.922869,
+    }
 }
 
