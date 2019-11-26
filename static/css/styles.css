@@ -69,6 +69,7 @@
 .forecast {
     display: inline-block;
     margin: 10px;
+    width: 100px;
 }
 
 img.forecast {
