@@ -154,15 +154,16 @@ def index():
 
         now = datetime.today()
         today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
+        today_end = datetime(now.year, now.month, now.day, 23, 59, 59)
         # seconds_since_midnight = (now - today_start).total_seconds()
         margin = timedelta(days = 1)
         events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
         # events_today = events.filter((today - margin) <= WearEvent.date ).all()
         # events_today = events.filter(WearEvent.date == date.today()).all()
-        events_tomorrow = events.filter(today_start <= WearEvent.date)
-        events_tomorrow = events_tomorrow.filter(WearEvent.date <= today_start + margin).all()
-        events_today = events.filter(today_start - margin <= WearEvent.date)
-        events_today = events_today.filter(WearEvent.date <= today_start).all()
+        events_today = events.filter(today_start <= WearEvent.date)
+        events_today = events_today.filter(WearEvent.date <= today_end).all()
+        # events_today = events.filter(today_start - margin <= WearEvent.date)
+        # events_today = events_today.filter(WearEvent.date <= today_start).all()
         
         outfit_recs = {}
         for event in events_today:
