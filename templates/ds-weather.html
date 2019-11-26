@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  
+{% for hour in hourly %}
+  <div class="forecast">
+    <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" />
+    <h3>{{ hour['temperature'] }}&deg;</h3>
+    {{ hour.datestr }} - {{ hour['summary'] }}
+  </div>
+{% endfor %}
+
+{% endblock%}
