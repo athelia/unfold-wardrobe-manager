@@ -501,14 +501,19 @@ class WearEvent(db.Model):
         """Compare event's tags to outfit tags."""
 
         outfit_dict = {}
+        outfit_dict['top_pick'] = ''
 
         if self.tags: 
             first_tag = self.tags[0]
+            most_tags = 0
 
             for tag in self.tags:
                 for outfit in tag.outfits:
                     outfit_dict[outfit] = outfit_dict.get(outfit, [])
                     outfit_dict[outfit].append(tag)
+                    if len(outfit_dict[outfit]) > most_tags:
+                        most_tags = len(outfit_dict[outfit])
+                        outfit_dict['top_pick'] = outfit
                 # Are there outfits with the same tag?
                 # If so add all to a dictionary with a counter += 1
                 # Return dictionary

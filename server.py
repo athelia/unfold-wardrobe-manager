@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 import os
 import requests
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from sqlalchemy import asc, update, func
 
 import flask_restless
@@ -148,12 +148,31 @@ def index():
         time_offset = - 8 * 60 * 60
 
         for hour in hourly:
-            hour.datestr = datetime.utcfromtimestamp(hour['time'] + time_offset).strftime('%m-%d-%y %H:%M')
-
+            hour.datestr = datetime.utcfromtimestamp(hour['time'] + time_offset).strftime('%m/%d %H:%M')
         for day in daily:
-            day.datestr = datetime.utcfromtimestamp(day['time'] + time_offset).strftime('%m-%d-%y')
+            day.datestr = datetime.utcfromtimestamp(day['time'] + time_offset).strftime('%m/%d')
 
-        return render_template("homepage.html", hourly=hourly, daily=daily)
+        now = datetime.today()
+        today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
+        # seconds_since_midnight = (now - today_start).total_seconds()
+        margin = timedelta(days = 1)
+        events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
+        # events_today = events.filter((today - margin) <= WearEvent.date ).all()
+        # events_today = events.filter(WearEvent.date == date.today()).all()
+        events_tomorrow = events.filter(today_start <= WearEvent.date)
+        events_tomorrow = events_tomorrow.filter(WearEvent.date <= today_start + margin).all()
+        events_today = events.filter(today_start - margin <= WearEvent.date)
+        events_today = events_today.filter(WearEvent.date <= today_start).all()
+        
+        outfit_recs = {}
+        for event in events_today:
+            outfit_recs[event] = event.match_tags()['top_pick']
+
+        return render_template("homepage.html",
+                               hourly=hourly,
+                               daily=daily,
+                               events_today=events_today,
+                               outfit_recs=outfit_recs)
     else:
         return render_template("login.html")
 

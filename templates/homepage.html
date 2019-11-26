@@ -5,7 +5,54 @@
 {% block content %}
 
 <div class="recommendation">
-  
+  <h2>Up Next:</h2>
+  {% for event in events_today %}
+    <p>
+      Event #{{ event.wear_event_id }} - {{ event.name }}
+    </p>
+
+    <div class="outfit-frame">
+    {% if event.outfit %}
+      <fieldset>
+      <legend>Outfit - 
+      {% if event.outfit.name %}
+        {{ event.outfit.name }}
+      {% else %}
+        # {{ event.outfit_id }}
+      {% endif %}
+      </legend>
+
+      <!-- Iterate over all articles in the event (via the outfit) & display them. -->
+      {% for article in event.outfit.articles %}
+        <div class="articles-block block-bucket">
+          <a href="/articles/{{ article.article_id }}">
+            {% if article.image %}
+              <img src="{{ article.image }}" class="article-image">
+            {% else %}
+              {{ article.description }}
+            {% endif %}
+          </a>
+        </div>
+      {% endfor %}
+      </fieldset>
+    {% else %}
+      <label for="event-outfit">Add outfit:</label>
+      <select name="event-outfit" id="event-outfit-select">
+          <option value="">------</option>
+        {% for outfit in outfits %}
+          <option value="{{ outfit.outfit_id }}">
+            {% if outfit.name %}
+              {{ outfit.name }}
+            {% else %}
+              Outfit # {{ outfit.outfit_id }}
+            {% endif %}
+          </option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Update outfit">
+    {% endif %}
+    </div>
+  {% endfor %}
 </div>
 
 <button class="block-bucket">
