@@ -92,7 +92,9 @@ class User(db.Model):
                                     'articles': 0,
                                     'categories': 0,
                                     'tags': 0,
+                                    'events': 0,
                                     }
+        self.stats['most_worn'] = {}
 
         # if not self.stats.get('counts'):
         #     self.stats['counts'] = {
@@ -103,15 +105,22 @@ class User(db.Model):
         #                             }
 
         # TODO: refactor using something related to COUNT from SQLAlchemy
-        qty_outfits = len(self.get_outfits_query().all())
-        qty_articles = len(self.get_articles_query().all())
-        qty_categories = len(self.get_categories_query().all())
-        qty_tags = len(self.get_tags_query().all())
+        outfits = self.get_outfits_query().order_by(Outfit.times_worn).all()
+        articles = self.get_articles_query().order_by(Article.times_worn).all()
+        categories = self.get_categories_query().all()
+        tags = self.get_tags_query().all()
+        events = self.get_events_query().all()
 
-        self.stats['counts']['outfits'] = qty_outfits
-        self.stats['counts']['articles'] = qty_articles
-        self.stats['counts']['categories'] = qty_categories
-        self.stats['counts']['tags'] = qty_tags
+        most_worn_outfit = outfits[-1]
+        most_worn_article = articles[-1]
+
+        self.stats['counts']['outfits'] = len(outfits)
+        self.stats['counts']['articles'] = len(articles)
+        self.stats['counts']['categories'] = len(categories)
+        self.stats['counts']['tags'] = len(tags)
+        self.stats['counts']['events'] = len(events)
+        self.stats['most_worn']['article'] = most_worn_article
+        self.stats['most_worn']['outfit'] = most_worn_outfit
 
         return self.stats
 
@@ -138,6 +147,12 @@ class User(db.Model):
       
       tags_query = Tag.query.filter_by(user_id = self.user_id)
       return tags_query
+
+    def get_events_query(self):
+      """Query for all of a user's events."""
+      
+      events_query = WearEvent.query.filter_by(user_id = self.user_id)
+      return events_query
 
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'

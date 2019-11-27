@@ -83,47 +83,6 @@ app.jinja_env.undefined = StrictUndefined
 # def load_user(user_id):
 #     return User.query.filter(User.user_id == user_id).first()
 
-@app.route('/weather/<city>')
-def test_weather(city):
-    """Test OpenWeatherMap's API & PyOWM wrapper"""
-
-    # city = 'San Francisco'
-    city_country = city + ',USA'
-    print(city_country)
-    observation = owm.three_hours_forecast(city_country)
-    f = observation.get_forecast()
-    forecasts = f.get_weathers()
-    print(datetime.time(datetime.now()))
-    for forecast in forecasts:
-        forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-        forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
-    today = forecasts[0:8]
-
-    return render_template('weather.html', today=today)
-
-
-@app.route('/ds-weather')
-def test_weather_darksky():
-    """Test DarkSky's API & DarkSkyLib wrapper"""
-
-    city = CITIES['SFO']
-    # Dark Sky requires a date in isoformat
-    weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
-
-    hourly = weather.hourly
-
-    print(datetime.time(datetime.now()))
-    for hour in hourly:
-
-        hour.datestr = datetime.utcfromtimestamp(hour['time']).strftime('%m-%d-%y %H:%M')
-
-    # for forecast in forecasts:
-    #     forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-    #     forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
-    # today = forecasts[0:8]
-
-    return render_template('ds-weather.html', hourly=hourly)
-
 
 ###############################################################################
 #                                                                             #
@@ -162,6 +121,8 @@ def index():
         events_today = events_today.filter(WearEvent.date <= today_end).all()
 
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
+        user = User.query.get(session['user_id'])
+        user_stats = user.get_counts_of_users_items()
         
         # TODO: add the other outfit recs as options at subsequent indices
         # outfit_recs[event] = [top_pick, other option, different option...]
@@ -170,11 +131,12 @@ def index():
             outfit_recs[event] = event.match_tags()['top_pick']
 
         return render_template("homepage.html",
-                               hourly=hourly,
-                               daily=daily,
-                               events_today=events_today,
-                               outfit_recs=outfit_recs,
-                               outfits = outfits)
+                               hourly = hourly,
+                               daily = daily,
+                               events_today = events_today,
+                               outfit_recs = outfit_recs,
+                               outfits = outfits,
+                               user_stats = user_stats)
     else:
         return render_template("login.html")
 
@@ -234,7 +196,7 @@ def show_profile():
     else:
         user = None
 
-    return render_template('profile.html', user=user)
+    return render_template('profile.html', user = user)
 
 
 ###############################################################################
@@ -288,10 +250,10 @@ def add_category():
     base_category = request.form.get('base-category')
     description = request.form.get('category-description')
 
-    new_category = Category(user_id=session['user_id'],
-                            base_category_id=base_category,
-                            name=name,
-                            description=description)
+    new_category = Category(user_id =session['user_id'],
+                            base_category_id =base_category,
+                            name =name,
+                            description =description)
 
     db.session.add(new_category)
     db.session.commit()
@@ -343,7 +305,7 @@ def add_article():
     new_tag_string = request.form.get('new-tags')
     purchase_price = request.form.get('purchase-price') 
 
-    category = Category.query.filter_by(category_id=category_id).one()
+    category = Category.query.get(category_id)
 
     if not allowed_file(file.filename):
         flash(f'File extension .{file.filename.rsplit(".", 1)[1]} not allowed')
@@ -363,11 +325,11 @@ def add_article():
                              )
 
         # For purchase_price, an empty string not ok, but okay to pass None
-        new_article = Article(user_id=session['user_id'],
-                              category_id=category_id,
-                              image=upload_file['secure_url'],
-                              description=description,
-                              purchase_price=purchase_price or None)
+        new_article = Article(user_id = session['user_id'],
+                              category_id = category_id,
+                              image = upload_file['secure_url'],
+                              description = description,
+                              purchase_price = purchase_price or None)
 
         all_tags = []
         for tag_id in tag_ids:
@@ -732,6 +694,48 @@ def test_etsy_api():
     json_listings = etsy_api.getInterestingListings()
 
     return render_template('api-test.html', json_listings=json_listings)
+
+
+@app.route('/weather/<city>')
+def test_weather(city):
+    """Test OpenWeatherMap's API & PyOWM wrapper"""
+
+    # city = 'San Francisco'
+    city_country = city + ',USA'
+    print(city_country)
+    observation = owm.three_hours_forecast(city_country)
+    f = observation.get_forecast()
+    forecasts = f.get_weathers()
+    print(datetime.time(datetime.now()))
+    for forecast in forecasts:
+        forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+        forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+    today = forecasts[0:8]
+
+    return render_template('weather.html', today=today)
+
+
+@app.route('/ds-weather')
+def test_weather_darksky():
+    """Test DarkSky's API & DarkSkyLib wrapper"""
+
+    city = CITIES['SFO']
+    # Dark Sky requires a date in isoformat
+    weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
+
+    hourly = weather.hourly
+
+    print(datetime.time(datetime.now()))
+    for hour in hourly:
+
+        hour.datestr = datetime.utcfromtimestamp(hour['time']).strftime('%m-%d-%y %H:%M')
+
+    # for forecast in forecasts:
+    #     forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+    #     forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+    # today = forecasts[0:8]
+
+    return render_template('ds-weather.html', hourly=hourly)
 
 
 # # WIP - do some simpler steps first

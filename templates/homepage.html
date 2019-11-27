@@ -78,7 +78,14 @@
 </div>
 
 <section name="statistics">
-  <div >
+  <div id="total_articles" class="stat-blocks">
+    <h1>{{ user_stats['counts']['articles'] }}</h1>
+    <p>articles</p>
+  </div>
+  <div id="total_outfits" class="stat-blocks">
+    <h1>{{ user_stats['counts']['outfits'] }}</h1>
+    <p>outfits</p>
+  </div>
 </section>
 
 <button class="block-bucket">
