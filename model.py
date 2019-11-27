@@ -114,6 +114,10 @@ class User(db.Model):
         most_worn_outfit = outfits[-1]
         most_worn_article = articles[-1]
 
+        # TODO:
+        # Most popular tag
+        # Least popular tag
+
         self.stats['counts']['outfits'] = len(outfits)
         self.stats['counts']['articles'] = len(articles)
         self.stats['counts']['categories'] = len(categories)

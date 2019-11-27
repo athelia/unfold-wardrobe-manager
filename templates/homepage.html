@@ -78,13 +78,31 @@
 </div>
 
 <section name="statistics">
-  <div id="total_articles" class="stat-blocks">
+  <div id="total-articles" class="inline-block">
     <h1>{{ user_stats['counts']['articles'] }}</h1>
-    <p>articles</p>
+    <p>| articles |</p>
   </div>
-  <div id="total_outfits" class="stat-blocks">
+  <div id="total-outfits" class="inline-block">
     <h1>{{ user_stats['counts']['outfits'] }}</h1>
-    <p>outfits</p>
+    <p>| outfits |</p>
+  </div>
+  <div id="total-events" class="inline-block">
+    <h1>{{ user_stats['counts']['events'] }}</h1>
+    <p>| events |</p>
+  </div>
+  <div id="total-categories" class="inline-block">
+    <h1>{{ user_stats['counts']['categories'] }}</h1>
+    <p>| categories |</p>
+  </div>
+  <div id="most-worn-outfit" class="inline-block">
+    <h1><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h1>
+    <p>| most worn outfit |<br>
+    | count: {{ user_stats['most_worn']['outfit'].times_worn }} |</p>
+  </div>
+  <div id="most-worn-article" class="inline-block">
+    <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
+    <p>| most worn article |<br>
+    | count: {{ user_stats['most_worn']['article'].times_worn }} |</p>
   </div>
 </section>
 
