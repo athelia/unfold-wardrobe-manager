@@ -104,6 +104,11 @@
     <p>| most worn article |<br />
     | worn {{ user_stats['most_worn']['article'].times_worn }} times |</p>
   </div>
+  <div id="most-worn-category-article" class="inline-block">
+    <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
+    <p>| most worn in {{ random_category.name }} |<br />
+    | worn {{ user_stats['most_worn'][random_category.name].times_worn }} times |</p>
+  </div>
   <div id="best-value-outfit" class="inline-block">
     <h1><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h1>
     <p>| best value outfit |<br />
@@ -116,19 +121,9 @@
     | {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} per wear |</p>
   </div>
   <div id="most-used-tag" class="inline-block">
-    <h1>{{ user_stats['most_used']['tag_article'].name }}</h1>
-    <p>| favorite article tag |<br />
-    | {{ user_stats['most_used']['tag_article_count'] }} uses |</p>
-  </div>
-  <div id="most-used-tag" class="inline-block">
-    <h1>{{ user_stats['most_used']['tag_outfit'].name }}</h1>
-    <p>| favorite outfit tag |<br />
-    | {{ user_stats['most_used']['tag_outfit_count'] }} uses |</p>
-  </div>
-  <div id="most-used-tag" class="inline-block">
-    <h1>{{ user_stats['most_used']['tag_event'].name }}</h1>
-    <p>| favorite event tag |<br />
-    | {{ user_stats['most_used']['tag_event_count'] }} uses |</p>
+    <h1>{{ user_stats['most_used'][random_tag]['tag'].name }}</h1>
+    <p>| favorite {{ random_tag }} tag |<br />
+    | {{ user_stats['most_used'][random_tag]['count'] }} uses |</p>
   </div>
 </section>
 

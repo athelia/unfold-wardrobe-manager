@@ -159,6 +159,10 @@ class User(db.Model):
         categories = self.get_categories_query().all()
         self.stats['counts']['categories'] = len(categories)
 
+        for category in categories:
+            articles = Article.query.filter(Article.category_id == category.category_id).order_by(Article.times_worn).all()
+            self.stats['most_worn'][category.name] = articles[-1]
+
     def __get_event_stats__(self):
         """Stats for user's events."""
 
@@ -170,6 +174,9 @@ class User(db.Model):
 
         tags = self.get_tags_query().all()
         self.stats['counts']['tags'] = len(tags)
+        self.stats['most_used']['article'] = {}
+        self.stats['most_used']['outfit'] = {}
+        self.stats['most_used']['event'] = {}
 
         tag_article_count = 0
         tag_outfit_count = 0
@@ -183,16 +190,16 @@ class User(db.Model):
             count_te = TagEvent.query.filter(TagEvent.tag_id == tag.tag_id).count()
             if count_ta > tag_article_count:
                 tag_article_count = count_ta
-                self.stats['most_used']['tag_article'] = tag
-                self.stats['most_used']['tag_article_count'] = count_ta
+                self.stats['most_used']['article']['tag'] = tag
+                self.stats['most_used']['article']['count'] = count_ta
             if count_to > tag_outfit_count:
                 tag_outfit_count = count_to
-                self.stats['most_used']['tag_outfit'] = tag
-                self.stats['most_used']['tag_outfit_count'] = count_to
+                self.stats['most_used']['outfit']['tag'] = tag
+                self.stats['most_used']['outfit']['count'] = count_to
             if count_te > tag_event_count:
                 tag_event_count = count_te
-                self.stats['most_used']['tag_event'] = tag
-                self.stats['most_used']['tag_event_count'] = count_te
+                self.stats['most_used']['event']['tag'] = tag
+                self.stats['most_used']['event']['count'] = count_te
 
     def get_categories_query(self):
         """Start a query for all of a user's categories."""

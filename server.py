@@ -9,6 +9,7 @@ import os
 import requests
 from datetime import datetime, date, timedelta
 from sqlalchemy import asc, update, func
+import random
 
 import flask_restless
 from flask_login import LoginManager
@@ -123,6 +124,10 @@ def index():
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
         user_stats = user.get_stats()
+    
+        random_category = user.categories[random.randint(1,len(user.categories))]
+
+        random_tag = ['article', 'outfit', 'event'][random.randint(0,2)]
         
         # TODO: add the other outfit recs as options at subsequent indices
         # outfit_recs[event] = [top_pick, other option, different option...]
@@ -136,7 +141,9 @@ def index():
                                events_today = events_today,
                                outfit_recs = outfit_recs,
                                outfits = outfits,
-                               user_stats = user_stats)
+                               user_stats = user_stats,
+                               random_category = random_category,
+                               random_tag = random_tag)
     else:
         return render_template("login.html")
 
