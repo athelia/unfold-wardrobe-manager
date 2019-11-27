@@ -122,7 +122,7 @@ def index():
 
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
-        user_stats = user.get_counts_of_users_items()
+        user_stats = user.get_stats()
         
         # TODO: add the other outfit recs as options at subsequent indices
         # outfit_recs[event] = [top_pick, other option, different option...]

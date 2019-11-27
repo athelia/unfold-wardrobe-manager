@@ -82,81 +82,147 @@ class User(db.Model):
             sum += article.purchase_price
         return sum
 
-    def get_counts_of_users_items(self):
+    def get_stats(self):
         """Count all of a user's outfits, articles, categories, and tags."""
 
         # TODO: set up instance attribute stats somewhere else besides here :(
         self.stats = {}
-        self.stats['counts'] = {
-                                    'outfits': 0,
-                                    'articles': 0,
-                                    'categories': 0,
-                                    'tags': 0,
-                                    'events': 0,
-                                    }
+        self.stats['counts'] = {}
         self.stats['most_worn'] = {}
-
-        # if not self.stats.get('counts'):
-        #     self.stats['counts'] = {
-        #                             'outfits': 0,
-        #                             'articles': 0,
-        #                             'categories': 0,
-        #                             'tags': 0,
-        #                             }
+        self.stats['best_value'] = {}
+        self.stats['most_used'] = {}
 
         # TODO: refactor using something related to COUNT from SQLAlchemy
-        outfits = self.get_outfits_query().order_by(Outfit.times_worn).all()
-        articles = self.get_articles_query().order_by(Article.times_worn).all()
-        categories = self.get_categories_query().all()
-        tags = self.get_tags_query().all()
-        events = self.get_events_query().all()
-
-        most_worn_outfit = outfits[-1]
-        most_worn_article = articles[-1]
-
-        # TODO:
-        # Most popular tag
-        # Least popular tag
-
-        self.stats['counts']['outfits'] = len(outfits)
-        self.stats['counts']['articles'] = len(articles)
-        self.stats['counts']['categories'] = len(categories)
-        self.stats['counts']['tags'] = len(tags)
-        self.stats['counts']['events'] = len(events)
-        self.stats['most_worn']['article'] = most_worn_article
-        self.stats['most_worn']['outfit'] = most_worn_outfit
+        self.__get_outfit_stats__()
+        self.__get_article_stats__()
+        self.__get_tag_stats__()
+        self.__get_category_stats__()
+        self.__get_event_stats__()
 
         return self.stats
 
+    def __get_outfit_stats__(self):
+        """Stats for user's outfits."""
+
+        # TODO: refactor using something related to COUNT from SQLAlchemy
+        outfits = self.get_outfits_query().order_by(Outfit.times_worn).all()
+        self.stats['counts']['outfits'] = len(outfits)
+        self.stats['most_worn']['outfit'] = outfits[-1]
+
+        best_value = outfits[-1].calculate_value()
+        best_nonzero_value = -1
+
+        for outfit in outfits:
+            if outfit.times_worn > 0:
+                value = outfit.calculate_value() / outfit.times_worn
+                outfit.value = value
+                if outfit.value < best_value:
+                    best_value = outfit.value
+                    self.stats['best_value']['outfit'] = outfit
+
+                # Store the first nonzero outfit value, then store any subsequent 
+                # value better than it
+                if outfit.value > 0 and (best_nonzero_value == -1 or 
+                                         outfit.value < best_nonzero_value):
+                    best_nonzero_value = outfit.value
+                    self.stats['best_value']['nonzero_outfit'] = outfit
+
+    def __get_article_stats__(self):
+        """Stats for user's articles."""
+
+        # TODO: refactor using something related to COUNT from SQLAlchemy
+        articles = self.get_articles_query().order_by(Article.times_worn).all()
+        self.stats['counts']['articles'] = len(articles)
+        self.stats['most_worn']['article'] = articles[-1]
+
+        best_value = articles[-1].purchase_price
+        best_nonzero_value = -1
+
+        for article in articles:
+            if article.times_worn > 0 and type(article.purchase_price) == float:
+                value = article.purchase_price / article.times_worn
+                article.value = value
+                if article.value < best_value:
+                    best_value = article.value
+                    self.stats['best_value']['article'] = article
+
+                # Store the first nonzero article value, then store any subsequent 
+                # value better than it
+                if article.value > 0 and (best_nonzero_value == -1 or 
+                                         article.value < best_nonzero_value):
+                    best_nonzero_value = article.value
+                    self.stats['best_value']['nonzero_article'] = article
+
+    def __get_category_stats__(self):
+        """Stats for user's categories."""
+
+        categories = self.get_categories_query().all()
+        self.stats['counts']['categories'] = len(categories)
+
+    def __get_event_stats__(self):
+        """Stats for user's events."""
+
+        events = self.get_events_query().all()
+        self.stats['counts']['events'] = len(events)
+
+    def __get_tag_stats__(self):
+        """Stats for user's tags."""
+
+        tags = self.get_tags_query().all()
+        self.stats['counts']['tags'] = len(tags)
+
+        tag_article_count = 0
+        tag_outfit_count = 0
+        tag_event_count = 0
+
+        # TODO: refactor using MAX or a heap data structure
+        # Or another table?
+        for tag in tags:
+            count_ta = TagArticle.query.filter(TagArticle.tag_id == tag.tag_id).count()
+            count_to = TagOutfit.query.filter(TagOutfit.tag_id == tag.tag_id).count()
+            count_te = TagEvent.query.filter(TagEvent.tag_id == tag.tag_id).count()
+            if count_ta > tag_article_count:
+                tag_article_count = count_ta
+                self.stats['most_used']['tag_article'] = tag
+                self.stats['most_used']['tag_article_count'] = count_ta
+            if count_to > tag_outfit_count:
+                tag_outfit_count = count_to
+                self.stats['most_used']['tag_outfit'] = tag
+                self.stats['most_used']['tag_outfit_count'] = count_to
+            if count_te > tag_event_count:
+                tag_event_count = count_te
+                self.stats['most_used']['tag_event'] = tag
+                self.stats['most_used']['tag_event_count'] = count_te
+
     def get_categories_query(self):
-      """Start a query for all of a user's categories."""
+        """Start a query for all of a user's categories."""
       
-      categories_query = Category.query.filter_by(user_id = self.user_id)
-      return categories_query
+        categories_query = Category.query.filter_by(user_id = self.user_id)
+        return categories_query
 
     def get_articles_query(self):
-      """Start a query for all of a user's articles."""
+        """Start a query for all of a user's articles."""
       
-      articles_query = Article.query.filter_by(user_id = self.user_id)
-      return articles_query
+        articles_query = Article.query.filter_by(user_id = self.user_id)
+        return articles_query
 
     def get_outfits_query(self):
-      """Query for all of a user's outfits."""
+        """Query for all of a user's outfits."""
       
-      outfits_query = Outfit.query.filter_by(user_id = self.user_id)
-      return outfits_query
+        outfits_query = Outfit.query.filter_by(user_id = self.user_id)
+        return outfits_query
 
     def get_tags_query(self):
-      """Query for all of a user's tags."""
+        """Query for all of a user's tags."""
       
-      tags_query = Tag.query.filter_by(user_id = self.user_id)
-      return tags_query
+        tags_query = Tag.query.filter_by(user_id = self.user_id)
+        return tags_query
 
     def get_events_query(self):
-      """Query for all of a user's events."""
+        """Query for all of a user's events."""
       
-      events_query = WearEvent.query.filter_by(user_id = self.user_id)
-      return events_query
+        events_query = WearEvent.query.filter_by(user_id = self.user_id)
+        return events_query
 
     def __repr__(self):
         return f'<user_id={self.user_id} email={self.email}>'
@@ -388,7 +454,8 @@ class Outfit(db.Model):
         
         sum = 0
         for article in self.articles:
-            sum += article.purchase_price
+            if article.purchase_price:
+                sum += article.purchase_price
         return sum
 
     def incr_times_worn(self):
