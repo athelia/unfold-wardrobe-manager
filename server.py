@@ -148,6 +148,42 @@ def index():
         return render_template("login.html")
 
 
+def recommend_coats(event):
+    """Logic for recommending extra layers."""
+
+    precip_set = {
+                  "rain",
+                  "raining",
+                  "drizzle",
+                  "snow",
+                  "snowing",
+                  "sleet",
+                  "sleeting",
+                  "hail",
+                  "hailing",
+                  "storm",
+                  "storms",
+                  "thunderstorm",
+                  "thunderstorms",
+                  "rainstorm",
+                  "rainstorms",
+                  "shower",
+                  "showers"
+                  }
+
+    # Look for overlap between set of words in weather_cond and 
+    # set of precipitation words
+
+    if event.temperature >= 70 and weather_cond :
+        print("No coat required")
+    elif event.temerature >= 60:
+        print("Bring one jacket")
+    elif event.temperature >= 45:
+        print("Wear two jackets")
+    else:
+        print("Wear a winter coat")
+
+
 @app.route('/login')
 def login():
     """Check login credentials against database."""

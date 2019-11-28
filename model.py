@@ -530,7 +530,10 @@ class Tag(db.Model):
         return f'<tag_id={self.tag_id} name={self.name}>'
 
 
-# TODO: Modify table manually to increase name column from 32 -> 128 char
+# TODO: 1) Modify table to increase name column from 32 -> 128 char
+# TODO: 2) Replace WearEvent / wear_events -> Event / events
+# TODO: 3) Add a precipitation chance column
+# TODO: 4) Add icon column (icon most reliable "summary")
 class WearEvent(db.Model):
     """Instances of outfits being worn. Can be past or future; outfits can be added later."""
     
@@ -542,6 +545,8 @@ class WearEvent(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     temperature = db.Column(db.Float, nullable=True)
     weather_cond = db.Column(db.String(128), nullable=True)
+    # precip_probability = db.Column(db.Float, nullable=True)
+    # weather_icon = db.Column(db.String(128), nullable=True)
 
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.user_id'),
@@ -564,6 +569,7 @@ class WearEvent(db.Model):
         self.outfit_id = options.get('outfit_id', self.outfit_id)
         db.session.commit()
 
+    # TODO: After #3/4 above, set precip chance and icon instance attributes.
     def set_weather(self, lat=37.774929, lng=-122.419418):
         """Assign temperature and weather conditions for date at latitude & longitude.
             
@@ -587,6 +593,8 @@ class WearEvent(db.Model):
         weather = forecast(dark_sky['secret'], lat, lng, time=self.date.isoformat())
         self.temperature = weather.temperature
         self.weather_cond = weather.summary
+        # self.weather_icon = weather.icon
+        # self.precip_probability = weather.precipProbability
         db.session.commit()
 
 
