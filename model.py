@@ -54,21 +54,24 @@ class User(db.Model):
         """Remove the user."""
 
         # First remove all of a user's data
-        # ? self.outfits.delete()
-        # ? Outfit.query.filter_by(user_id=self.user_id).delete()
+        # Should be unnecessary with cascade-delete above, 
+        # remove once testing complete
 
-        # ?
-        outfits.delete().where(outfits.user_id == self.user_id)
-        articles.delete().where(articles.user_id == self.user_id)
-        categories.delete().where(categories.user_id == self.user_id)
-
-        # Not good:
+        # Less good approach:
         # for outfit in self.outfits:
         #     db.session.delete(outfit)
         # for article in self.articles:
         #     db.session.delete(article)
         # for category in self.categories:
         #     db.session.delete(category)
+
+        # Maybe works?
+        # ? self.outfits.delete()
+        # ? Outfit.query.filter_by(user_id=self.user_id).delete()
+
+        outfits.delete().where(outfits.user_id == self.user_id)
+        articles.delete().where(articles.user_id == self.user_id)
+        categories.delete().where(categories.user_id == self.user_id)
 
         # Then remove the account
         db.session.delete(self)
@@ -383,6 +386,7 @@ class Article(db.Model):
         self.times_worn += 1
         db.session.commit()
 
+    # Dedent doesn't work! White space is not eliminated :(
     # def __repr__(self):
     #     return textwrap.dedent(
     #             f'<article_id={self.article_id} \
@@ -609,10 +613,10 @@ class WearEvent(db.Model):
     # Perhaps the outfit_dict should sort by quanity of tags matched and return 
     # in this order so we can move down the list as options are eliminated.
     def match_tags(self):
-        """Compare event's tags to outfit tags."""
+        """Compare event's tags to outfit tags. Dictionary returns all matches."""
 
         outfit_dict = {}
-        outfit_dict['top_pick'] = ''
+        outfit_dict['top_pick'] = []
 
         if self.tags: 
             first_tag = self.tags[0]
@@ -622,12 +626,10 @@ class WearEvent(db.Model):
                 for outfit in tag.outfits:
                     outfit_dict[outfit] = outfit_dict.get(outfit, [])
                     outfit_dict[outfit].append(tag)
-                    if len(outfit_dict[outfit]) > most_tags:
+                    if len(outfit_dict[outfit]) >= most_tags:
                         most_tags = len(outfit_dict[outfit])
-                        outfit_dict['top_pick'] = outfit
-                # Are there outfits with the same tag?
-                # If so add all to a dictionary with a counter += 1
-                # Return dictionary
+                        outfit_dict['top_pick'].append(outfit)
+
         else:
             print('Event has no tags!')
 
