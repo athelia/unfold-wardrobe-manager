@@ -613,10 +613,18 @@ class WearEvent(db.Model):
     # Perhaps the outfit_dict should sort by quanity of tags matched and return 
     # in this order so we can move down the list as options are eliminated.
     def match_tags(self):
-        """Compare event's tags to outfit tags. Dictionary returns all matches."""
+        """Compare event's tags to outfit tags. Dictionary returns all matches.
+
+        Matches are stored as 
+            outfit: [<tag1>, <tag2>...] 
+        and as 
+            tag_count (e.g. 3): [<outfit1>, <outfit2>...]
+        with one special key 'top_pick'
+            'top_pick': <outfit8>
+        """
 
         outfit_dict = {}
-        outfit_dict['top_pick'] = []
+        outfit_dict['top_pick'] = ''
 
         if self.tags: 
             first_tag = self.tags[0]
@@ -626,14 +634,27 @@ class WearEvent(db.Model):
                 for outfit in tag.outfits:
                     outfit_dict[outfit] = outfit_dict.get(outfit, [])
                     outfit_dict[outfit].append(tag)
-                    if len(outfit_dict[outfit]) >= most_tags:
+                    outfit_dict[len(outfit_dict[outfit])] = outfit_dict.get(len(outfit_dict[outfit]), [])
+                    outfit_dict[len(outfit_dict[outfit])].append(outfit)
+                    if len(outfit_dict[outfit]) > 1:
+                        outfit_dict[len(outfit_dict[outfit]) - 1].remove(outfit)
+                    if len(outfit_dict[outfit]) > most_tags:
                         most_tags = len(outfit_dict[outfit])
-                        outfit_dict['top_pick'].append(outfit)
+                        outfit_dict['top_pick'] = (outfit)
 
         else:
             print('Event has no tags!')
 
         return outfit_dict
+
+    # If self.date within 1 week of last worn for outfit_dict's top pick, 
+    # look at all other items with same number of tags
+    # e.g. outfit_dict[3] = [outfit1, outfit2, outfit3] 
+    # eliminate outfit1, worn this week; look at outfit2
+    # if not worn this week, replace top_pick.
+    # top_pick = outfit_dict['top_pick'] and then get 
+    def __filter_worn__(self, outfit_dict):
+        pass
 
     def add_tag(self, tag):
         """Add the tag to the event."""

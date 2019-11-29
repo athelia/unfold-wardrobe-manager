@@ -34,15 +34,15 @@
     {% else %}
       <fieldset>
       <legend>Recommended Outfit - 
-      {% if outfit_recs[0][event].name %}
-        {{ outfit_recs[0][event].name }}
+      {% if outfit_recs[event].name %}
+        {{ outfit_recs[event].name }}
       {% else %}
-        # {{ outfit_recs[0][event].outfit_id }}
+        # {{ outfit_recs[event].outfit_id }}
       {% endif %}
       </legend>
 
       <!-- Iterate over all articles in the event (via the outfit) & display them. -->
-      {% for article in outfit_recs[0][event].articles %}
+      {% for article in outfit_recs[event].articles %}
         <div class="articles-block block-bucket">
           <a href="/articles/{{ article.article_id }}">
             <img src="{{ article.image }}" class="article-image">
@@ -51,7 +51,7 @@
       {% endfor %}
       <form action="/update-event" method="POST">
         <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
-        <input type="hidden" name="event-outfit" value="{{ outfit_recs[0][event].outfit_id }}">
+        <input type="hidden" name="event-outfit" value="{{ outfit_recs[event].outfit_id }}">
         <input type="submit" value="Wear this!">
       </form>
       <form action="/update-event" method="POST">
