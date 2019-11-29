@@ -123,7 +123,10 @@ def index():
 
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
+        # TODO: Find a way to save results of this function so the crazy Tag queries
+        # don't run every time user goes back to homepage
         user_stats = user.get_stats()
+        # user_stats = session['user_stats']
     
         random_category = user.categories[random.randint(1,len(user.categories))]
 
@@ -170,9 +173,10 @@ def recommend_coats(event):
                   "shower",
                   "showers"
                   }
+    weather_condition_set = set(event.weather_cond.split())
 
-    # Look for overlap between set of words in weather_cond and 
-    # set of precipitation words
+    if (precip_set & weather_condition_set):
+        print("Rain jacket today")
 
     if event.temperature >= 70 and weather_cond :
         print("No coat required")
@@ -182,6 +186,9 @@ def recommend_coats(event):
         print("Wear two jackets")
     else:
         print("Wear a winter coat")
+
+    # Check for whether an Outerwear is present in outfit
+    # If not, move down to next outfit in the list
 
 
 @app.route('/login')
@@ -201,6 +208,7 @@ def login():
         session['user_email'] = user.email
         # Flask-Login is WIP
         # login_user(user)
+        user = User.query.get(session['user_id'])
         flash(f"Welcome back, {session['user_email']}!")
         return redirect('/')
     else:
@@ -221,7 +229,7 @@ def logout():
     return redirect('/')
 
 
-# WIP 
+# WIP - This template does not exist!
 @app.route('/create-account')
 def create_account_page():
     """Display account creation form."""

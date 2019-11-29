@@ -597,7 +597,9 @@ class WearEvent(db.Model):
         # self.precip_probability = weather.precipProbability
         db.session.commit()
 
-
+    # TODO: If outfit has been worn this week, it has a lower priority.
+    # Perhaps the outfit_dict should sort by quanity of tags matched and return 
+    # in this order so we can move down the list as options are eliminated.
     def match_tags(self):
         """Compare event's tags to outfit tags."""
 
