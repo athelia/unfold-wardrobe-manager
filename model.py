@@ -107,25 +107,27 @@ class User(db.Model):
         # TODO: refactor using something related to COUNT from SQLAlchemy
         outfits = self.get_outfits_query().order_by(Outfit.times_worn).all()
         self.stats['counts']['outfits'] = len(outfits)
-        self.stats['most_worn']['outfit'] = outfits[-1]
 
-        best_value = outfits[-1].calculate_value()
-        best_nonzero_value = -1
+        if outfits:
+            self.stats['most_worn']['outfit'] = outfits[-1]
 
-        for outfit in outfits:
-            if outfit.times_worn > 0:
-                value = outfit.calculate_value() / outfit.times_worn
-                outfit.value = value
-                if outfit.value < best_value:
-                    best_value = outfit.value
-                    self.stats['best_value']['outfit'] = outfit
+            best_value = outfits[-1].calculate_value()
+            best_nonzero_value = -1
 
-                # Store the first nonzero outfit value, then store any subsequent 
-                # value better than it
-                if outfit.value > 0 and (best_nonzero_value == -1 or 
-                                         outfit.value < best_nonzero_value):
-                    best_nonzero_value = outfit.value
-                    self.stats['best_value']['nonzero_outfit'] = outfit
+            for outfit in outfits:
+                if outfit.times_worn > 0:
+                    value = outfit.calculate_value() / outfit.times_worn
+                    outfit.value = value
+                    if outfit.value < best_value:
+                        best_value = outfit.value
+                        self.stats['best_value']['outfit'] = outfit
+
+                    # Store the first nonzero outfit value, then store any subsequent 
+                    # value better than it
+                    if outfit.value > 0 and (best_nonzero_value == -1 or 
+                                             outfit.value < best_nonzero_value):
+                        best_nonzero_value = outfit.value
+                        self.stats['best_value']['nonzero_outfit'] = outfit
 
     def __get_article_stats__(self):
         """Stats for user's articles."""
@@ -133,25 +135,27 @@ class User(db.Model):
         # TODO: refactor using something related to COUNT from SQLAlchemy
         articles = self.get_articles_query().order_by(Article.times_worn).all()
         self.stats['counts']['articles'] = len(articles)
-        self.stats['most_worn']['article'] = articles[-1]
 
-        best_value = articles[-1].purchase_price
-        best_nonzero_value = -1
+        if articles:
+            self.stats['most_worn']['article'] = articles[-1]
 
-        for article in articles:
-            if article.times_worn > 0 and type(article.purchase_price) == float:
-                value = article.purchase_price / article.times_worn
-                article.value = value
-                if article.value < best_value:
-                    best_value = article.value
-                    self.stats['best_value']['article'] = article
+            best_value = articles[-1].purchase_price
+            best_nonzero_value = -1
 
-                # Store the first nonzero article value, then store any subsequent 
-                # value better than it
-                if article.value > 0 and (best_nonzero_value == -1 or 
-                                         article.value < best_nonzero_value):
-                    best_nonzero_value = article.value
-                    self.stats['best_value']['nonzero_article'] = article
+            for article in articles:
+                if article.times_worn > 0 and type(article.purchase_price) == float:
+                    value = article.purchase_price / article.times_worn
+                    article.value = value
+                    if article.value < best_value:
+                        best_value = article.value
+                        self.stats['best_value']['article'] = article
+
+                    # Store the first nonzero article value, then store any subsequent 
+                    # value better than it
+                    if article.value > 0 and (best_nonzero_value == -1 or 
+                                             article.value < best_nonzero_value):
+                        best_nonzero_value = article.value
+                        self.stats['best_value']['nonzero_article'] = article
 
     def __get_category_stats__(self):
         """Stats for user's categories."""
@@ -161,7 +165,10 @@ class User(db.Model):
 
         for category in categories:
             articles = Article.query.filter(Article.category_id == category.category_id).order_by(Article.times_worn).all()
-            self.stats['most_worn'][category.name] = articles[-1]
+            if articles:
+                self.stats['most_worn'][category.name] = articles[-1]
+            # else:
+            #     self.stats['most_worn'][category.name] = None
 
     def __get_event_stats__(self):
         """Stats for user's events."""
@@ -182,24 +189,25 @@ class User(db.Model):
         tag_outfit_count = 0
         tag_event_count = 0
 
-        # TODO: refactor using MAX or a heap data structure
-        # Or another table?
-        for tag in tags:
-            count_ta = TagArticle.query.filter(TagArticle.tag_id == tag.tag_id).count()
-            count_to = TagOutfit.query.filter(TagOutfit.tag_id == tag.tag_id).count()
-            count_te = TagEvent.query.filter(TagEvent.tag_id == tag.tag_id).count()
-            if count_ta > tag_article_count:
-                tag_article_count = count_ta
-                self.stats['most_used']['article']['tag'] = tag
-                self.stats['most_used']['article']['count'] = count_ta
-            if count_to > tag_outfit_count:
-                tag_outfit_count = count_to
-                self.stats['most_used']['outfit']['tag'] = tag
-                self.stats['most_used']['outfit']['count'] = count_to
-            if count_te > tag_event_count:
-                tag_event_count = count_te
-                self.stats['most_used']['event']['tag'] = tag
-                self.stats['most_used']['event']['count'] = count_te
+        if tags:
+            # TODO: refactor using MAX or a heap data structure
+            # Or another table?
+            for tag in tags:
+                count_ta = TagArticle.query.filter(TagArticle.tag_id == tag.tag_id).count()
+                count_to = TagOutfit.query.filter(TagOutfit.tag_id == tag.tag_id).count()
+                count_te = TagEvent.query.filter(TagEvent.tag_id == tag.tag_id).count()
+                if count_ta > tag_article_count:
+                    tag_article_count = count_ta
+                    self.stats['most_used']['article']['tag'] = tag
+                    self.stats['most_used']['article']['count'] = count_ta
+                if count_to > tag_outfit_count:
+                    tag_outfit_count = count_to
+                    self.stats['most_used']['outfit']['tag'] = tag
+                    self.stats['most_used']['outfit']['count'] = count_to
+                if count_te > tag_event_count:
+                    tag_event_count = count_te
+                    self.stats['most_used']['event']['tag'] = tag
+                    self.stats['most_used']['event']['count'] = count_te
 
     def get_categories_query(self):
         """Start a query for all of a user's categories."""

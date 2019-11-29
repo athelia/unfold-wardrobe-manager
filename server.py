@@ -125,11 +125,11 @@ def index():
         user = User.query.get(session['user_id'])
         # TODO: Find a way to save results of this function so the crazy Tag queries
         # don't run every time user goes back to homepage
-        user_stats = user.get_stats()
         # user_stats = session['user_stats']
-    
-        random_category = user.categories[random.randint(1,len(user.categories))]
-
+        
+        user_stats = user.get_stats()
+        random_category = user.categories[random.randint(0,len(user.categories)-1)] \
+            if user.categories else None
         random_tag = ['article', 'outfit', 'event'][random.randint(0,2)]
         
         # TODO: add the other outfit recs as options at subsequent indices
@@ -146,7 +146,8 @@ def index():
                                outfits = outfits,
                                user_stats = user_stats,
                                random_category = random_category,
-                               random_tag = random_tag)
+                               random_tag = random_tag
+                               )
     else:
         return render_template("login.html")
 

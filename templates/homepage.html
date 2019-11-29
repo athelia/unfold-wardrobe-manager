@@ -94,37 +94,49 @@
     <h1>{{ user_stats['counts']['categories'] }}</h1>
     <p>| categories |</p>
   </div>
-  <div id="most-worn-outfit" class="inline-block">
-    <h1><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h1>
-    <p>| most worn outfit |<br />
-    | worn {{ user_stats['most_worn']['outfit'].times_worn }} times |</p>
-  </div>
-  <div id="most-worn-article" class="inline-block">
-    <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
-    <p>| most worn article |<br />
-    | worn {{ user_stats['most_worn']['article'].times_worn }} times |</p>
-  </div>
-  <div id="most-worn-category-article" class="inline-block">
-    <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
-    <p>| most worn in {{ random_category.name }} |<br />
-    | worn {{ user_stats['most_worn'][random_category.name].times_worn }} times |</p>
-  </div>
-  <div id="best-value-outfit" class="inline-block">
-    <h1><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h1>
-    <p>| best value outfit |<br />
-    {# Jinja doesn't seem to support f-string formatting :( #}
-    | {{ '$%.2f'|format(user_stats['best_value']['nonzero_outfit'].value) }} per wear |</p>
-  </div>
-  <div id="best-value-article" class="inline-block">
-    <h1><a href="/articles/{{ user_stats['best_value']['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value']['nonzero_article'].image }}" class="thumbnail"></a></h1>
-    <p>| best value article |<br />
-    | {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} per wear |</p>
-  </div>
-  <div id="most-used-tag" class="inline-block">
-    <h1>{{ user_stats['most_used'][random_tag]['tag'].name }}</h1>
-    <p>| favorite {{ random_tag }} tag |<br />
-    | {{ user_stats['most_used'][random_tag]['count'] }} uses |</p>
-  </div>
+  {% if user_stats['most_worn'].get('outfit') %}
+    <div id="most-worn-outfit" class="inline-block">
+      <h1><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h1>
+      <p>| most worn outfit |<br />
+      | worn {{ user_stats['most_worn']['outfit'].times_worn }} times |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['most_worn'].get('article') %}
+    <div id="most-worn-article" class="inline-block">
+      <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
+      <p>| most worn article |<br />
+      | worn {{ user_stats['most_worn']['article'].times_worn }} times |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['most_worn'].get(random_category) %}
+    <div id="most-worn-category-article" class="inline-block">
+      <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
+      <p>| most worn in {{ random_category.name }} |<br />
+      | worn {{ user_stats['most_worn'][random_category.name].times_worn }} times |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['best_value'].get('nonzero_outfit') %}
+    <div id="best-value-outfit" class="inline-block">
+      <h1><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h1>
+      <p>| best value outfit |<br />
+      {# Jinja doesn't seem to support f-string formatting :( #}
+      | {{ '$%.2f'|format(user_stats['best_value']['nonzero_outfit'].value) }} per wear |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['best_value'].get('nonzero_article') %}
+    <div id="best-value-article" class="inline-block">
+      <h1><a href="/articles/{{ user_stats['best_value']['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value']['nonzero_article'].image }}" class="thumbnail"></a></h1>
+      <p>| best value article |<br />
+      | {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} per wear |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['most_used'].get(random_tag) %}
+    <div id="most-used-tag" class="inline-block">
+      <h1>{{ user_stats['most_used'][random_tag]['tag'].name }}</h1>
+      <p>| favorite {{ random_tag }} tag |<br />
+      | {{ user_stats['most_used'][random_tag]['count'] }} uses |</p>
+    </div>
+  {% endif %}
 </section>
 
 <button class="block-bucket">
