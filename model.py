@@ -2,7 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import asc, update
-from datetime import datetime as dt
+from datetime import date, timedelta, datetime as dt
 import os
 from darksky import forecast
 import textwrap
@@ -492,6 +492,17 @@ class Outfit(db.Model):
                 return True
         return False
 
+    def last_worn(self):
+        """Return last date an outfit was worn."""
+
+        # What was the most recent wear date of top_outfit:
+        wear_dates = WearEvent.query.filter_by(outfit_id = self.outfit_id).order_by(WearEvent.date).all()
+
+        if wear_dates:
+            return wear_dates[-1]
+        else:
+            return None
+
     def __repr__(self):
         return f'<outfit_id={self.outfit_id} name={self.name} description={self.description:.20}>'
 
@@ -625,6 +636,7 @@ class WearEvent(db.Model):
 
         outfit_dict = {}
         outfit_dict['top_pick'] = ''
+        outfit_dict['all_picks'] = []
 
         if self.tags: 
             first_tag = self.tags[0]
@@ -642,8 +654,13 @@ class WearEvent(db.Model):
                         most_tags = len(outfit_dict[outfit])
                         outfit_dict['top_pick'] = (outfit)
 
+            for i in range(1, most_tags + 1):
+                for outfit in outfit_dict[i]:
+                    outfit_dict['all_picks'].append(outfit)
+
         else:
             print('Event has no tags!')
+            return None
 
         return outfit_dict
 
@@ -653,8 +670,47 @@ class WearEvent(db.Model):
     # eliminate outfit1, worn this week; look at outfit2
     # if not worn this week, replace top_pick.
     # top_pick = outfit_dict['top_pick'] and then get 
-    def __filter_worn__(self, outfit_dict):
-        pass
+    def remove_recent_outfits(self, outfit_dict):
+        """Iterate through all_picks removing any outfits worn in last week.
+
+        >>> event = WearEvent.query.get(58)
+        >>> od1 = event.match_tags()
+        >>> od2 = event.remove_recent_outfits(od1)
+        """
+        
+        delta = timedelta(days=7)
+        outfit_dict2 = {}
+        outfit_dict2['all_picks'] = list(outfit_dict['all_picks'])
+        outfit_dict2['top_pick'] = outfit_dict['top_pick']
+        # if outfit_dict['top_pick'].last_worn() <= self.date - delta:
+
+        for outfit in outfit_dict2['all_picks']:
+            if outfit.last_worn() != None:
+                print(outfit.outfit_id)
+                print(outfit.last_worn().date)
+                print(self.date - delta)
+                if outfit.last_worn().date >= self.date - delta:
+                    outfit_dict2['all_picks'].remove(outfit)
+                    if outfit == outfit_dict2['top_pick']:
+                        outfit_dict2['top_pick'] = None
+            else:
+                continue
+
+        if outfit_dict2['top_pick']:
+            return outfit_dict2
+        else:
+            outfit_dict2['top_pick'] = outfit_dict2['all_picks'][-1]
+            return outfit_dict2
+        # if outfit_dict['top_pick'].last_worn() <= self.date - delta:
+        #     del outfit_dict['top_pick']
+        #     next_pick = outfit_dict[max_tags].get(outfit_dict[max_tags], None)
+        #     if next_pick:
+        #         outfit_dict['top_pick'] = next_pick
+        #     else:
+        #         max_tags -= 1
+        #         outfit_dict['top_pick'] = outfit_dict[max_tags].get(outfit_dict[max_tags], None)
+        #     self.remove_recent_outfits(outfit_dict)
+        
 
     def add_tag(self, tag):
         """Add the tag to the event."""
