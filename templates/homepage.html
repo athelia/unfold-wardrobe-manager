@@ -108,7 +108,7 @@
       | worn {{ user_stats['most_worn']['article'].times_worn }} times |</p>
     </div>
   {% endif %}
-  {% if user_stats['most_worn'].get(random_category) %}
+  {% if user_stats['most_worn'].get(random_category.name) %}
     <div id="most-worn-category-article" class="inline-block">
       <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
       <p>| most worn in {{ random_category.name }} |<br />
