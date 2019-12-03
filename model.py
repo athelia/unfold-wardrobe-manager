@@ -487,10 +487,19 @@ class Outfit(db.Model):
         db.session.commit()
 
     def is_category_in_outfit(self, category):
+        """Returns whether an article of the given category exists in the outfit."""
         for article in self.articles:
             if article.category_id == category.category_id:
                 return True
         return False
+
+    def count_category_articles(self, category):
+        """For the given category, count articles belonging to that category in outfit."""
+        count = 0
+        for article in self.articles:
+            if article.category_id == category.category_id:
+                count += 1
+        return count
 
     def last_worn(self):
         """Return last date an outfit was worn."""
@@ -639,7 +648,6 @@ class WearEvent(db.Model):
         outfit_dict['all_picks'] = []
 
         if self.tags: 
-            first_tag = self.tags[0]
             most_tags = 0
 
             for tag in self.tags:
@@ -710,7 +718,82 @@ class WearEvent(db.Model):
         #         max_tags -= 1
         #         outfit_dict['top_pick'] = outfit_dict[max_tags].get(outfit_dict[max_tags], None)
         #     self.remove_recent_outfits(outfit_dict)
+
+    def recommend_coats(self):
+        """Logic for recommending extra layers."""
+
+        coat_count = 0
+
+        precip_set = {
+                      "rain",
+                      "raining",
+                      "drizzle",
+                      "snow",
+                      "snowing",
+                      "sleet",
+                      "sleeting",
+                      "hail",
+                      "hailing",
+                      "storm",
+                      "storms",
+                      "thunderstorm",
+                      "thunderstorms",
+                      "rainstorm",
+                      "rainstorms",
+                      "shower",
+                      "showers"
+                      }
+        weather_condition_set = set(self.weather_cond.split())
+
+        if (precip_set & weather_condition_set):
+            coat_count = 1
+
+        if self.temperature >= 70:
+            pass
+        elif self.temperature >= 60:
+            coat_count = 1
+        elif self.temperature >= 45:
+            coat_count += 1
+        else:
+            coat_count += 2
+
+        return coat_count
+
+    def filter_outfits_by_weather_and_recent(self):
+        """Combine match_tags(), remove_recent_outfits(), & recommend_coats() for a final recommendation.
+
+        >>> event = WearEvent.query.get(58)
+        >>> result = event.filter_outfits_by_weather_and_recent()
+        >>> result
+        {'all_picks': [
+                       <outfit_id=21 name= description=>,
+                       <outfit_id=23 name= description=Green sweater, white>,
+                       <outfit_id=25 name= description=Poncho + henley>,
+                       <outfit_id=33 name= description=>,
+                       <outfit_id=64 name= description=>
+                       ], 
+        'top_pick': <outfit_id=64 name= description=>
+        }
+        """
+
+        outfit_dict = self.match_tags()
+        outfit_dict2 = self.remove_recent_outfits(outfit_dict)
+        coat_count = self.recommend_coats()
+        get_outerwear_categories = Category.query.filter(Category.base_category_id == 'outers').all()
+
+        count_of_outerwear = 0
         
+        outfit_dict3 = recursive_filter(coat_count, outfit_dict2, get_outerwear_categories)
+
+        if outfit_dict3:
+            return outfit_dict3
+
+        else:
+            # TODO: recommend a non-weather-appropriate outfit and print text suggesting a jacket
+            # Better implementation would suggest a new outfit created from a top_pick 
+            # and one or more jackets as appropriate. 
+            outfit_dict2['top_pick'] = None
+            return outfit_dict2
 
     def add_tag(self, tag):
         """Add the tag to the event."""
@@ -732,6 +815,27 @@ class WearEvent(db.Model):
 
     def __repr__(self):
         return f'<wear_event_id={self.wear_event_id} name={self.name} user_id={self.user_id}>'
+
+
+def recursive_filter(coat_count, outfit_dict, category_list):
+    """Recursively walks through outfit_dict to look for a match with enough coats."""
+
+    count_of_outerwear = 0
+    for category in category_list:
+        count_of_outerwear += outfit_dict['top_pick'].count_category_articles(category)
+        print(f'category={category.name}, count={count_of_outerwear}')
+
+    if count_of_outerwear >= coat_count:
+        # First base case is when there are enough coats present
+        return outfit_dict
+    elif len(outfit_dict['all_picks']) < 1:
+        # Second base case is when we run out of outfits
+        return None
+    else:
+        print(f"old top pick={outfit_dict['top_pick']}, new top pick={outfit_dict['all_picks'][-1]}")
+        outfit_dict['top_pick'] = outfit_dict['all_picks'][-1]
+        outfit_dict['all_picks'].pop()
+        recursive_filter(coat_count, outfit_dict, category_list)
 
 
 class BaseCategory(db.Model):

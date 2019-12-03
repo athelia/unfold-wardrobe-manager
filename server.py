@@ -125,8 +125,7 @@ def index():
         user = User.query.get(session['user_id'])
         # TODO: Find a way to save results of this function so the crazy Tag queries
         # don't run every time user goes back to homepage
-        # user_stats = session['user_stats']
-        
+        # session['user_stats'] = user_stats
         user_stats = user.get_stats()
         random_category = user.categories[random.randint(0,len(user.categories)-1)] \
             if user.categories else None
@@ -136,7 +135,8 @@ def index():
         # outfit_recs[event] = [top_pick, other option, different option...]
         outfit_recs = {}
         for event in events_today:
-            outfit_recs[event] = event.match_tags()['top_pick']
+            filtered = event.filter_outfits_by_weather_and_recent()
+            outfit_recs[event] = filtered['top_pick'] if filtered else None
 
         return render_template("homepage.html",
                                hourly = hourly,
@@ -150,46 +150,6 @@ def index():
                                )
     else:
         return render_template("login.html")
-
-
-def recommend_coats(event):
-    """Logic for recommending extra layers."""
-
-    precip_set = {
-                  "rain",
-                  "raining",
-                  "drizzle",
-                  "snow",
-                  "snowing",
-                  "sleet",
-                  "sleeting",
-                  "hail",
-                  "hailing",
-                  "storm",
-                  "storms",
-                  "thunderstorm",
-                  "thunderstorms",
-                  "rainstorm",
-                  "rainstorms",
-                  "shower",
-                  "showers"
-                  }
-    weather_condition_set = set(event.weather_cond.split())
-
-    if (precip_set & weather_condition_set):
-        print("Rain jacket today")
-
-    if event.temperature >= 70 and weather_cond :
-        print("No coat required")
-    elif event.temerature >= 60:
-        print("Bring one jacket")
-    elif event.temperature >= 45:
-        print("Wear two jackets")
-    else:
-        print("Wear a winter coat")
-
-    # Check for whether an Outerwear is present in outfit
-    # If not, move down to next outfit in the list
 
 
 @app.route('/login')

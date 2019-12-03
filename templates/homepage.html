@@ -33,14 +33,20 @@
       </fieldset>
     {% else %}
       <fieldset>
-      <legend>Recommended Outfit - 
-      {% if outfit_recs[event].name %}
-        {{ outfit_recs[event].name }}
-      {% else %}
-        # {{ outfit_recs[event].outfit_id }}
-      {% endif %}
+      <legend>
+        {% if outfit_recs.get(event) %}
+          Recommended Outfit - 
+          {% if outfit_recs[event].name %}
+            {{ outfit_recs[event].name }}
+          {% else %}
+            # {{ outfit_recs[event].outfit_id }}
+          {% endif %}
+        {% else %}
+          No outfit to recommend
+        {% endif %}
       </legend>
 
+      {% if outfit_recs.get(event) %}
       <!-- Iterate over all articles in the event (via the outfit) & display them. -->
       {% for article in outfit_recs[event].articles %}
         <div class="articles-block block-bucket">
@@ -54,6 +60,7 @@
         <input type="hidden" name="event-outfit" value="{{ outfit_recs[event].outfit_id }}">
         <input type="submit" value="Wear this!">
       </form>
+      {% endif %}
       <form action="/update-event" method="POST">
         <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
         <label for="event-outfit">Choose a different outfit:</label>
