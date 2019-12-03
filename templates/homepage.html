@@ -36,11 +36,9 @@
       <legend>
         {% if outfit_recs.get(event) %}
           Recommended Outfit - 
-          {% if outfit_recs[event].name %}
-            {{ outfit_recs[event].name }}
-          {% else %}
-            # {{ outfit_recs[event].outfit_id }}
-          {% endif %}
+          {% if outfit_recs[event].name %}{{ outfit_recs[event].name }}{% endif %}
+          # {{ outfit_recs[event].outfit_id }}
+          {% if coat_count %} + an extra {{ coat_count }} jacket(s){% endif %}
         {% else %}
           No outfit to recommend
         {% endif %}
@@ -120,6 +118,13 @@
       <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
       <p>| most worn in {{ random_category.name }} |<br />
       | worn {{ user_stats['most_worn'][random_category.name].times_worn }} times |</p>
+    </div>
+  {% endif %}
+  {% if user_stats['best_value'][random_category2.name].get('nonzero_article') %}
+    <div id="best-value-category-article" class="inline-block">
+      <a href="/articles/{{ user_stats['best_value'][random_category2.name]['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value'][random_category2.name]['nonzero_article'].image }}" class="thumbnail" /></a>
+      <p>| best value in {{ random_category2.name }} |<br />
+      | {{ '$%.2f'|format(user_stats['best_value'][random_category2.name]['nonzero_article'].value) }} per wear |</p>
     </div>
   {% endif %}
   {% if user_stats['best_value'].get('nonzero_outfit') %}

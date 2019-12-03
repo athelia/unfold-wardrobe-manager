@@ -129,14 +129,21 @@ def index():
         user_stats = user.get_stats()
         random_category = user.categories[random.randint(0,len(user.categories)-1)] \
             if user.categories else None
+        random_category2 = user.categories[random.randint(0,len(user.categories)-1)] \
+            if user.categories else None
         random_tag = ['article', 'outfit', 'event'][random.randint(0,2)]
         
         # TODO: add the other outfit recs as options at subsequent indices
         # outfit_recs[event] = [top_pick, other option, different option...]
         outfit_recs = {}
+        coat_count = None
         for event in events_today:
             filtered = event.filter_outfits_by_weather_and_recent()
-            outfit_recs[event] = filtered['top_pick'] if filtered else None
+            if filtered['top_pick']: 
+                outfit_recs[event] = filtered['top_pick']
+            else:
+                outfit_recs[event] = filtered['all_picks'][-1]
+                coat_count = event.recommend_coats()
 
         return render_template("homepage.html",
                                hourly = hourly,
@@ -146,7 +153,9 @@ def index():
                                outfits = outfits,
                                user_stats = user_stats,
                                random_category = random_category,
-                               random_tag = random_tag
+                               random_category2 = random_category2,
+                               random_tag = random_tag,
+                               coat_count = coat_count or None
                                )
     else:
         return render_template("login.html")

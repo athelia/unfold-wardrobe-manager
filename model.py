@@ -167,11 +167,30 @@ class User(db.Model):
         self.stats['counts']['categories'] = len(categories)
 
         for category in categories:
+            # Reset for every loop of categories
+            best_value = 0
+            best_nonzero_value = -1
             articles = Article.query.filter(Article.category_id == category.category_id).order_by(Article.times_worn).all()
             if articles:
                 self.stats['most_worn'][category.name] = articles[-1]
-            # else:
-            #     self.stats['most_worn'][category.name] = None
+                # Set best_value to a purchase price of an article the list, possibly 0
+                best_value = articles[-1].purchase_price
+                self.stats['best_value'][category.name] = {'article': None,
+                                                           'nonzero_article': None}
+                
+                for article in articles:
+                    if article.times_worn > 0 and type(article.purchase_price) in [float, int]:
+                        article.value = article.purchase_price / article.times_worn
+                        if article.value < best_value:
+                            best_value = article.value
+                            self.stats['best_value'][category.name]['article'] = article
+
+                        # Store the first nonzero article value, then store any subsequent 
+                        # value better than it
+                        if article.value > 0 and (best_nonzero_value == -1 or \
+                                                  article.value < best_nonzero_value):
+                            best_nonzero_value = article.value
+                            self.stats['best_value'][category.name]['nonzero_article'] = article
 
     def __get_event_stats__(self):
         """Stats for user's events."""
