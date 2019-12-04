@@ -28,7 +28,7 @@ from cloudinary.uploader import upload
 from image_handling import allowed_file, ALLOWED_EXTENSIONS
 
 # CITIES' latitude and longitude
-from global_var import CITIES
+from global_var import CITIES, MONTHS
 
 # Compare clothing prices
 from etsy import Etsy
@@ -232,9 +232,11 @@ def show_categories():
     """Display all user categories and the option to add a new category."""
 
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    base_categories = BaseCategory.query.all()
 
     return render_template("categories.html", 
-                           categories=categories)
+                           categories=categories,
+                           base_categories=base_categories)
 
 
 @app.route('/categories/<category_id>')
@@ -576,9 +578,17 @@ def remove_article_from_outfit(outfit_id, article_id):
 def show_events():
     """Display all events and the option to add a new event."""
 
+    evt_by_month = {}
+    # events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).order_by(WearEvent.date.desc()).all()
     events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).order_by(WearEvent.date).all()
+    for event in events:
+        month = event.date.month
+        year = event.date.year
+        evt_by_month[year] = evt_by_month.get(year, {})
+        evt_by_month[year][month] = evt_by_month[year].get(month, [])
+        evt_by_month[year][month].append(event)
 
-    return render_template('events.html', events=events)
+    return render_template('events.html', evt_by_month=evt_by_month, MONTHS=MONTHS)
 
 
 @app.route('/add-event')
