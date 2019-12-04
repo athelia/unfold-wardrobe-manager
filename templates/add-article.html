@@ -40,17 +40,21 @@
       <label for="purchase-price">Purchase price:</label>
       $ <input type="number" step="any" name="purchase-price" />
     </p>
-    <fieldset>
-      <legend>Tags (optional):</legend>
+    <div class="tag-frame scrollable row">
+    <fieldset class="gray-border">
+      <legend class="manual-border">Tags (optional):</legend>
         {% for tag in tags %}
-          <div>
+          <div class="inline-block">
             <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" />
             <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
           </div>
         {% endfor %}
-        <label for="new-tags">Add more tags (separate with commas):</label>
-        <input type="text" id="new-tags" name="new-tags" />
+        <div>
+          <label for="new-tags">Add more tags (separate with commas):</label>
+          <input type="text" id="new-tags" name="new-tags" />
+        </div>
     </fieldset>
+    </div>
     <input type="submit" value="Create item" />
   </form>
 

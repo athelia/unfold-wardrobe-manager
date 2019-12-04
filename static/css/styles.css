@@ -10,6 +10,10 @@
     border: solid 1px green;
 }
 
+.gray-border {
+    border: solid 1px gray;
+}
+
 .block-bucket {
     width: 150px;
     height: 150px;
@@ -26,9 +30,20 @@
     display: inline-block;
 }
 
+.display-category-2 {
+/*    width: 35%;*/
+    border: solid 1px gray;
+    margin: 5px;
+    display: inline-block;
+}
+
 .article-image {
     max-width: 140px;
     max-height: 140px;
+}
+
+.align-top {
+    vertical-align: top;
 }
 
 .outfit-frame {
@@ -39,9 +54,19 @@
     vertical-align: top;
 }
 
+.homepage-outfit-frame {
+    display: inline-block;
+    vertical-align: top;
+}
+
 .category-frame {
     width: 45%;
 /*    height: 80%;*/
+    height: 95vh;
+    display: inline-block;
+}
+
+.category-frame-2 {
     height: 95vh;
     display: inline-block;
 }
@@ -73,7 +98,7 @@
 .forecast {
     display: inline-block;
     margin: 10px;
-    width: 100px;
+    /*width: 100px;*/
 }
 
 img.forecast {
@@ -87,6 +112,7 @@ img.thumbnail {
 .tomorrow {
     border-left: 1px solid black;
     padding-left: 10px;
+    /*width: 200px;*/
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
@@ -94,7 +120,7 @@ img.thumbnail {
 }
 
 /* Override Bootstrap defaults */
-legend {
+legend.manual-border {
     width:auto;
     padding:0 10px;
     border-bottom:none;
@@ -102,8 +128,10 @@ legend {
     margin: 0 10px;
 }
 
-/*https://stackoverflow.com/questions/7492062/css-overflow-scroll-always-show-vertical-scroll-bar*/
+/*https://stackoverflow.com/questions/7492062/css-overflow-scroll-always-show-vertical-scroll-bar
+sadly, it doesn't work :( */
 
+/*
 @media(device-width: 768px) and (device-height: 1024px){
     ::-webkit-scrollbar {
         -webkit-appearance: none;
@@ -115,6 +143,9 @@ legend {
         -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
     }
 }
+*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*
 box & overbox (mask) styles from 

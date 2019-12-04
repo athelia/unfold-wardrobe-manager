@@ -14,8 +14,8 @@
     <div class="scrollable">
       {% for category in categories %}
       <!-- <fieldset class="display-category category-block scrollable"> -->
-      <fieldset class="inline-block col-5 category-block scrollable">
-        <legend class="no-border">{{ category.name }}</legend>
+      <fieldset class="inline-block col-5 category-block scrollable gray-border align-top">
+        <legend class="manual-border">{{ category.name }}</legend>
           {% for article in category.articles %}
             <button class="article-block block-bucket"> 
               <a href="/articles/{{ article.article_id }}">

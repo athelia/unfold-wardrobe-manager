@@ -89,7 +89,7 @@
           </p>
 
           <fieldset class="inline-block col-5 category-block scrollable">
-            <legend>Tags:</legend>
+            <legend class="manual-border">Tags:</legend>
             {% for tag in tags %}
               <div>
                 <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="update-tags" {% if tag in event.tags %} checked {% endif %}/>

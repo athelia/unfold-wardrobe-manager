@@ -36,7 +36,7 @@
       $ <input type="number" step="any" name="purchase-price">
     </p>
     <fieldset class="inline-block col-5 category-block scrollable">
-      <legend>Tags:</legend>
+      <legend class="manual-border">Tags:</legend>
         {% for tag in tags %}
           <div>
             <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" {% if tag in article.tags %} checked {% endif %}/>

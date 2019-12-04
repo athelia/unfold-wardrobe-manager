@@ -16,8 +16,8 @@
     <!-- The container shows all categories that the user has. -->
     <div class="scrollable">
       {% for category in categories %}
-      <fieldset class="display-category category-block scrollable">
-        <legend>{{ category.name }}</legend>
+      <fieldset class="display-category category-block scrollable gray-border">
+        <legend class="manual-border">{{ category.name }}</legend>
           {% for article in category.articles %}
             <div class="article-block block-bucket"> 
               <input type="checkbox" id="{{ article.article_id }}" value="{{ article.article_id }}" name="articles-to-add" />
@@ -42,17 +42,21 @@
       <label for="outfit-name">Outfit name (optional):</label>
       <input type="text" name="outfit-name" />
     </p>
-    <fieldset>
-      <legend>Tags:</legend>
+    <div class="tag-frame scrollable row">
+    <fieldset class="gray-border">
+      <legend class="manual-border">Tags:</legend>
         {% for tag in tags %}
-          <div>
+          <div class="inline-block">
             <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="outfit-tags" />
             <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
           </div>
         {% endfor %}
-        <label for="new-tags">Add more tags (separate with commas):</label>
-        <input type="text" id="new-tags" name="new-tags" />
+        <div>
+          <label for="new-tags">Add more tags (separate with commas):</label>
+          <input type="text" id="new-tags" name="new-tags" />
+        </div>
     </fieldset>
+    </div>
     <input type="submit" value="Create outfit" />
   </form>
 
