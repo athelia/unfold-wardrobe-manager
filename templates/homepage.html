@@ -10,53 +10,53 @@
 
 {% block content %}
 <div class="container">
-  <section name="statistics" class="inline-block col-4">
-    <div id="total-articles" class="inline-block col-3 align-top">
+  <section name="statistics" class="inline-block col-5">
+    <div id="total-articles" class="inline-block col-4 align-top">
       <h1>{{ user_stats['counts']['articles'] }}</h1>
       <p>articles</p>
     </div>
-    <div id="total-outfits" class="inline-block col-3 align-top">
+    <div id="total-outfits" class="inline-block col-4 align-top">
       <h1>{{ user_stats['counts']['outfits'] }}</h1>
       <p>outfits</p>
     </div>
-    <div id="total-events" class="inline-block col-3 align-top">
+    <div id="total-events" class="inline-block col-4 align-top">
       <h1>{{ user_stats['counts']['events'] }}</h1>
       <p>events</p>
     </div>
-    <div id="total-categories" class="inline-block col-3 align-top">
+    <div id="total-categories" class="inline-block col-4 align-top">
       <h1>{{ user_stats['counts']['categories'] }}</h1>
       <p>categories</p>
     </div>
     {% if user_stats['most_worn'].get('outfit') %}
-      <div id="most-worn-outfit" class="inline-block col-3 align-top">
+      <div id="most-worn-outfit" class="inline-block col-4 align-top">
         <h1><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h1>
         <p>most worn outfit:<br />
         {{ user_stats['most_worn']['outfit'].times_worn }} times</p>
       </div>
     {% endif %}
     {% if user_stats['most_worn'].get('article') %}
-      <div id="most-worn-article" class="inline-block col-3 align-top">
+      <div id="most-worn-article" class="inline-block col-4 align-top">
         <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
         <p>most worn article:<br />
         {{ user_stats['most_worn']['article'].times_worn }} times</p>
       </div>
     {% endif %}
     {% if user_stats['most_worn'].get(random_category.name) %}
-      <div id="most-worn-category-article" class="inline-block col-3 align-top">
+      <div id="most-worn-category-article" class="inline-block col-4 align-top">
         <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
         <p>most worn in {{ random_category.name }}:<br />
         {{ user_stats['most_worn'][random_category.name].times_worn }} times</p>
       </div>
     {% endif %}
     {% if user_stats['best_value'][random_category2.name].get('nonzero_article') %}
-      <div id="best-value-category-article" class="inline-block col-3 align-top">
+      <div id="best-value-category-article" class="inline-block col-4 align-top">
         <a href="/articles/{{ user_stats['best_value'][random_category2.name]['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value'][random_category2.name]['nonzero_article'].image }}" class="thumbnail" /></a>
         <p>best value in {{ random_category2.name }}:<br />
         {{ '$%.2f'|format(user_stats['best_value'][random_category2.name]['nonzero_article'].value) }} / wear</p>
       </div>
     {% endif %}
     {% if user_stats['best_value'].get('nonzero_outfit') %}
-      <div id="best-value-outfit" class="inline-block col-3 align-top">
+      <div id="best-value-outfit" class="inline-block col-4 align-top">
         <h1><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h1>
         <p>best value outfit:<br />
         {# Jinja doesn't seem to support f-string formatting :( #}
@@ -64,14 +64,14 @@
       </div>
     {% endif %}
     {% if user_stats['best_value'].get('nonzero_article') %}
-      <div id="best-value-article" class="inline-block col-3 align-top">
+      <div id="best-value-article" class="inline-block col-4 align-top">
         <h1><a href="/articles/{{ user_stats['best_value']['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value']['nonzero_article'].image }}" class="thumbnail"></a></h1>
         <p>best value article:<br />
         {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} / wear</p>
       </div>
     {% endif %}
     {% if user_stats['most_used'].get(random_tag) %}
-      <div id="most-used-tag" class="inline-block col-3 align-top">
+      <div id="most-used-tag" class="inline-block col-4 align-top">
         <h1>{{ user_stats['most_used'][random_tag]['tag'].name }}</h1>
         <p>top {{ random_tag }} tag:<br />
         {{ user_stats['most_used'][random_tag]['count'] }} uses</p>
@@ -79,7 +79,7 @@
     {% endif %}
 </section>
 
-<div class="recommendation col-6 inline-block homepage-outfit-frame">
+<div class="recommendation col-5 inline-block homepage-outfit-frame">
   <h2>Up Next:</h2>
   {% for event in events_today %}
     <p>
@@ -168,7 +168,7 @@
  <br />
  
 {% for hour in hourly[:5:1] %}
-  <div class="forecast col-1">
+  <div class="forecast col-1 align-top">
     <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
     <h3>{{ hour['temperature'] }}&deg;</h3>
     {{ hour.datestr }} - {{ hour['summary'] }}
@@ -176,7 +176,7 @@
 {% endfor %}
 
 {% for day in daily[1:2] %}
-<div class="forecast tomorrow col-2">
+<div class="forecast tomorrow col-2 align-top">
   <img src="https://darksky.net/images/weather-icons/{{ day['icon'] }}.png" class="forecast" />
   <h3>{{ day.apparentTemperatureLow }}&deg; - {{ day.apparentTemperatureHigh }}&deg;</h3>
   {{ day.datestr }} - {{ day['summary'] }}
