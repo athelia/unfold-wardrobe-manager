@@ -174,13 +174,15 @@
     Events (Logs)
   </a>
 </button>
-
+<!-- 
 <form action="/get-weather" id="get-weather">
     <label for="city">City:</label>
     <input type="text" name="city">
     <input type="submit" value="Get Weather">
 </form>
-
+ -->
+ <br />
+ 
 {% for hour in hourly[:5:1] %}
   <div class="forecast">
     <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
