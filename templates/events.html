@@ -8,18 +8,25 @@
     <a href="/">Back to Homepage</a>
   </p>
 
-  {% for event in events %}
-    <button class="event-block block-bucket">
-      <a href="/events/{{ event.wear_event_id }}">
-        {{ event.date }} - {{ event.name }}
-      </a>
-    </button>
-  {% endfor %}
-
   <button class="event-block block-bucket">
     <a href="/add-event">
       +
     </a>
   </button>
+
+  {% for year in evt_by_month %}
+    {% for month in evt_by_month[year] %}
+    <fieldset class="display-event event-block scrollable">
+      <legend>{{ MONTHS[month] }} {{ year }}</legend>
+      {% for event in evt_by_month[year][month] %}
+        <button class="event-block block-bucket">
+          <a href="/events/{{ event.wear_event_id }}">
+            {{ event.date }} - {{ event.name }}
+          </a>
+        </button>
+      {% endfor %}
+    </fieldset>
+    {% endfor %}
+  {% endfor %}
 
 {% endblock%}
