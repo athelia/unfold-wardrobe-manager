@@ -84,6 +84,7 @@
     </div>
   </div>
 
+  <div class="tag-frame scrollable">
     <fieldset class="inline-block col-5 category-block scrollable">
       <legend>Tags:</legend>
       <form action="/update-outfit" method="POST">
@@ -101,6 +102,7 @@
         </div>
       </form>
     </fieldset>
+  </div>
 
   <form action="/delete-outfit" method="POST">
     <input type="hidden" name="outfit-to-delete" id="outfit-to-delete" value="{{ outfit.outfit_id }}">

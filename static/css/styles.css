@@ -13,15 +13,16 @@
 .block-bucket {
     width: 150px;
     height: 150px;
-    margin: 10px;
+    margin: 5px;
     border: solid 1px;
     display: inline-block;
+    text-align: center;
 }
 
 .display-category {
-    width: 35%;
+/*    width: 35%;*/
     height: 300px;
-    margin: 10px;
+    margin: 5px;
     display: inline-block;
 }
 
@@ -32,13 +33,16 @@
 
 .outfit-frame {
     width: 45%;
-    height: 80%;
+/*    height: 80%;*/
+    height: 95vh;
     display: inline-block;
+    vertical-align: top;
 }
 
 .category-frame {
     width: 45%;
-    height: 80%;
+/*    height: 80%;*/
+    height: 95vh;
     display: inline-block;
 }
 
@@ -54,7 +58,7 @@
 .login-form {
     margin-left: auto;
     margin-right: auto;
-    width: 45%;
+/*    width: 45%;*/
 }
 
 .full-size {
@@ -89,16 +93,27 @@ img.thumbnail {
     content:" > ";
 }
 
-.breadcrumb {
-
-}
-
+/* Override Bootstrap defaults */
 legend {
     width:auto;
     padding:0 10px;
     border-bottom:none;
     /*margin-bottom: 0;*/
     margin: 0 10px;
+}
+
+/*https://stackoverflow.com/questions/7492062/css-overflow-scroll-always-show-vertical-scroll-bar*/
+
+@media(device-width: 768px) and (device-height: 1024px){
+    ::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 7px;
+    }
+    ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba(0,0,0,.5);
+        -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
 }
 
 /*
