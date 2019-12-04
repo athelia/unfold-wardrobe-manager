@@ -7,19 +7,26 @@
   <p>
     <a href="/">Back to Homepage</a>
   </p>
-
-  {% for category in categories %}
-    <button class="category-block block-bucket">
-      <a href="/categories/{{ category.category_id }}">
-        {{ category.name }}
-      </a>
-    </button>
-  {% endfor %}
-
-  <button class="category-block block-bucket">
-    <a href="/add-category">
-      +
-    </a>
-  </button>
+  <div class="scrollable">
+    {% for base in base_categories %}
+    <fieldset class="display-category category-block scrollable">
+      <legend>{{ base.name }}</legend>
+        {% for category in base.categories %}
+          {% if category in categories %}
+            <button class="category-block block-bucket">
+              <a href="/categories/{{ category.category_id }}">
+                {{ category.name }}
+              </a>
+            </button>
+          {% endif %}
+        {% endfor %}
+        <button class="category-block block-bucket">
+          <a href="/add-category">
+               +
+          </a>
+        </button>
+      </fieldset>
+      {% endfor %}
+    </div>
 
 {% endblock%}
