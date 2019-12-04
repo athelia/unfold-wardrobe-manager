@@ -2,12 +2,20 @@
 
 {% block title %}Articles - {% endblock %}
 
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Articles</li>
+  </ol>
+{% endblock %}
+
 {% block content %}
 
     <div class="scrollable">
       {% for category in categories %}
-      <fieldset class="display-category category-block scrollable">
-        <legend>{{ category.name }}</legend>
+      <!-- <fieldset class="display-category category-block scrollable"> -->
+      <fieldset class="inline-block col-5 category-block scrollable">
+        <legend class="no-border">{{ category.name }}</legend>
           {% for article in category.articles %}
             <button class="article-block block-bucket"> 
               <a href="/articles/{{ article.article_id }}">

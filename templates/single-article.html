@@ -2,11 +2,16 @@
 
 {% block title %} Article Detail - {% endblock %}
 
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/articles">Articles</a></li>
+    <li class="breadcrumb-item active">Article Detail {% if article.description %} - {{ article.description }}{% endif %}</li>
+  </ol>
+{% endblock %}
+
 {% block content %}
-  
-  <p>
-    <a href="/articles">Back to Articles</a>
-  </p>
+
   <h2>
     {{ article.category.name }} - {{ article.description }}
   </h2>
@@ -24,13 +29,13 @@
     </p>
     <p>
       <input type="hidden" name="article-to-edit" id="article-to-edit" value="{{ article.article_id }}">
-      Purchase price: $ {{ article.purchase_price }}
+      Purchase price: {% if article.purchase_price %}{{ '$%.2f'|format(article.purchase_price) }}{% endif %}
     </p>
     <p>
       <label for="purchase-price">New purchase price:</label>
       $ <input type="number" step="any" name="purchase-price">
     </p>
-    <fieldset>
+    <fieldset class="inline-block col-5 category-block scrollable">
       <legend>Tags:</legend>
         {% for tag in tags %}
           <div>

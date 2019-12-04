@@ -2,13 +2,15 @@
 
 {% block title %}Add Outfit - {% endblock %}
 
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/outfits">Outfits</a></li>
+    <li class="breadcrumb-item active">Add outfit</li>
+  </ol>
+{% endblock %}
+
 {% block content %}
-
-  <p>
-    <a href="/outfits">Back to Outfits</a>
-  </p>
-
-
 
   <form action="/create-outfit" id="create-outfit-form" method="POST" enctype="multipart/form-data">
     <!-- The container shows all categories that the user has. -->

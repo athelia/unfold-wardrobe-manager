@@ -2,11 +2,15 @@
 
 {% block title %}Add Event/Clothing Log - {% endblock %}
 
-{% block content %}
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/events">Events</a></li>
+    <li class="breadcrumb-item active">Add event</li>
+  </ol>
+{% endblock %}
 
-  <p>
-    <a href="/">Back to Home</a>
-  </p>
+{% block content %}
 
   <form action="/create-event" id="create-event-form" method="POST" enctype="multipart/form-data">
     <p>

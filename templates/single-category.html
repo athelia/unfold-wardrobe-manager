@@ -2,11 +2,20 @@
 
 {% block title %} {{ category.name }} - {% endblock %}
 
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/categories">Categories</a></li>
+    <li class="breadcrumb-item active">{{ category.name }}</li>
+  </ol>
+{% endblock %}
+
 {% block content %}
-  
-  <p>
-    <a href="/categories">Back to Categories</a>
-  </p>
+  <button class="articles-block block-bucket">
+    <a href="/add-article">
+      +
+    </a>
+  </button>
 
   {% for article in articles %}
     <button class="articles-block block-bucket">
@@ -19,11 +28,5 @@
       </a>
     </button>
   {% endfor %}
-
-  <button class="articles-block block-bucket">
-    <a href="/add-article">
-      Create a new article
-    </a>
-  </button>
 
 {% endblock%}

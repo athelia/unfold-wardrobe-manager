@@ -2,11 +2,15 @@
 
 {% block title %} {% endblock %}
 
-{% block content %}
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/categories">Categories</a></li>
+    <li class="breadcrumb-item active">Add category</li>
+  </ol>
+{% endblock %}
 
-  <p>
-    <a href="/categories">Back to Categories</a>
-  </p>
+{% block content %}
 
   <form action="/create-category" id="create-category-form" method="POST">
     <p>

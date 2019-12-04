@@ -2,12 +2,15 @@
 
 {% block title %}{{ event.name }} Event Detail - {% endblock %}
 
-{% block content %}
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/events">Events</a></li>
+    <li class="breadcrumb-item active">Event Detail - {{ event.name }}</li>
+  </ol>
+{% endblock %}
 
-  <!-- Go back to page where you can see all events -->
-  <p>
-    <a href="/events">Back to Events</a>
-  </p>
+{% block content %}
 
   <!-- Keep the left and right sides in another container -->
   <div class="outer-frame">
@@ -85,7 +88,7 @@
             Weather conditions: {{ event.weather_cond }}
           </p>
 
-          <fieldset>
+          <fieldset class="inline-block col-5 category-block scrollable">
             <legend>Tags:</legend>
             {% for tag in tags %}
               <div>

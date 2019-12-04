@@ -2,6 +2,13 @@
 
 {% block title %}Outfits - {% endblock %}
 
+{% block breadcrumb %}
+  <ol class="breadcrumb" aria-label="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Outfits</li>
+  </ol>
+{% endblock %}
+
 {% block content %}
 
   {% for outfit in outfits %}
