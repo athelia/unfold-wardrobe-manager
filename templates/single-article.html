@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
   <h2>
     {{ article.category.name }} - {{ article.description }}
   </h2>
@@ -35,20 +35,26 @@
       <label for="purchase-price">New purchase price:</label>
       $ <input type="number" step="any" name="purchase-price">
     </p>
-    <fieldset class="inline-block col-5 category-block scrollable">
-      <legend class="manual-border">Tags:</legend>
-        {% for tag in tags %}
-          <div>
-            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" {% if tag in article.tags %} checked {% endif %}/>
-            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
-          </div>
-        {% endfor %}
-        <label for="new-tags">Add more tags (separate with commas):</label>
-        <input type="text" id="new-tags" name="new-tags" />
-        <div>
-          <input type="submit" id="update-article" value="Update">
-        </div>
-    </fieldset>
+    <div class="tag-frame scrollable row">
+      <div class="col">
+        <fieldset class="inline-block col-10 gray-border">
+          <legend class="manual-border">Tags:</legend>
+            {% for tag in tags %}
+              <div class="inline-block">
+                <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="article-tags" {% if tag in article.tags %} checked {% endif %}/>
+                <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+              </div>
+            {% endfor %}
+            <div>
+              <label for="new-tags">Add more tags (separate with commas):</label>
+              <input type="text" id="new-tags" name="new-tags" />
+            </div>
+            <div>
+              <input type="submit" id="update-article" value="Update">
+            </div>
+        </fieldset>
+      </div>
+    </div>
   </form>
 
   <form action="/delete-article" method="POST">
@@ -56,5 +62,5 @@
     <label for="delete-article">Permanently delete this article?</label>
     <input type="submit" id="delete-article" value="Delete">
   </form>
-
+<main class="container">
 {% endblock%}

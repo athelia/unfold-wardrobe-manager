@@ -3,6 +3,9 @@
 <head>
   <title>{% block title %}{% endblock %}Wardrobe Manager</title>
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Open+Sans|Playfair+Display:400,400i&display=swap" rel="stylesheet"> 
+
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
@@ -12,41 +15,51 @@
 </head>
 
 <body>
-  <nav class="navbar sticky-top navbar-dark bg-dark justify-content-start">
-    <div class="navbar-nav container col-8 flex-row">
-      <a class="navbar-brand" href="/">Wardrobe Manager</a>
-      <a class="nav-link" href="/articles">Articles</a>
-      <a class="nav-link" href="/outfits">Outfits</a>
-      <a class="nav-link" href="/events">Events (Logs)</a>
-      <a class="nav-link" href="/categories">Categories</a>
-    </div>
-    <div class="navbar-nav container col-2">
-    </div>
-    <div class="navbar-nav container col-2">
-      <a class="nav-link" href="/logout">Logout</a>
+  <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
+    <div class="navbar-nav container col-12 flex-row">
+      <a class="navbar-brand justify-content-start" href="/">Wardrobe Manager</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navExpandContent1"
+      >
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse" id="navExpandContent1">
+        <div class="navbar-nav justify-content-start">
+          <a class="nav-link" href="/articles">Articles</a>
+          <a class="nav-link" href="/outfits">Outfits</a>
+          <a class="nav-link" href="/events">Events</a>
+          <a class="nav-link" href="/categories">Categories</a>
+        </div>
+        <div class="navbar-nav justify-content-end">
+          <a class="nav-link" href="/logout">Logout</a>
+        </div>
+      </div>
     </div>
   </nav>
 
-<!-- Show flashed messages -->
-{% for message in get_flashed_messages() %}
-  <p>{{ message }}</p>
-{% endfor %}
-
 {% block breadcrumb %} BREADCRUMBS HERE {% endblock %}
 
-<main class="container col-9">
+<!-- Show flashed messages -->
+{% for message in get_flashed_messages() %}
+  <div class="flex-row alert alert-success" role="alert">{{ message }}</div>
+{% endfor %}
+
 <!-- Content of pages using inheritance -->
-{% block content %} HERE IS SOME CONTENT {% endblock %}
-</main>
+{% block content %} {% endblock %}
 
 </body>
 <footer>
-<!-- <p> 
-  The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy.
-</p>
--->
-<p>
-  <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
-</p>
+  <main class="container">
+    <!-- <p> 
+      The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy.
+    </p>
+    -->
+    <p>
+      <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
+    </p>
+  </main>
 </footer>
 </html>

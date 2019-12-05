@@ -19,6 +19,7 @@
 
 {% block content %}
 
+<main class="container">
   <!-- TODO: Add < and > nav buttons to click through "adjacent" outfits -->
 
   <!-- Keep the left and right sides in another container -->
@@ -29,9 +30,10 @@
     Here we display the outfit's name if it has one, otherwise its ID.
      -->
     <!-- <div class="outfit-frame"> -->
-    <div class="col-4 align-top inline-block"> 
-      <fieldset>
-      <legend>Outfit - 
+    <div class="col-4 align-top inline-block">
+      <h2>Remove from outfit:</h2>
+      <fieldset class="gray-border">
+      <legend class="manual-border">Outfit - 
       {% if outfit.name %}
         {{ outfit.name }}
       {% else %}
@@ -60,9 +62,10 @@
     <!-- The right container shows all categories that the user has. -->
     <!-- <div class="category-frame scrollable"> -->
     <div class="col-6 scrollable inline-block category-frame-2">
+      <h2>Add to outfit:</h2>
       {% for category in categories %}
         <!-- <fieldset class="display-category category-block scrollable"> -->
-        <fieldset class="inline-block display-category-2 scrollable">
+        <fieldset class="inline-block gray-border">
           <legend class="manual-border">{{ category.name }}</legend>
           <!-- For each category, show all articles added to the category. -->
           {% for article in category.articles %}
@@ -89,7 +92,7 @@
 
   <div class="tag-frame scrollable row">
     <div class="col">
-    <fieldset class="inline-block col-10 category-block scrollable">
+    <fieldset class="inline-block col-10 gray-border">
       <legend class="manual-border">Tags:</legend>
       <form action="/update-outfit" method="POST">
         <input type="hidden" name="outfit-to-edit" id="outfit-to-edit" value="{{ outfit.outfit_id }}">
@@ -122,5 +125,5 @@
     <input type="hidden" name="outfit_id" value="{{ outfit.outfit_id }}" />
 
   </form> -->
-
+</main>
 {% endblock%}

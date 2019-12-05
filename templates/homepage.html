@@ -9,153 +9,178 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <section name="statistics" class="inline-block col-5">
-    <div id="total-articles" class="inline-block col-4 align-top">
-      <h1>{{ user_stats['counts']['articles'] }}</h1>
-      <p>articles</p>
-    </div>
-    <div id="total-outfits" class="inline-block col-4 align-top">
-      <h1>{{ user_stats['counts']['outfits'] }}</h1>
-      <p>outfits</p>
-    </div>
-    <div id="total-events" class="inline-block col-4 align-top">
-      <h1>{{ user_stats['counts']['events'] }}</h1>
-      <p>events</p>
-    </div>
-    <div id="total-categories" class="inline-block col-4 align-top">
-      <h1>{{ user_stats['counts']['categories'] }}</h1>
-      <p>categories</p>
-    </div>
-    {% if user_stats['most_worn'].get('outfit') %}
-      <div id="most-worn-outfit" class="inline-block col-4 align-top">
-        <h1><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h1>
-        <p>most worn outfit:<br />
-        {{ user_stats['most_worn']['outfit'].times_worn }} times</p>
-      </div>
-    {% endif %}
-    {% if user_stats['most_worn'].get('article') %}
-      <div id="most-worn-article" class="inline-block col-4 align-top">
-        <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
-        <p>most worn article:<br />
-        {{ user_stats['most_worn']['article'].times_worn }} times</p>
-      </div>
-    {% endif %}
-    {% if user_stats['most_worn'].get(random_category.name) %}
-      <div id="most-worn-category-article" class="inline-block col-4 align-top">
-        <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
-        <p>most worn in {{ random_category.name }}:<br />
-        {{ user_stats['most_worn'][random_category.name].times_worn }} times</p>
-      </div>
-    {% endif %}
-    {% if user_stats['best_value'][random_category2.name].get('nonzero_article') %}
-      <div id="best-value-category-article" class="inline-block col-4 align-top">
-        <a href="/articles/{{ user_stats['best_value'][random_category2.name]['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value'][random_category2.name]['nonzero_article'].image }}" class="thumbnail" /></a>
-        <p>best value in {{ random_category2.name }}:<br />
-        {{ '$%.2f'|format(user_stats['best_value'][random_category2.name]['nonzero_article'].value) }} / wear</p>
-      </div>
-    {% endif %}
-    {% if user_stats['best_value'].get('nonzero_outfit') %}
-      <div id="best-value-outfit" class="inline-block col-4 align-top">
-        <h1><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h1>
-        <p>best value outfit:<br />
-        {# Jinja doesn't seem to support f-string formatting :( #}
-        {{ '$%.2f'|format(user_stats['best_value']['nonzero_outfit'].value) }} / wear</p>
-      </div>
-    {% endif %}
-    {% if user_stats['best_value'].get('nonzero_article') %}
-      <div id="best-value-article" class="inline-block col-4 align-top">
-        <h1><a href="/articles/{{ user_stats['best_value']['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value']['nonzero_article'].image }}" class="thumbnail"></a></h1>
-        <p>best value article:<br />
-        {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} / wear</p>
-      </div>
-    {% endif %}
-    {% if user_stats['most_used'].get(random_tag) %}
-      <div id="most-used-tag" class="inline-block col-4 align-top">
-        <h1>{{ user_stats['most_used'][random_tag]['tag'].name }}</h1>
-        <p>top {{ random_tag }} tag:<br />
-        {{ user_stats['most_used'][random_tag]['count'] }} uses</p>
-      </div>
-    {% endif %}
-</section>
-
-<div class="recommendation col-5 inline-block homepage-outfit-frame">
-  <h2>Up Next:</h2>
-  {% for event in events_today %}
-    <p>
-      <a href="/events/{{ event.wear_event_id }}">Event #{{ event.wear_event_id }} - {{ event.name }}</a>
-    </p>
-
-    <div class="">
-    {% if event.outfit %}
-      <fieldset class="gray-border">
-      <legend class="manual-border">
-        <a href="/outfits/{{ event.outfit_id }}">
-          Outfit # {{ event.outfit_id }}
-          {% if event.outfit.name %}
-             - {{ event.outfit.name }}
-          {% endif %}
-        </a>
-      </legend>
-
-      <!-- Iterate over all articles in the event (via the outfit) & display them. -->
-      {% for article in event.outfit.articles %}
-        <div class="articles-block block-bucket">
-          <a href="/articles/{{ article.article_id }}">
-            <img src="{{ article.image }}" class="article-image">
-          </a>
-        </div>
-      {% endfor %}
-      </fieldset>
-    {% else %}
-      <fieldset>
-      <legend class="manual-border">
-        {% if outfit_recs.get(event) %}
-          Recommended Outfit - 
-          {% if outfit_recs[event].name %}{{ outfit_recs[event].name }}{% endif %}
-          # {{ outfit_recs[event].outfit_id }}
-          {% if coat_count %} + an extra {{ coat_count }} jacket(s){% endif %}
-        {% else %}
-          No outfit to recommend
-        {% endif %}
-      </legend>
-
-      {% if outfit_recs.get(event) %}
-      <!-- Iterate over all articles in the event (via the outfit) & display them. -->
-      {% for article in outfit_recs[event].articles %}
-        <div class="articles-block block-bucket">
-          <a href="/articles/{{ article.article_id }}">
-            <img src="{{ article.image }}" class="article-image">
-          </a>
-        </div>
-      {% endfor %}
-      <form action="/update-event" method="POST">
-        <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
-        <input type="hidden" name="event-outfit" value="{{ outfit_recs[event].outfit_id }}">
-        <input type="submit" value="Wear this!">
-      </form>
-      {% endif %}
-      <form action="/update-event" method="POST">
-        <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
-        <label for="event-outfit">Choose a different outfit:</label>
-        <select name="event-outfit" id="event-outfit-select">
-          {% for outfit in outfits %}
-            <option value="{{ outfit.outfit_id }}">
-              {% if outfit.name %}
-                {{ outfit.name }}
-              {% else %}
-                Outfit # {{ outfit.outfit_id }}
-              {% endif %}
-            </option>
+<div class="container col-12">
+  <div class="row col-12">
+  <div class="col-6 offset-1 left-side inline-block">
+    <div class="recommendation homepage-outfit-frame">
+      <h1>Good morning!</h1>
+      {% for event in events_today %}
+        <div class="event-recommendation">
+        {% if event.outfit %}
+          <h3>For <a href="/events/{{ event.wear_event_id }}">{{ event.name }}</a>, you're wearing:</h3>
+          <a href="/outfits/{{ event.outfit.outfit_id }}"><div>
+          <!-- Iterate over all articles in the event (via the outfit) & display them. -->
+          {% for article in event.outfit.articles %}
+            <div class="articles-block block-bucket">
+                <img src="{{ article.image }}" class="article-image">
+            </div>
           {% endfor %}
-        </select>
-        <input type="submit" value="Wear something else">
-      </form>
-      </fieldset>
-    {% endif %}
-    </div>
-  {% endfor %}
+          </div></a>
+        {% else %}
+          <h3>For <a href="/events/{{ event.wear_event_id }}">{{ event.name }}</a>,
+            {% if outfit_recs.get(event) %}
+              {% if coat_count %}
+                we recommend an extra {{ coat_count }} jacket(s) to go with:
+              {% else %}
+                we recommend:
+              {% endif %}
+            {% else %}
+              Sorry, no outfit match found!
+            {% endif %}
+          </h3>
 
+          {% if outfit_recs.get(event) %}
+          <!-- Iterate over all articles in the event (via the outfit) & display them. -->
+          {% for article in outfit_recs[event].articles %}
+            <div class="articles-block block-bucket">
+              <a href="/articles/{{ article.article_id }}">
+                <img src="{{ article.image }}" class="article-image">
+              </a>
+            </div>
+          {% endfor %}
+          <form action="/update-event" method="POST">
+            <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
+            <input type="hidden" name="event-outfit" value="{{ outfit_recs[event].outfit_id }}">
+            <input type="submit" value="Wear this recommendation!">
+          </form>
+          {% endif %}
+          <form action="/update-event" method="POST">
+            <input type="hidden" name="event-to-edit" value="{{ event.wear_event_id }}">
+            <label for="event-outfit">Or choose a different outfit:</label>
+            <select name="event-outfit" id="event-outfit-select">
+              {% for outfit in outfits %}
+                <option value="{{ outfit.outfit_id }}">
+                  {% if outfit.name %}
+                    {{ outfit.name }}
+                  {% else %}
+                    Outfit # {{ outfit.outfit_id }}
+                  {% endif %}
+                </option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Wear this choice">
+          </form>
+          </fieldset>
+        {% endif %}
+        </div>
+      {% endfor %}
+      </div>
+      </div>
+
+
+      <div class="col-3 offset-1 align-top right-side inline-block">
+        <div class="row">
+          {% for hour in hourly[:1:1] %}
+            <div class="forecast align-top">
+              <h2>Today:</h2>
+              <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
+              <h3 class="weather-temp">{{ hour['temperature'] }}&deg;</h3>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="row">
+          {% for day in daily[1:2] %}
+          <div class="forecast tomorrow align-top">
+            <h2>Tomorrow:</h2>
+            <img src="https://darksky.net/images/weather-icons/{{ day['icon'] }}.png" class="forecast" />
+            <h3 class="weather-temp">{{ day.apparentTemperatureLow }}&deg; - {{ day.apparentTemperatureHigh }}&deg;</h3>
+            {{ day['summary'] }}
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="row">
+          <h2>Your stats:</h2>
+          <section name="statistics" class="align-top carousel slide" data-interval="false">
+            <div class="carousel-inner">
+            <div id="total-articles" class="inline-block carousel-item active align-top user-stats">
+              <div>
+                <h3 class="stats">{{ user_stats['counts']['articles'] }}</h3>
+                <p>articles</p>
+              </div>
+            </div>
+            <div id="total-outfits" class="inline-block carousel-item align-top user-stats">
+              <h3 class="stats">{{ user_stats['counts']['outfits'] }}</h3>
+              <p>outfits</p>
+            </div>
+            <div id="total-events" class="inline-block carousel-item align-top user-stats">
+              <h3 class="stats">{{ user_stats['counts']['events'] }}</h3>
+              <p>events</p>
+            </div>
+            <div id="total-categories" class="inline-block carousel-item align-top user-stats">
+              <h3 class="stats">{{ user_stats['counts']['categories'] }}</h3>
+              <p>categories</p>
+            </div>
+            {% if user_stats['most_worn'].get('outfit') %}
+              <div id="most-worn-outfit" class="inline-block carousel-item align-top user-stats">
+                <h3 class="stats"><a href="/outfits/{{ user_stats['most_worn']['outfit'].outfit_id }}">#{{ user_stats['most_worn']['outfit'].outfit_id }}</a></h3>
+                <p>most worn outfit:<br />
+                {{ user_stats['most_worn']['outfit'].times_worn }} times</p>
+              </div>
+            {% endif %}
+            {% if user_stats['most_worn'].get('article') %}
+              <div id="most-worn-article" class="inline-block carousel-item align-top user-stats">
+                <a href="/articles/{{ user_stats['most_worn']['article'].article_id }}"><img src="{{ user_stats['most_worn']['article'].image }}" class="thumbnail" /></a>
+                <p>most worn article:<br />
+                {{ user_stats['most_worn']['article'].times_worn }} times</p>
+              </div>
+            {% endif %}
+            {% if user_stats['most_worn'].get(random_category.name) %}
+              <div id="most-worn-category-article" class="inline-block carousel-item align-top user-stats">
+                <a href="/articles/{{ user_stats['most_worn'][random_category.name].article_id }}"><img src="{{ user_stats['most_worn'][random_category.name].image }}" class="thumbnail" /></a>
+                <p>most worn in {{ random_category.name }}:<br />
+                {{ user_stats['most_worn'][random_category.name].times_worn }} times</p>
+              </div>
+            {% endif %}
+            {% if user_stats['best_value'][random_category2.name].get('nonzero_article') %}
+              <div id="best-value-category-article" class="inline-block carousel-item align-top user-stats">
+                <a href="/articles/{{ user_stats['best_value'][random_category2.name]['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value'][random_category2.name]['nonzero_article'].image }}" class="thumbnail" /></a>
+                <p>best value in {{ random_category2.name }}:<br />
+                {{ '$%.2f'|format(user_stats['best_value'][random_category2.name]['nonzero_article'].value) }} / wear</p>
+              </div>
+            {% endif %}
+            {% if user_stats['best_value'].get('nonzero_outfit') %}
+              <div id="best-value-outfit" class="inline-block carousel-item align-top user-stats">
+                <h3 class="stats"><a href="/outfits/{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}">#{{ user_stats['best_value']['nonzero_outfit'].outfit_id }}</a></h3>
+                <p>best value outfit:<br />
+                {# Jinja doesn't seem to support f-string formatting :( #}
+                {{ '$%.2f'|format(user_stats['best_value']['nonzero_outfit'].value) }} / wear</p>
+              </div>
+            {% endif %}
+            {% if user_stats['best_value'].get('nonzero_article') %}
+              <div id="best-value-article" class="inline-block carousel-item align-top user-stats">
+                <h3 class="stats"><a href="/articles/{{ user_stats['best_value']['nonzero_article'].article_id }}"><img src="{{ user_stats['best_value']['nonzero_article'].image }}" class="thumbnail"></a></h3>
+                <p>best value article:<br />
+                {{ '$%.2f'|format(user_stats['best_value']['nonzero_article'].value) }} / wear</p>
+              </div>
+            {% endif %}
+            {% if user_stats['most_used'].get(random_tag) %}
+              <div id="most-used-tag" class="inline-block carousel-item align-top user-stats">
+                <h3 class="stats">{{ user_stats['most_used'][random_tag]['tag'].name }}</h3>
+                <p>top {{ random_tag }} tag:<br />
+                {{ user_stats['most_used'][random_tag]['count'] }} uses</p>
+              </div>
+            {% endif %}
+              <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 
@@ -167,21 +192,6 @@
  -->
  <br />
  
-{% for hour in hourly[:5:1] %}
-  <div class="forecast col-1 align-top">
-    <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
-    <h3>{{ hour['temperature'] }}&deg;</h3>
-    {{ hour.datestr }} - {{ hour['summary'] }}
-  </div>
-{% endfor %}
-
-{% for day in daily[1:2] %}
-<div class="forecast tomorrow col-2 align-top">
-  <img src="https://darksky.net/images/weather-icons/{{ day['icon'] }}.png" class="forecast" />
-  <h3>{{ day.apparentTemperatureLow }}&deg; - {{ day.apparentTemperatureHigh }}&deg;</h3>
-  {{ day.datestr }} - {{ day['summary'] }}
-</div>
-{% endfor %}
 
   <div class="weather-forecast">
       <div class="weather-forecast today" id="forecast-today">
@@ -190,8 +200,6 @@
       </div>
   </div>
 
-<!-- End of container div -->
-</div>
 
 <script>
     "use strict";

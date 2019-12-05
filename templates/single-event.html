@@ -11,106 +11,114 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container col-12">
   <!-- Keep the left and right sides in another container -->
-  <div class="outer-frame">
-
-    <form action="/update-event" method="POST">
-    <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
+  <div class="row">
+    <div class="col-4 offset-2">
     <!-- 
     The left container shows everything that's in the current outfit.
     Here we display the outfit's name if it has one, otherwise its ID.
      -->
-    <div class="outfit-frame">
-    {% if event.outfit %}
-      <fieldset>
-      <legend>
-        Outfit - #{{ event.outfit.outfit_id }}
-        {% if event.outfit.description %}
-           - {{ event.outfit.description }}
-        {% elif event.outfit.name %}
-           - {{ event.outfit.name }}
-        {% endif %}
-      </legend>
+     <form action="/update-event" method="POST">
+      <input type="hidden" name="event-to-edit" id="event-to-edit" value="{{ event.wear_event_id }}">
 
-      <!-- Iterate over all articles in the event (via the outfit) & display them. -->
-      {% for article in event.outfit.articles %}
-        <div class="articles-block block-bucket">
-          <a href="/articles/{{ article.article_id }}">
-            {% if article.image %}
-              <img src="{{ article.image }}" class="article-image">
-            {% else %}
-              {{ article.description }}
-            {% endif %}
-          </a>
-        </div>
-      {% endfor %}
-      </fieldset>
-    {% else %}
-      <label for="event-outfit">Add outfit:</label>
-      <select name="event-outfit" id="event-outfit-select">
-          <option value="">------</option>
-        {% for outfit in outfits %}
-          <option value="{{ outfit.outfit_id }}">
-            #{{ outfit.outfit_id }}
-            {% if outfit.description %}
-               - {{ outfit.description }}
-            {% elif outfit.name %}
-               - {{ outfit.name }}
-            {% endif %}
-          </option>
+      <div class="outfit-frame">
+      {% if event.outfit %}
+        <h3>
+          Outfit - #{{ event.outfit.outfit_id }}
+          {% if event.outfit.description %}
+             - {{ event.outfit.description }}
+          {% elif event.outfit.name %}
+             - {{ event.outfit.name }}
+          {% endif %}
+        </h3>
+
+        <!-- Iterate over all articles in the event (via the outfit) & display them. -->
+        {% for article in event.outfit.articles %}
+          <div class="articles-block block-bucket">
+            <a href="/articles/{{ article.article_id }}">
+              {% if article.image %}
+                <img src="{{ article.image }}" class="article-image">
+              {% else %}
+                {{ article.description }}
+              {% endif %}
+            </a>
+          </div>
         {% endfor %}
-      </select>
-      <input type="submit" value="Update outfit">
-    {% endif %}
+
+      {% else %}
+
+          <label for="event-outfit">Add outfit:</label>
+          <select name="event-outfit" id="event-outfit-select">
+              <option value="">------</option>
+            {% for outfit in outfits %}
+              <option value="{{ outfit.outfit_id }}">
+                #{{ outfit.outfit_id }}
+                {% if outfit.description %}
+                   - {{ outfit.description }}
+                {% elif outfit.name %}
+                   - {{ outfit.name }}
+                {% endif %}
+              </option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="Add outfit">
+      {% endif %}
+      </div>
     </div>
 
-
     <!-- The right container has event details. -->
-      <div class="inline-block">
-          <h1>
-            Name: {{ event.name }}
-          </h1>
-          <label for="update-name">New name:</label>
-          <input type="text" name="update-name">
-          <p>
-            Date: {{ event.date }}
-          </p>
-          <p>
-            Description: {{ event.description }}
-          </p>
-          <label for="update-description">New description:</label>
-          <input type="text" name="update-description">
-          <p>
-            Temperature: {{ event.temperature }}
-          </p>
-          <p>
-            Weather conditions: {{ event.weather_cond }}
-          </p>
+      <div class="col-3">
+        <h1>
+          Name: {{ event.name }}
+        </h1>
+        <label for="update-name">New name:</label>
+        <input type="text" name="update-name">
+        <p>
+          Date: {{ event.date }}
+        </p>
+        <p>
+          Description: {{ event.description }}
+        </p>
+        <label for="update-description">New description:</label>
+        <input type="text" name="update-description">
+        <p>
+          Temperature: {{ event.temperature }}
+        </p>
+        <p>
+          Weather conditions: {{ event.weather_cond }}
+        </p>
 
-          <fieldset class="inline-block col-5 category-block scrollable">
-            <legend class="manual-border">Tags:</legend>
-            {% for tag in tags %}
-              <div>
-                <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="update-tags" {% if tag in event.tags %} checked {% endif %}/>
-                <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
-              </div>
-            {% endfor %}
+        <fieldset class="inline-block col-10 gray-border">
+          <legend class="manual-border">Tags:</legend>
+          {% for tag in tags %}
+            <div class="inline-block">
+              <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="update-tags" {% if tag in event.tags %} checked {% endif %}/>
+              <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+            </div>
+          {% endfor %}
+          <div>
             <label for="new-tags">Add more tags (separate with commas):</label>
             <input type="text" id="new-tags" name="new-tags" /> 
-          </fieldset>
-        <div>
-          <input type="submit" value="Update event">    
-        </div>
-     </div>
-   </form>
+          </div>
+        </fieldset>
+
+          <div>
+            <input type="submit" value="Update event">    
+          </div>
+      </div>
+     </div>  
+   </div>
+ </form>
+   <div class="row">
+    <div class="col offset-2">
+      <form action="/delete-event" method="POST">
+        <input type="hidden" name="event-to-delete" id="event-to-delete" value="{{ event.wear_event_id }}">
+        <label for="delete-event">Permanently delete this event?</label>
+        <input type="submit" id="delete-event" value="Delete">
+      </form>
+    </div>
   </div>
-  
 
-  <form action="/delete-event" method="POST">
-    <input type="hidden" name="event-to-delete" id="event-to-delete" value="{{ event.wear_event_id }}">
-    <label for="delete-event">Permanently delete this event?</label>
-    <input type="submit" id="delete-event" value="Delete">
-  </form>
-
+</main>
 {% endblock%}

@@ -11,12 +11,7 @@
 
 {% block content %}
 
-  <button class="event-block block-bucket">
-    <a href="/add-event">
-      +
-    </a>
-  </button>
-
+<main class="container">
   {% for year in evt_by_month %}
     {% for month in evt_by_month[year] %}
     <fieldset class="display-event event-block scrollable">
@@ -31,5 +26,12 @@
     </fieldset>
     {% endfor %}
   {% endfor %}
+
+  <a href="/add-event">
+    <button class="add-button">
+      +
+    </button>
+  </a>
+</main>
 
 {% endblock%}

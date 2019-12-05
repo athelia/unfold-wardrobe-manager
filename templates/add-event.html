@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
   <form action="/create-event" id="create-event-form" method="POST" enctype="multipart/form-data">
     <p>
       <label for="event-date">Date of event or log*:</label>
@@ -20,6 +20,7 @@
     <p>
       <label for="event-time">Time of event (optional):</label>
       <input type="time" name="event-time">
+    </p>
     <p>
       <label for="event-name">Name of the event (optional):</label>
       <input type="text" name="event-name" id="new-event-name-input">
@@ -54,16 +55,22 @@
         {% endfor %}
       </select>
     </p>
-    <fieldset>
-      <legend class="manual-border">Tags (optional):</legend>
-        {% for tag in tags %}
-          <div>
-            <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event-tags" />
-            <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
-          </div>
-        {% endfor %}
-      </fieldset>
+
+    <div class="tag-frame row">
+      <div class="col">
+        <fieldset class="gray-border inline-block col-10">
+          <legend class="manual-border">Tags (optional):</legend>
+            {% for tag in tags %}
+              <div class="inline-block">
+                <input type="checkbox" id="{{ tag.tag_id }}" value="{{ tag.tag_id }}" name="event-tags" />
+                <label for="{{ tag.tag_id }}">{{ tag.name }}</label>
+              </div>
+            {% endfor %}
+          </fieldset>
+        </div>
+      </div>
+
     <input type="submit" value="Create event">
   </form>
-
+</main>
 {% endblock%}

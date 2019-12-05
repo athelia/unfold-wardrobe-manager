@@ -10,30 +10,35 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="scrollable">
+<div class="container col-12">
+  <div class="row">
+    <div class="scrollable offset-2">
       {% for category in categories %}
       <!-- <fieldset class="display-category category-block scrollable"> -->
-      <fieldset class="inline-block col-5 category-block scrollable gray-border align-top">
-        <legend class="manual-border">{{ category.name }}</legend>
-          {% for article in category.articles %}
-            <button class="article-block block-bucket"> 
-              <a href="/articles/{{ article.article_id }}">
-                {% if article.image %}
-                  <img src="{{ article.image }}" class="article-image" />
-                {% else %}
-                  {{ article.description }}
-                {% endif %}
-              </a>
-            </button>
-          {% endfor %}
-          <button class="article-block block-bucket">
+      <div class="col-3 scrollable inline-block align-top">
+        <fieldset class="gray-border">
+          <legend class="manual-border">{{ category.name }}</legend>
+            {% for article in category.articles %}
+              <div class="article-block block-bucket"> 
+                <a href="/articles/{{ article.article_id }}">
+                  {% if article.image %}
+                    <img src="{{ article.image }}" class="article-image" />
+                  {% else %}
+                    {{ article.description }}
+                  {% endif %}
+                </a>
+              </div>
+            {% endfor %}
+          <button class="add-button"> <!-- article-block block-bucket -->
             <a href="/add-article">
               +
             </a>
           </button>
-      </fieldset>
+        </fieldset>
+      </div>
       {% endfor %}
     </div>
+  </div>
+</div>
 
 {% endblock%}

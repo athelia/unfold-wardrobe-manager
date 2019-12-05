@@ -11,6 +11,8 @@
 
 {% block content %}
 
+<main class="container">
+  
   {% for outfit in outfits %}
     <button class="outfit-block block-bucket">
       <a href="/outfits/{{ outfit.outfit_id }}">
@@ -29,5 +31,7 @@
       +
     </a>
   </button>
+
+</main>
 
 {% endblock%}
