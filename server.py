@@ -119,7 +119,7 @@ def index():
         today_end = datetime(now.year, now.month, now.day, 23, 59, 59)
         events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
         events_today = events.filter(today_start <= WearEvent.date)
-        events_today = events_today.filter(WearEvent.date <= today_end).all()
+        events_today = events_today.filter(WearEvent.date <= today_end).order_by(WearEvent.date).all()
 
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
@@ -499,12 +499,49 @@ def show_outfit_detail(outfit_id):
 
     outfit = Outfit.query.filter_by(outfit_id = outfit_id).first()
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    categories = sort_categories_by_base(categories)
     tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
     return render_template('single-outfit.html',
                            outfit=outfit,
                            categories=categories,
                            tags=tags)
+
+
+def sort_categories_by_base(categories):
+    """Puts user categories in order by base category type."""
+
+    categories_2 = []
+
+    for category in categories:
+        if category.base_category_id == 'tops':
+            categories_2.append(category)
+
+    for category in categories:
+        if category.base_category_id == 'bottoms':
+            categories_2.append(category)
+
+    for category in categories:
+        if category.base_category_id == 'fulls':
+            categories_2.append(category)
+
+    for category in categories:
+        if category.base_category_id == 'outers':
+            categories_2.append(category)
+
+    for category in categories:
+        if category.base_category_id == 'shoes':
+            categories_2.append(category)
+        elif category.base_category_id == 'hats':
+            categories_2.append(category)
+        elif category.base_category_id == 'access':
+            categories_2.append(category)
+        elif category.base_category_id == 'jewels':
+            categories_2.append(category)
+        elif category.base_category_id == 'others':
+            categories_2.append(category)
+
+    return categories_2
 
 
 @app.route('/update-outfit', methods=['POST'])
