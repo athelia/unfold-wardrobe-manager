@@ -1,0 +1,73 @@
+fonts:
+
+font-family: 'Abril Fatface', cursive;
+
+font-family: 'Open Sans', sans-serif;
+
+font-family: 'Playfair Display', serif;
+
+
+
+colors:
+
+#475159
+r   71
+g   81
+b   89
+k   35
+
+#B8D0E6
+r   184
+g   208
+b   230
+k   90
+
+#7A8B99
+r   122
+g   139
+b   153
+k   60
+
+#8596A6
+r   133
+g   150
+b   166
+k   65
+
+#667480
+r   102
+g   116
+b   128
+k   50
+
+
+
+#7FA77C
+r   124
+g   166
+b   162
+k   65
+
+#84B0A3
+r   132
+g   176
+b   163
+k   69
+
+#7A8B99
+r   122
+g   139
+b   153
+k   60
+
+#8B84B0
+r   139
+g   132
+b   176
+k   69
+
+#A27CA6
+r   162
+g   124
+b   166
+k   65
