@@ -5,3 +5,4 @@ __pycache__
 flaskconfig.cfg
 secrets.sh*
 clothesdatabase
+demo-talk*
