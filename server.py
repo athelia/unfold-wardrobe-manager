@@ -123,6 +123,8 @@ def index():
 
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
+        categories = Category.query.filter(Category.user_id == session['user_id']).all()
+        categories = sort_categories_by_base(categories)
         # TODO: Find a way to save results of this function so the crazy Tag queries
         # don't run every time user goes back to homepage
         # session['user_stats'] = user_stats
@@ -298,6 +300,7 @@ def show_articles():
     """Display all articles of clothing and the option to add a new article."""
 
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
+    categories = sort_categories_by_base(categories)
     articles = Article.query.filter(Article.user_id == session['user_id']).all()
 
     return render_template("articles.html", 
