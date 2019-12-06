@@ -13,7 +13,7 @@
   <div class="row col-12" id="homepage-content">
     <div class="col-6 offset-1 left-side inline-block">
       <div class="recommendation homepage-outfit-frame">
-        <h1 id="greeting">What shall we wear today?</h1>
+        <h1 id="greeting" class="playfair">What shall we wear today?</h1>
         {% for event in events_today %}
           <div class="event-recommendation">
           {% if event.outfit %}
@@ -81,7 +81,7 @@
       <div class="row">
         {% for hour in hourly[:1:1] %}
           <div class="forecast align-top">
-            <h2>Today:</h2>
+            <h2 class="playfair">Today:</h2>
             <img src="https://darksky.net/images/weather-icons/{{ hour['icon'] }}.png" class="forecast" />
             <h3 class="weather-temp">{{ hour['temperature'] }}&deg;</h3>
           </div>
@@ -91,7 +91,7 @@
       <div class="row">
         {% for day in daily[1:2] %}
         <div class="forecast tomorrow align-top">
-          <h2>Tomorrow:</h2>
+          <h2 class="playfair">Tomorrow:</h2>
           <img src="https://darksky.net/images/weather-icons/{{ day['icon'] }}.png" class="forecast" />
           <h3 class="weather-temp">{{ day.apparentTemperatureLow }}&deg; - {{ day.apparentTemperatureHigh }}&deg;</h3>
           {{ day['summary'] }}
@@ -99,17 +99,15 @@
         {% endfor %}
       </div>
 
-      <div class="row">
-        <h2>Your stats:</h2>
-        <div class="row">
+      <div class="row block">
+        <h2 class="playfair">Your stats:</h2>
+        <div class="row carousel">
 
-          <section name="statistics" class="carousel slide">
+          <section name="statistics" id="carouselExampleControls" class="carousel slide" data-interval="false">
             <div class="carousel-inner">
               <div id="total-articles" class="carousel-item active user-stats">
-                <div>
-                  <h3 class="stats">{{ user_stats['counts']['articles'] }}</h3>
-                  <p>articles</p>
-                </div>
+                <h3 class="stats">{{ user_stats['counts']['articles'] }}</h3>
+                <p>articles</p>
               </div>
 
               <div id="total-outfits" class="carousel-item user-stats">

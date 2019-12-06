@@ -3,9 +3,17 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.abril {
+    font-family: 'Abril Fatface', cursive;
+}
+
+.playfair {
+    font-family: 'Playfair Display', serif;
+}
+
 .stats {
     font-family: 'Abril Fatface', cursive;
-    font-size: xx-large;
+    font-size: 60px;
 }
 
 #greeting {
@@ -94,6 +102,10 @@ footer {
     overflow: hidden;
 }
 
+.row + .carousel {
+    margin-left: 0;
+}
+
 .align-top {
     vertical-align: top;
 }
@@ -147,6 +159,10 @@ footer {
     display: inline-block;
 }
 
+.block {
+    display: block;
+}
+
 /*.left-side {
     text-align: left;
 }*/
@@ -168,7 +184,6 @@ img.thumbnail {
     height: 200px;
     width: 200px;
     text-align: center;
-    
 }
 
 .tomorrow {
@@ -182,8 +197,16 @@ img.thumbnail {
     content:" > ";
 }
 
-.carousel {
+section.carousel {
     background-color: #E9E9E9;
+}
+
+.carousel-item {
+    /*display: flex;*/
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    height:100%;
 }
 
 .event-recommendation {
