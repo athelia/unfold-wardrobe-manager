@@ -14,8 +14,8 @@
 <main class="container">
   {% for year in evt_by_month %}
     {% for month in evt_by_month[year] %}
-    <fieldset class="display-event event-block scrollable">
-      <legend class="manual-border">{{ MONTHS[month] }} {{ year }}</legend>
+    <h3 class="month-header">{{ MONTHS[month] }} {{ year }}</h3>
+    <div class="row">
       {% for event in evt_by_month[year][month] %}
         <button class="event-block block-bucket">
           <a href="/events/{{ event.wear_event_id }}">
@@ -23,15 +23,17 @@
           </a>
         </button>
       {% endfor %}
-    </fieldset>
+      </div>
     {% endfor %}
   {% endfor %}
 
-  <a href="/add-event">
-    <button class="add-button">
-      +
-    </button>
-  </a>
+  <div class="row top-padding">
+    <a href="/add-event">
+      <button class="add-button">
+        +
+      </button>
+    </a>
+  </div>
 </main>
 
 {% endblock%}

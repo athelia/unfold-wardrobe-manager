@@ -10,12 +10,10 @@
 {% endblock %}
 
 {% block content %}
-
+<main class="container">
   <div class="scrollable">
     {% for base in base_categories %}
-    <!-- <fieldset class="display-category category-block scrollable"> -->
-    <fieldset class="inline-block col-5 category-block scrollable">
-      <legend class="manual-border">{{ base.name }}</legend>
+      <h3>{{ base.name }}</h3>
         {% for category in base.categories %}
           {% if category in categories %}
             <button class="category-block block-bucket">
@@ -25,13 +23,13 @@
             </button>
           {% endif %}
         {% endfor %}
-        <button class="add-button">
-          <a href="/add-category">
+        <a href="/add-category">
+          <button class="add-button">
                +
-          </a>
-        </button>
-      </fieldset>
+          </button>
+        </a>
       {% endfor %}
-    </div>
+  </div>
+</main>
 
 {% endblock%}

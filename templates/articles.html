@@ -15,12 +15,11 @@
     <div class="scrollable offset-2">
       {% for category in categories %}
       <!-- <fieldset class="display-category category-block scrollable"> -->
-      <div class="col-3 scrollable inline-block align-top">
-        <fieldset class="gray-border">
-          <legend class="manual-border">{{ category.name }}</legend>
+      <div class="col-3 scrollable inline-block align-top category-for-articles">
+          <h3>{{ category.name }}</h3>
             {% for article in category.articles %}
               <div class="article-block block-bucket"> 
-                <a href="/articles/{{ article.article_id }}">
+                <a href="/articles/{{ article.article_id }}" class="thumbnail">
                   {% if article.image %}
                     <img src="{{ article.image }}" class="article-image" />
                   {% else %}
@@ -29,12 +28,11 @@
                 </a>
               </div>
             {% endfor %}
-          <button class="add-button"> <!-- article-block block-bucket -->
-            <a href="/add-article">
+          <a href="/add-article">
+            <button class="add-button inline-block"> <!-- article-block block-bucket -->
               +
-            </a>
-          </button>
-        </fieldset>
+            </button>
+          </a>
       </div>
       {% endfor %}
     </div>

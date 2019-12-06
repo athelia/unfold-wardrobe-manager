@@ -1,10 +1,19 @@
 body {
-    font-size: small;
+    font-size: 12px;
     font-family: 'Open Sans', sans-serif;
 }
 
 .stats {
     font-family: 'Abril Fatface', cursive;
+    font-size: xx-large;
+}
+
+#greeting {
+    /*margin-top:1.5em;*/
+}
+
+#homepage-content {
+    margin-top: 40px;
 }
 
 a {
@@ -26,20 +35,8 @@ footer {
     text-align: center;
 }
 
-.active {
-    
-}
-
-.category-block {
-    /*border: solid 1px gray;*/
-}
-
-.articles-block {
-    /*border: solid 1px gold;*/
-}
-
-.outfit-block {
-    /*border: solid 1px green;*/
+#save-rec-outfit {
+    margin: 10px 0px;
 }
 
 .gray-border {
@@ -53,14 +50,27 @@ footer {
     /*border: solid 1px;*/
     display: inline-block;
     text-align: center;
+    border-radius: 10px;
 }
 
 .add-button {
-    width: 80px;
-    height: 80px;
-    fill: #fff;
-    background: #fff;
-    margin: 35px;
+    width: 150px;
+    height: 150px;
+    /*fill: #fff;*/
+    /*background: #fff;*/
+    /*margin: 5px;*/
+    border-radius: 10px;
+    font-size: xx-large;
+    text-decoration: none;
+    color: #667480;
+}
+
+.add-button:hover {
+    color: #A27CA6;
+}
+
+.top-padding {
+    padding-top: 40px;
 }
 
 .display-category {
@@ -155,7 +165,10 @@ img.thumbnail {
 }
 
 .user-stats {
-    /*height: 100px;*/
+    height: 200px;
+    width: 200px;
+    text-align: center;
+    
 }
 
 .tomorrow {
@@ -164,12 +177,27 @@ img.thumbnail {
     /*width: 200px;*/
 }
 
+/* Add a separator between breadcrumb hierarchy */
 .breadcrumb-item + .breadcrumb-item::before {
     content:" > ";
 }
 
-.breadcrumb {
+.carousel {
     background-color: #E9E9E9;
+}
+
+.event-recommendation {
+    background-color: #E9E9E9;
+    padding: 10px;
+    margin: 30px;
+    border-radius: 10px;
+}
+
+.category-for-articles {
+    background-color: #E9E9E9;
+    padding: 10px;
+    margin: 30px;
+    border-radius: 10px;
 }
 
 /* Override Bootstrap defaults */
@@ -181,11 +209,8 @@ legend.manual-border {
     margin: 0 10px;
 }
 
-.event-recommendation {
-    background-color: #E9E9E9;
-    padding: 10px;
-    margin: 30px;
-    border-radius: 10px;
+.month-header {
+    padding-top: 30px;
 }
 
 /*https://stackoverflow.com/questions/7492062/css-overflow-scroll-always-show-vertical-scroll-bar
