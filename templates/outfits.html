@@ -12,26 +12,26 @@
 {% block content %}
 
 <main class="container">
-  
-  {% for outfit in outfits %}
-    <button class="outfit-block block-bucket">
-      <a href="/outfits/{{ outfit.outfit_id }}">
-      #{{ outfit.outfit_id }}
-      {% if outfit.description %}
-         - {{ outfit.description }}
-      {% elif outfit.name %}
-         - {{ outfit.name }}
-      {% endif %}
-      </a>
-    </button>
-  {% endfor %}
+  <div class="row">
+    {% for outfit in outfits %}
+      <button class="outfit-block block-bucket">
+        <a href="/outfits/{{ outfit.outfit_id }}">
+        #{{ outfit.outfit_id }}
+        {% if outfit.description %}
+           - {{ outfit.description }}
+        {% elif outfit.name %}
+           - {{ outfit.name }}
+        {% endif %}
+        </a>
+      </button>
+    {% endfor %}
 
-  <a href="/add-outfit">
-    <button class="add-button">
-         +
-    </button>
-  </a>
-
+    <a href="/add-outfit">
+      <button class="add-button">
+           +
+      </button>
+    </a>
+  </div>
 </main>
 
 {% endblock%}
