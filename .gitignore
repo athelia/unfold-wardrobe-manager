@@ -6,3 +6,4 @@ flaskconfig.cfg
 secrets.sh*
 clothesdatabase
 demo-talk*
+/project-temp
