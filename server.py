@@ -695,7 +695,7 @@ def add_event():
 
     text = name if name else description
 
-    flash(f"Created new outfit: {text}")
+    flash(f"Created new event: {text}")
 
     return redirect('/events')
 
@@ -841,18 +841,17 @@ def test_weather_darksky():
 #     article_outfit = ArticleOutfit.query.filter(ArticleOutfit.article_id == article_id,
 #                                                 ArticleOutfit.outfit_id == outfit_id
 #                                                 ).first()
-    
 
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    # app.debug = True
-    # # make sure templates, etc. are not cached in debug mode
-    # app.jinja_env.auto_reload = app.debug
+    app.debug = True
+    # make sure templates, etc. are not cached in debug mode
+    app.jinja_env.auto_reload = app.debug
 
     # # Use the DebugToolbar
     # DebugToolbarExtension(app)
-    
+
     connect_to_db(app)
     app.run(port=5000, host='0.0.0.0')
