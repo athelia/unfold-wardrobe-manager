@@ -797,7 +797,7 @@ class WearEvent(db.Model):
 
         outfit_dict = self.match_tags()
         outfit_dict2 = self.remove_recent_outfits(outfit_dict)
-        coat_count = self.recommend_coats()
+        coat_count = self.recommend_coats() if self.weather_cond else 0
         get_outerwear_categories = Category.query.filter(Category.base_category_id == 'outers').all()
 
         count_of_outerwear = 0
