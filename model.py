@@ -796,23 +796,26 @@ class WearEvent(db.Model):
         """
 
         outfit_dict = self.match_tags()
-        outfit_dict2 = self.remove_recent_outfits(outfit_dict)
-        coat_count = self.recommend_coats() if self.weather_cond else 0
-        get_outerwear_categories = Category.query.filter(Category.base_category_id == 'outers').all()
+        if outfit_dict:
+            outfit_dict2 = self.remove_recent_outfits(outfit_dict)
+            coat_count = self.recommend_coats() if self.weather_cond else 0
+            get_outerwear_categories = Category.query.filter(Category.base_category_id == 'outers').all()
 
-        count_of_outerwear = 0
-        
-        outfit_dict3 = recursive_filter(coat_count, outfit_dict2, get_outerwear_categories)
+            count_of_outerwear = 0
+            
+            outfit_dict3 = recursive_filter(coat_count, outfit_dict2, get_outerwear_categories)
 
-        if outfit_dict3:
-            return outfit_dict3
+            if outfit_dict3:
+                return outfit_dict3
 
+            else:
+                # TODO: recommend a non-weather-appropriate outfit and print text suggesting a jacket
+                # Better implementation would suggest a new outfit created from a top_pick 
+                # and one or more jackets as appropriate. 
+                outfit_dict2['top_pick'] = None
+                return outfit_dict2
         else:
-            # TODO: recommend a non-weather-appropriate outfit and print text suggesting a jacket
-            # Better implementation would suggest a new outfit created from a top_pick 
-            # and one or more jackets as appropriate. 
-            outfit_dict2['top_pick'] = None
-            return outfit_dict2
+            return None
 
     def add_tag(self, tag):
         """Add the tag to the event."""
