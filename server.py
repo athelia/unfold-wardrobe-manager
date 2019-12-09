@@ -21,6 +21,7 @@ from model import (connect_to_db, db, User, BaseCategory, Category, Article,
 # Handles image upload and storage
 import cloudinary
 from cloudinary.uploader import upload
+import cloudinary.api
 
 #########################
 # REFACTOR ME
@@ -85,6 +86,21 @@ app.jinja_env.undefined = StrictUndefined
 #     return User.query.filter(User.user_id == user_id).first()
 
 
+def downsize_image(articles, width=300, height=300):
+    """Replaces instance attribute article.image with a downsied image url.
+
+    Because it transforms the original input in place, function returns None.
+    Uses Cloudinary's built-in transformations on the server side to render the
+    new url as a smaller image.
+    """
+
+    thumbnail_format = f'w_{width},h_{height},c_fill'
+    for article in articles:
+        split_url = article.image.split('/')
+        split_url.insert(6, thumbnail_format)
+        article.image = '/'.join(split_url)
+
+
 ###############################################################################
 #                                                                             #
 #                                BASIC ROUTES                                 #
@@ -141,11 +157,18 @@ def index():
         coat_count = None
         for event in events_today:
             filtered = event.filter_outfits_by_weather_and_recent()
-            if filtered['top_pick']: 
-                outfit_recs[event] = filtered['top_pick']
-            else:
-                outfit_recs[event] = filtered['all_picks'][-1]
-                coat_count = event.recommend_coats()
+            if filtered:
+                if filtered['top_pick']: 
+                    outfit_recs[event] = filtered['top_pick']
+                else:
+                    outfit_recs[event] = filtered['all_picks'][-1]
+                    coat_count = event.recommend_coats()
+
+        # TODO: May be irrelevant in the scheme of things, but this is quite
+        # inefficient. Iterates over all articles in all outfits, rather than
+        # only the ones we will need to display.
+        for outfit in outfits:
+            downsize_image(outfit.articles, width=500, height=500)
 
         return render_template("homepage.html",
                                hourly = hourly,
@@ -252,6 +275,8 @@ def show_category_articles(category_id):
     category = Category.query.filter(Category.category_id == category_id,
                                      Category.user_id == session['user_id']).one()
 
+    downsize_image(articles, width=300, height=300)
+
     return render_template("single-category.html", 
                            articles=articles,
                            category=category)
@@ -302,6 +327,8 @@ def show_articles():
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
     categories = sort_categories_by_base(categories)
     articles = Article.query.filter(Article.user_id == session['user_id']).all()
+
+    downsize_image(articles, width=300, height=300)
 
     return render_template("articles.html", 
                            articles=articles,
@@ -452,6 +479,9 @@ def show_create_outfit_form():
     categories = Category.query.filter(Category.user_id == session['user_id']).all()
     tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
+    for category in categories:
+        downsize_image(category.articles, width=300, height=300)
+
     return render_template('add-outfit.html', categories=categories, tags=tags)
 
 
@@ -505,12 +535,16 @@ def show_outfit_detail(outfit_id):
     categories = sort_categories_by_base(categories)
     tags = Tag.query.filter(Tag.user_id == session['user_id']).all()
 
+    for category in categories:
+        downsize_image(category.articles, width=300, height=300)
+
     return render_template('single-outfit.html',
                            outfit=outfit,
                            categories=categories,
                            tags=tags)
 
 
+# TODO: this all feels quite inefficient - is there a better way?
 def sort_categories_by_base(categories):
     """Puts user categories in order by base category type."""
 
@@ -739,6 +773,9 @@ def show_event_details(wear_event_id):
     event = WearEvent.query.filter_by(wear_event_id = wear_event_id).first()
     tags = Tag.query.filter_by(user_id = session['user_id']).all()
     outfits = Outfit.query.filter_by(user_id = session['user_id']).all()
+
+    for outfit in outfits:
+        downsize_image(outfit.articles, width=300, height=300)
 
     return render_template('single-event.html',
                            event=event,
