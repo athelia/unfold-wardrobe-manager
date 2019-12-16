@@ -87,7 +87,7 @@ app.jinja_env.undefined = StrictUndefined
 
 
 def downsize_image(articles, width=300, height=300):
-    """Replaces instance attribute article.image with a downsied image url.
+    """Replaces instance attribute article.image with a downsized image url.
 
     Because it transforms the original input in place, function returns None.
     Uses Cloudinary's built-in transformations on the server side to render the
