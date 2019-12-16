@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 def load_users():
-    """Load base categories from seed-user.txt into database."""
+    """Load users from seed-user.txt into database."""
 
     print("Users")
 
