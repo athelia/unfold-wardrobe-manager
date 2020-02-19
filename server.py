@@ -11,8 +11,8 @@ from datetime import datetime, date, timedelta
 from sqlalchemy import asc, update, func
 import random
 
-import flask_restless
-from flask_login import LoginManager
+# import flask_restless
+# from flask_login import LoginManager
 
 # Import helper function, SQLAlchemy database, and model definitions
 from model import (connect_to_db, db, User, BaseCategory, Category, Article,
@@ -32,10 +32,10 @@ from image_handling import allowed_file, ALLOWED_EXTENSIONS
 from global_var import CITIES, MONTHS
 
 # Compare clothing prices
-from etsy import Etsy
+# from etsy import Etsy
 
 # Get weather from OpenWeatherMap API
-import pyowm
+# import pyowm
 
 # Get weather from DarkSky API
 from darksky import forecast
@@ -43,7 +43,7 @@ from darksky import forecast
 app = Flask(__name__)
 app.config.from_pyfile('flaskconfig.cfg')
 
-manager = flask_restless.APIManager(app)
+# manager = flask_restless.APIManager(app)
 
 # Set Cloudinary API configuration from environmental variables
 cloudinary.config.update = ({
@@ -53,15 +53,15 @@ cloudinary.config.update = ({
     })
 
 # Set Etsy API config from environmental variables
-etsy_config = ({
-    'api_key': os.environ.get('ETSY_API_KEY'),
-    'api_secret': os.environ.get('ETSY_API_SECRET')
-    })
+# etsy_config = ({
+    # 'api_key': os.environ.get('ETSY_API_KEY'),
+    # 'api_secret': os.environ.get('ETSY_API_SECRET')
+    # })
 # Manual assignment of API key
-etsy_api = Etsy(etsy_config['api_key'])
+# etsy_api = Etsy(etsy_config['api_key'])
 
 # Set OpenWeatherMap API key
-owm = pyowm.OWM(os.environ.get('OPEN_WEATHER_API_KEY'))
+# owm = pyowm.OWM(os.environ.get('OPEN_WEATHER_API_KEY'))
 
 # Set DarkSky API key
 dark_sky = ({
@@ -116,7 +116,7 @@ def index():
     if session.get('user_id', None):
         city = CITIES['SFO']
         # Dark Sky requires a date in isoformat
-        weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
+        weather = forecast.Forecast(dark_sky['secret'], city['lat'], city['lng'])
         hourly = weather.hourly
         daily = weather.daily
 
@@ -795,32 +795,33 @@ def delete_event():
     return redirect('/events')
 
 
-@app.route('/etsy-api')
-def test_etsy_api():
-    """Test some Etsy API calls."""
+# @app.route('/etsy-api')
+# def test_etsy_api():
+    # """Test some Etsy API calls."""
 
-    json_listings = etsy_api.getInterestingListings()
+    # json_listings = etsy_api.getInterestingListings()
 
-    return render_template('api-test.html', json_listings=json_listings)
+    # return render_template('api-test.html', json_listings=json_listings)
 
 
-@app.route('/weather/<city>')
-def test_weather(city):
-    """Test OpenWeatherMap's API & PyOWM wrapper"""
+# Unused library; switched to DarkSky
+# @app.route('/weather/<city>')
+# def test_weather(city):
+#     """Test OpenWeatherMap's API & PyOWM wrapper"""
 
-    # city = 'San Francisco'
-    city_country = city + ',USA'
-    print(city_country)
-    observation = owm.three_hours_forecast(city_country)
-    f = observation.get_forecast()
-    forecasts = f.get_weathers()
-    print(datetime.time(datetime.now()))
-    for forecast in forecasts:
-        forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-        forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
-    today = forecasts[0:8]
+#     # city = 'San Francisco'
+#     city_country = city + ',USA'
+#     print(city_country)
+#     observation = owm.three_hours_forecast(city_country)
+#     f = observation.get_forecast()
+#     forecasts = f.get_weathers()
+#     print(datetime.time(datetime.now()))
+#     for forecast in forecasts:
+#         forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
+#         forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+#     today = forecasts[0:8]
 
-    return render_template('weather.html', today=today)
+#     return render_template('weather.html', today=today)
 
 
 @app.route('/ds-weather')
