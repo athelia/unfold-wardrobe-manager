@@ -5,6 +5,12 @@ CITIES = {
         'lat': 33.753746,
         'lng': -84.386330,
     },
+    'MSP': {
+        'name': 'Minneapolis',
+        'location_id': 'MSP',
+        'lat': 44.970697,
+        'lng': -93.2614785,
+    },
     'OAK': {
         'name': 'Oakland',
         'location_id': 'OAK',
