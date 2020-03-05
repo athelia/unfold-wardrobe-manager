@@ -126,23 +126,20 @@ def index():
         time_offset = - 8 * 60 * 60
 
         for hour in hourly:
-            hour.datestr = datetime.utcfromtimestamp(hour['time'] + time_offset).strftime('%m/%d %H:%M')
+            hour.datestr = datetime.utcfromtimestamp(hour['time'] + 
+                time_offset).strftime('%m/%d %H:%M')
         for day in daily:
-            day.datestr = datetime.utcfromtimestamp(day['time'] + time_offset).strftime('%m/%d')
+            day.datestr = datetime.utcfromtimestamp(day['time'] + 
+                time_offset).strftime('%m/%d')
 
-        now = datetime.today()
-        today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
-        today_end = datetime(now.year, now.month, now.day, 23, 59, 59)
-        events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
-        events_today = events.filter(today_start <= WearEvent.date)
-        events_today = events_today.filter(WearEvent.date <= today_end).order_by(WearEvent.date).all()
-
+        events_today = filter_events_today()
+        
         outfits = Outfit.query.filter(Outfit.user_id == session['user_id']).all()
         user = User.query.get(session['user_id'])
         categories = Category.query.filter(Category.user_id == session['user_id']).all()
         categories = sort_categories_by_base(categories)
-        # TODO: Find a way to save results of this function so the crazy Tag queries
-        # don't run every time user goes back to homepage
+        # TODO: Find a way to save results of this function so the crazy Tag 
+        # queries don't run every time user goes back to homepage
         # session['user_stats'] = user_stats
         user_stats = user.get_stats()
         random_category = user.categories[random.randint(0,len(user.categories)-1)] \
@@ -184,6 +181,19 @@ def index():
                                )
     else:
         return render_template("login.html")
+
+
+def filter_events_today():
+    """Set time window for 'today' and return user's events within window."""
+
+    now = datetime.today()
+    today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
+    today_end = datetime(now.year, now.month, now.day, 23, 59, 59)
+    events = WearEvent.query.filter(WearEvent.user_id == session['user_id'])
+    events_today = events.filter(today_start <= WearEvent.date)
+    events_today = events_today.filter(WearEvent.date <= today_end)
+    events_today = events_today.order_by(WearEvent.date).all()
+    return events_today
 
 
 @app.route('/login')
@@ -653,8 +663,10 @@ def show_events():
     """Display all events and the option to add a new event."""
 
     evt_by_month = {}
-    # events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).order_by(WearEvent.date.desc()).all()
-    events = WearEvent.query.filter(WearEvent.user_id == session['user_id']).order_by(WearEvent.date).all()
+    # events = WearEvent.query.filter(WearEvent.user_id == 
+    #   session['user_id']).order_by(WearEvent.date.desc()).all()
+    events = WearEvent.query.filter(WearEvent.user_id == 
+        session['user_id']).order_by(WearEvent.date).all()
     for event in events:
         month = event.date.month
         year = event.date.year
@@ -804,33 +816,13 @@ def delete_event():
     # return render_template('api-test.html', json_listings=json_listings)
 
 
-# Unused library; switched to DarkSky
-# @app.route('/weather/<city>')
-# def test_weather(city):
-#     """Test OpenWeatherMap's API & PyOWM wrapper"""
-
-#     # city = 'San Francisco'
-#     city_country = city + ',USA'
-#     print(city_country)
-#     observation = owm.three_hours_forecast(city_country)
-#     f = observation.get_forecast()
-#     forecasts = f.get_weathers()
-#     print(datetime.time(datetime.now()))
-#     for forecast in forecasts:
-#         forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-#         forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
-#     today = forecasts[0:8]
-
-#     return render_template('weather.html', today=today)
-
-
 @app.route('/ds-weather')
 def test_weather_darksky():
     """Test DarkSky's API & DarkSkyLib wrapper"""
 
     city = CITIES['SFO']
     # Dark Sky requires a date in isoformat
-    weather = forecast(dark_sky['secret'], city['lat'], city['lng'])
+    weather = forecast.Forecast(dark_sky['secret'], city['lat'], city['lng'])
 
     hourly = weather.hourly
 
@@ -841,44 +833,11 @@ def test_weather_darksky():
 
     # for forecast in forecasts:
     #     forecast.temp = int(round(forecast.get_temperature('fahrenheit')['temp'],0))
-    #     forecast.datestr = datetime.utcfromtimestamp(forecast.get_reference_time()).strftime('%H:%M')
+    #     forecast.datestr = datetime.utcfromtimestamp(
+    #       forecast.get_reference_time()).strftime('%H:%M')
     # today = forecasts[0:8]
 
     return render_template('ds-weather.html', hourly=hourly)
-
-
-# # WIP - do some simpler steps first
-# @app.route('/select-article/<outfit_id>/<category_id>/<article_id>')
-# def add_or_replace_article_in_outfit(outfit_id, category_id, article_id):
-#     """If category already in outfit, replace article in outfit; otherwise, add."""
-
-#     outfit = Outfit.query.filter_by(outfit_id = outfit_id).one()
-#     category = Category.query.filter_by(category_id = category_id).one()
-
-#     if is_category_in_outfit(outfit, category):
-#         pass
-#     else:
-#         pass
-
-#     # outfit_categories = Category.query.filter(Outfit.articles.category_id == category_id).all()
-#     # outfit = Outfit.query.filter(Outfit.outfit_id == outfit_id).one()
-
-#     # categories = Category.query.filter(Category.user_id == session['user_id']).all()
-#     # if category_id in outfit_categories:
-#     #     outfit.article_id = article_id
-#     # else:
-#     #     outfit.article_id = article_id
-
-#     return redirect(f'outfits/{outfit_id}',
-#                     outfit=outfit,
-#                     categories=categories)
-
-# def update_article(article_id, outfit_id):
-#     """Change article in outfit's category."""
-
-#     article_outfit = ArticleOutfit.query.filter(ArticleOutfit.article_id == article_id,
-#                                                 ArticleOutfit.outfit_id == outfit_id
-#                                                 ).first()
 
 
 if __name__ == "__main__":
