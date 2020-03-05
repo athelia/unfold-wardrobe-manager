@@ -641,7 +641,7 @@ class WearEvent(db.Model):
         """
 
         # Dark Sky requires a date in isoformat
-        weather = forecast(dark_sky['secret'], lat, lng, time=self.date.isoformat())
+        weather = forecast.Forecast(dark_sky['secret'], lat, lng, time=self.date.isoformat())
         self.temperature = weather.temperature
         self.weather_cond = weather.summary
         # self.weather_icon = weather.icon
